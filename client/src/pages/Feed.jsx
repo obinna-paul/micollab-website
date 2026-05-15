@@ -3,11 +3,13 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
-import { Briefcase, ArrowRight } from 'lucide-react';
+import { Briefcase, ArrowRight, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 
 const Feed = () => {
   const { token } = useAuthStore();
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedMode, setFeedMode] = useState('GLOBAL'); // GLOBAL, NETWORK
@@ -71,6 +73,23 @@ const Feed = () => {
 
   return (
     <div className="max-w-2xl mx-auto py-2">
+      {/* Route to Collabs */}
+      <div className="card mb-6 overflow-hidden border-none bg-white shadow-sm ring-1 ring-primary/5">
+        <div className="bg-primary/[0.03] p-4 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-black text-primary uppercase tracking-widest">Looking to hire?</p>
+            <p className="text-sm text-textMain font-medium mt-0.5">Post gigs and find talent in the Collabs Hub.</p>
+          </div>
+          <button 
+            onClick={() => navigate('/collabs/new')}
+            className="bg-white text-primary text-xs font-bold px-4 py-2 rounded-xl shadow-sm border border-divider hover:border-primary/50 transition-all flex items-center gap-2 group"
+          >
+            <Briefcase size={14} className="group-hover:scale-110 transition-transform" /> 
+            <span>Post Collab</span>
+            <ChevronRight size={14} />
+          </button>
+        </div>
+      </div>
       
       {/* Feed Toggle */}
       <div className="flex bg-white/40 backdrop-blur-xl p-1.5 rounded-2xl border border-divider mb-8 sticky top-2 z-40">

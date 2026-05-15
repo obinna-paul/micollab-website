@@ -116,20 +116,8 @@ const CreatePost = ({ onPostCreated }) => {
   };
 
   return (
-    <div className="card mb-6 overflow-hidden">
-      {/* Route to Collabs */}
-      <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
-        <div>
-           <p className="text-xs font-black text-primary uppercase tracking-widest">Looking to hire?</p>
-           <p className="text-sm text-textMain font-medium mt-0.5">Post gigs and find talent in the Collabs Hub.</p>
-        </div>
-        <button 
-          onClick={() => navigate('/collabs/new')}
-          className="bg-white text-primary text-xs font-bold px-4 py-2 rounded-lg shadow-sm border border-divider hover:border-primary transition flex items-center gap-1"
-        >
-          <Briefcase size={14} /> Post Collab <ChevronRight size={14} />
-        </button>
-      </div>
+    <>
+      <div className="card mb-6 overflow-hidden">
 
       <div className="p-6">
         <div className="flex items-center gap-3 mb-4">
@@ -300,8 +288,9 @@ const CreatePost = ({ onPostCreated }) => {
             </button>
           </div>
         </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

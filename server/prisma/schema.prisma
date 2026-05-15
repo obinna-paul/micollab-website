@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -8,351 +8,288 @@ generator client {
 }
 
 model User {
-  id               String           @id @default(uuid())
-  email            String           @unique
-  username         String           @unique
-  password         String
-  profileImage     String?
-  coverImage       String?
-  bio              String?
-  profileType      String           @default("CREATIVE") // CREATIVE, BRAND, SCOUT
-  location         String?
-  skills           String?          // Comma separated
-  isVerified       Boolean          @default(false)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-
-  posts            Post[]
-  likes            Like[]
-  comments         Comment[]
-  portfolio        PortfolioItem[]
-  experience       Experience[]
+  id                String    @id @default(cuid())
+  username          String    @unique
+  email             String    @unique
+  password          String
+  displayName       String?   
+  profileImage      String?   @default("https://via.placeholder.com/150")
+  coverImage        String?   @default("https://images.unsplash.com/photo-1579546929518-9e396f3cc809")
+  profileType       String    @default("CREATIVE") // CREATIVE, SCOUT
+  bio               String?   @default("Creative explorer on Micollab.")
+  longAbout         String?   
+  isVerified        String?   @default("NO") // NO, PENDING, YES
+  location          String?   @default("Lagos, Nigeria")
+  skills            String?   // comma-separated
+  availabilityStatus String?  @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB
   
-  collabs          Collab[]         @relation("CollabPoster")
-  proposals        Proposal[]
-  savedCollabs     SavedCollab[]
+  // Reputation Metrics
+  reputationScore   Int       @default(0)
+  completionRate    Int       @default(100)
+  responseRate      Int       @default(100)
   
-  sentMsgRequests      MessageRequest[] @relation("SentRequests")
-  receivedMsgRequests  MessageRequest[] @relation("ReceivedRequests")
-  messages             Message[]        @relation("SentMessages")
-  reactions            MessageReaction[]
-  conversations        ConversationParticipant[]
+  socialLinks       String?     // Stored as JSON string in SQLite
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  sentConnections      Connection[]     @relation("SentConnections")
-  receivedConnections  Connection[]     @relation("ReceivedConnections")
-  ledCircles           Circle[]         @relation("CircleLead")
-  circleMemberships    CircleMember[]
-  receivedCircleInvites CircleInvitation[] @relation("ReceivedCircleInvites")
-  notifications        Notification[]
-  notificationsSent    Notification[]   @relation("NotificationSender")
-}
-
-model Notification {
-  id          String   @id @default(uuid())
-  userId      String
-  senderId    String?
-  type        String   // COLLAB_PROPOSAL, COLLAB_STATUS, CONNECTION, CIRCLE, SOCIAL
-  title       String
-  content     String
-  link        String?
-  isRead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
-
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sender      User?    @relation("NotificationSender", fields: [senderId], references: [id])
-}
-
-model OTP {
-  id        String   @id @default(uuid())
-  email     String
-  code      String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  // Relations
+  posts             Post[]
+  collabs           Collab[]
+  proposals         Proposal[]
+  connections       Connection[] @relation("UserConnections")
+  connectedTo       Connection[] @relation("ConnectedTo")
+  sentRequests      ConnectionRequest[] @relation("SentRequests")
+  receivedRequests  ConnectionRequest[] @relation("ReceivedRequests")
+  circleMemberships CircleMember[]
+  notifications     Notification[] @relation("UserNotifications")
+  triggeredAlerts   Notification[] @relation("TriggeredBy")
+  
+  portfolioItems    PortfolioItem[]
+  testimonials      Testimonial[] @relation("ReceivedTestimonials")
+  givenTestimonials Testimonial[] @relation("GivenTestimonials")
+  analytics         UserAnalytics?
+  credits           PortfolioCredit[] @relation("UserCredits")
 }
 
 model PortfolioItem {
-  id          String   @id @default(uuid())
-  creatorId   String
-  title       String
-  description String?
-  mediaUrl    String
-  mediaType   String   // IMAGE, VIDEO, LINK
-  createdAt   DateTime @default(now())
-
-  creator     User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  title         String
+  description   String?   
+  category      String    // Video, Photography, Music, Writing, etc.
+  projectType   String?   @default("PERSONAL") // CLIENT, PERSONAL, COMMERCIAL
+  date          DateTime? 
+  featured      Boolean   @default(false)
+  viewCount     Int       @default(0)
+  
+  media         PortfolioMedia[]
+  tags          PortfolioTag[]
+  credits       PortfolioCredit[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
-model Experience {
-  id          String   @id @default(uuid())
-  userId      String
-  title       String
-  company     String
-  startDate   String
-  endDate     String?
-  description String?
-
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model PortfolioMedia {
+  id              String    @id @default(cuid())
+  portfolioItemId String
+  portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
+  url             String
+  type            String    @default("IMAGE") // IMAGE, VIDEO, AUDIO
+  order           Int       @default(0)
 }
 
-model Collab {
-  id              String   @id @default(uuid())
-  posterId        String
-  title           String
-  description     String
-  category        String
-  budget          String
-  location        String?
-  status          String   @default("OPEN") // OPEN, CLOSED
-  projectType     String   @default("ONE_OFF") // ONE_OFF, RECURRING
-  deadline        DateTime?
-  paymentVerified Boolean  @default(false)
-  isVerified      Boolean  @default(false)
-  experienceLevel String?
-  duration        String?
-  crossPostToFeed Boolean  @default(false)
-  createdAt       DateTime @default(now())
-
-  poster          User     @relation("CollabPoster", fields: [posterId], references: [id], onDelete: Cascade)
-  proposals       Proposal[]
-  requirements    CollabRequirement[]
-  attachments     CollabAttachment[]
-  savedBy         SavedCollab[]
-  posts           Post[]
-  proposalThreads ProposalThread[]
+model PortfolioTag {
+  id              String    @id @default(cuid())
+  portfolioItemId String
+  portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
+  name            String
 }
 
-model CollabRequirement {
-  id        String @id @default(uuid())
-  collabId  String
-  skill     String
-
-  collab    Collab @relation(fields: [collabId], references: [id], onDelete: Cascade)
+model PortfolioCredit {
+  id              String    @id @default(cuid())
+  portfolioItemId String
+  portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
+  creditedUserId  String
+  user            User      @relation("UserCredits", fields: [creditedUserId], references: [id])
+  role            String    // Director, Producer, Editor, etc.
 }
 
-model CollabAttachment {
-  id        String @id @default(uuid())
-  collabId  String
-  fileUrl   String
-  fileType  String // IMAGE, VIDEO, DOCUMENT
-
-  collab    Collab @relation(fields: [collabId], references: [id], onDelete: Cascade)
+model Testimonial {
+  id          String    @id @default(cuid())
+  fromUserId  String
+  fromUser    User      @relation("GivenTestimonials", fields: [fromUserId], references: [id])
+  toUserId    String
+  toUser      User      @relation("ReceivedTestimonials", fields: [toUserId], references: [id])
+  content     String    
+  rating      Int       @default(5)
+  createdAt   DateTime  @default(now())
 }
 
-model Proposal {
-  id             String   @id @default(uuid())
-  collabId       String
-  creatorId      String
-  coverLetter    String
-  portfolioLinks String?
-  status         String   @default("SUBMITTED") // SUBMITTED, VIEWED, SHORTLISTED, ACCEPTED, REJECTED, CLOSED
-  createdAt      DateTime @default(now())
-
-  collab         Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
-  creator        User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  attachments    ProposalAttachment[]
-}
-
-model ProposalAttachment {
-  id          String @id @default(uuid())
-  proposalId  String
-  fileUrl     String
-  fileType    String // IMAGE, VIDEO, DOCUMENT, AUDIO
-
-  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-}
-
-model SavedCollab {
-  userId      String
-  collabId    String
-  createdAt   DateTime @default(now())
-
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  collab      Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
-
-  @@id([userId, collabId])
+model UserAnalytics {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id])
+  profileViews      Int       @default(0)
+  portfolioViews    Int       @default(0)
+  searchAppearances Int       @default(0)
 }
 
 model Post {
-  id             String    @id @default(uuid())
-  creatorId      String
-  contentType    String    // IMAGE, VIDEO, TEXT
-  postCategory   String    @default("UPDATE") // UPDATE, MEDIA, EVENT
-  caption        String?
-  mediaUrl       String?
-  eventDate      String?
-  eventTime      String?
-  eventLocation  String?
-  inviteTarget   String?   // NONE, ALL_NETWORK, SELECTED
-  isCollabCard   Boolean   @default(false)
-  collabId       String?
-  isArchived     Boolean   @default(false)
-  createdAt      DateTime  @default(now())
-
-  creator        User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  likes          Like[]
-  comments       Comment[]
-  collab         Collab?   @relation(fields: [collabId], references: [id], onDelete: SetNull)
-}
-
-model Like {
-  id        String   @id @default(uuid())
-  postId    String
-  userId    String
-  createdAt DateTime @default(now())
-
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([postId, userId])
-}
-
-model Comment {
-  id        String   @id @default(uuid())
-  postId    String
-  userId    String
-  content   String
-  createdAt DateTime @default(now())
-
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Conversation {
-  id           String                    @id @default(uuid())
-  type         String                    @default("DIRECT") // DIRECT, GROUP, PROPOSAL
-  updatedAt    DateTime                  @updatedAt
-  participants ConversationParticipant[]
-  messages     Message[]
-  proposalThread ProposalThread?
-  circle       Circle?                   @relation("CircleConversation")
-}
-
-model ConversationParticipant {
-  conversationId String
-  userId         String
-  role           String?                 @default("MEMBER")
-  lastReadAt     DateTime?               @default(now())
+  id            String    @id @default(cuid())
+  content       String?
+  contentType   String    @default("TEXT") // TEXT, IMAGE, VIDEO
+  mediaUrl      String?
+  caption       String?
+  postCategory  String    @default("GENERAL") // UPDATE, SHOWCASE, QUESTION
+  isCollabCard  Boolean   @default(false)
+  collabId      String?   
   
-  conversation   Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  user           User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@id([conversationId, userId])
+  createdAt     DateTime  @default(now())
+  creator       User      @relation(fields: [creatorId], references: [id])
+  creatorId     String
+
+  likes         Int       @default(0)
+  comments      Int       @default(0)
 }
 
-model Message {
-  id             String                  @id @default(uuid())
-  conversationId String
-  senderId       String
-  content        String
-  messageType    String                  @default("TEXT")
-  replyToId      String?
-  createdAt      DateTime                @default(now())
-  editedAt       DateTime?
-  deletedAt      DateTime?
+model Collab {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  budget          String?
+  category        String
+  location        String
+  projectType     String    @default("ONE_OFF") // ONE_OFF, LONG_TERM
+  deadline        DateTime?
+  experienceLevel String?   @default("ALL")
+  duration        String?
+  status          String    @default("OPEN") // OPEN, CLOSED, COMPLETED
+  crossPostToFeed Boolean   @default(false)
+  isVerified      Boolean   @default(false)
   
-  conversation   Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender         User                    @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  replyTo        Message?                @relation("Replies", fields: [replyToId], references: [id])
-  replies        Message[]               @relation("Replies")
-  reactions      MessageReaction[]
-  attachments    MessageAttachment[]
+  poster          User      @relation(fields: [posterId], references: [id])
+  posterId        String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  requirements    Requirement[]
+  attachments     Attachment[]
+  proposals       Proposal[]
 }
 
-model MessageReaction {
-  id        String   @id @default(uuid())
-  messageId String
-  userId    String
-  emoji     String
-  
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Requirement {
+  id        String   @id @default(cuid())
+  skill     String
+  collab    Collab   @relation(fields: [collabId], references: [id])
+  collabId  String
 }
 
-model MessageAttachment {
-  id        String   @id @default(uuid())
-  messageId String
-  fileUrl   String
-  fileType  String
-  
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+model Attachment {
+  id        String   @id @default(cuid())
+  url       String
+  name      String
+  collabId  String?
+  collab    Collab?  @relation(fields: [collabId], references: [id])
+  proposalId String?
+  proposal  Proposal? @relation(fields: [proposalId], references: [id])
 }
 
-model MessageRequest {
-  id          String   @id @default(uuid())
-  senderId    String
-  receiverId  String
-  status      String   @default("PENDING")
-  initialMsg  String?
-  createdAt   DateTime @default(now())
+model Proposal {
+  id              String    @id @default(cuid())
+  coverLetter     String
+  bidAmount       String?
+  status          String    @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  portfolioLinks  String?   // JSON string
   
-  sender      User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver    User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
-}
-
-model ProposalThread {
-  id             String       @id @default(uuid())
-  conversationId String       @unique
-  collabId       String
-  creatorId      String
-  scoutId        String
-  status         String       @default("SUBMITTED")
-  
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  collab         Collab       @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id])
+  userId          String
+  collab          Collab    @relation(fields: [collabId], references: [id])
+  collabId        String
+  attachments     Attachment[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model Connection {
-  id          String   @id @default(uuid())
-  requesterId String
-  receiverId  String
-  status      String   @default("PENDING") // PENDING, ACCEPTED, BLOCKED
+  id          String   @id @default(cuid())
+  userId      String
+  connectedId String
+  status      String   @default("ACCEPTED")
   createdAt   DateTime @default(now())
-  
-  requester   User     @relation("SentConnections", fields: [requesterId], references: [id], onDelete: Cascade)
-  receiver    User     @relation("ReceivedConnections", fields: [receiverId], references: [id], onDelete: Cascade)
-  
-  @@unique([requesterId, receiverId])
+
+  user        User     @relation("UserConnections", fields: [userId], references: [id])
+  connectedTo User     @relation("ConnectedTo", fields: [connectedId], references: [id])
+
+  @@unique([userId, connectedId])
+}
+
+model ConnectionRequest {
+  id          String   @id @default(cuid())
+  fromUserId  String
+  toUserId    String
+  status      String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt   DateTime @default(now())
+
+  fromUser    User     @relation("SentRequests", fields: [fromUserId], references: [id])
+  toUser      User     @relation("ReceivedRequests", fields: [toUserId], references: [id])
 }
 
 model Circle {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   name        String
   description String?
-  leadId      String
-  status      String   @default("PLANNING") // PLANNING, ACTIVE, COMPLETED
-  startDate   DateTime?
-  duration    String?  // e.g., "3 months"
+  image       String?
+  collabId    String?  @unique
   createdAt   DateTime @default(now())
-  
-  lead        User     @relation("CircleLead", fields: [leadId], references: [id], onDelete: Cascade)
+  updatedAt   DateTime @updatedAt
+
   members     CircleMember[]
-  invitations CircleInvitation[]
-  
-  conversationId String? @unique
-  conversation   Conversation? @relation("CircleConversation", fields: [conversationId], references: [id])
+  messages    CircleMessage[]
 }
 
 model CircleMember {
+  id        String   @id @default(cuid())
   circleId  String
   userId    String
-  role      String   @default("MEMBER")
+  role      String   @default("MEMBER") // ADMIN, MEMBER
   joinedAt  DateTime @default(now())
-  
-  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@id([circleId, userId])
+
+  circle    Circle   @relation(fields: [circleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([circleId, userId])
 }
 
-model CircleInvitation {
-  id        String   @id @default(uuid())
+model CircleMessage {
+  id        String   @id @default(cuid())
+  content   String
   circleId  String
-  inviteeId String
-  inviterId String
-  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  senderId  String
   createdAt DateTime @default(now())
-  
-  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  invitee   User     @relation("ReceivedCircleInvites", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  circle    Circle   @relation(fields: [circleId], references: [id])
 }
 
+model Conversation {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  userId         String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  content        String
+  senderId       String
+  conversationId String
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // CONNECTION_REQUEST, PROPOSAL_RECEIVED, COLLAB_ACCEPTED, MESSAGE_RECEIVED
+  content     String
+  relatedId   String?  // ID of the related object (collab, user, etc.)
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation("UserNotifications", fields: [userId], references: [id])
+  triggeredBy User?    @relation("TriggeredBy", fields: [triggeredById], references: [id])
+  triggeredById String?
+}

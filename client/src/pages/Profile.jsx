@@ -1,500 +1,488 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MapPin, Link as LinkIcon, Calendar, Star, Users, Briefcase, 
-  MessageSquare, Plus, Grid, List, Activity as ActivityIcon, 
-  Edit3, Share2, MoreHorizontal, ExternalLink, Image as ImageIcon, X, Loader2, Building, UserCircle
+  MapPin, Link as LinkIcon, Calendar, Users, 
+  Briefcase, CheckCircle, Star, MessageSquare, 
+  UserPlus, Share2, Grid, Info, Clock, ExternalLink
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 import useAuthStore from '../store/useAuthStore';
-import PostCard from '../components/PostCard';
+import EditProfileModal from '../components/EditProfileModal';
+import PhotoActionModal from '../components/PhotoActionModal';
+import PhotoViewerModal from '../components/PhotoViewerModal';
+import { Camera } from 'lucide-react';
+
+const TABS = [
+  { id: 'PORTFOLIO', label: 'Portfolio', icon: Grid },
+  { id: 'ABOUT', label: 'About', icon: Info },
+  { id: 'EXPERIENCE', label: 'Experience', icon: Briefcase },
+  { id: 'ACTIVITY', label: 'Activity', icon: Clock }
+];
 
 const Profile = () => {
   const { username } = useParams();
-  const { user: currentUser, token } = useAuthStore();
+  const { user: currentUser, token, updateProfile: updateAuthProfile } = useAuthStore();
   const [profile, setProfile] = useState(null);
+  const [activeTab, setActiveTab] = useState('PORTFOLIO');
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('portfolio');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
-  // Modals
-  const [showPortfolioModal, setShowPortfolioModal] = useState(false);
-  const [showExpModal, setShowExpModal] = useState(false);
-  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
-  
-  // Forms
-  const [newProject, setNewProject] = useState({ title: '', mediaUrl: '', caption: '' });
-  const [newExp, setNewExp] = useState({ company: '', role: '', startDate: '', endDate: '', description: '', location: '' });
-  const [editProfileData, setEditProfileData] = useState({ profileType: '', bio: '', location: '', skills: '', creativeMission: '' });
-  
-  const [modalLoading, setModalLoading] = useState(false);
+  // Image Management State
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const [coverMenuOpen, setCoverMenuOpen] = useState(false);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerUrl, setViewerUrl] = useState('');
+  const [uploadLoading, setUploadLoading] = useState(false);
 
-  const updateStoreProfile = useAuthStore(state => state.updateProfile);
-  const isOwnProfile = currentUser?.username === username;
+  const avatarInputRef = React.useRef(null);
+  const coverInputRef = React.useRef(null);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/users/profile/${username}`);
+        setProfile(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchProfile();
   }, [username]);
 
-  const fetchProfile = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`http://localhost:5000/api/users/profile/${username}`);
-      setProfile(res.data);
-      setEditProfileData({
-        profileType: res.data.profileType || '',
-        bio: res.data.bio || '',
-        location: res.data.location || '',
-        skills: res.data.skills || '',
-        creativeMission: res.data.creativeMission || ''
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleFileUpload = async (e, type) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const handleAddProject = async (e) => {
-    e.preventDefault();
-    setModalLoading(true);
-    try {
-      await axios.post('http://localhost:5000/api/users/portfolio', newProject, {
-         headers: { Authorization: `Bearer ${token}` }
-      });
-      setShowPortfolioModal(false);
-      setNewProject({ title: '', mediaUrl: '', caption: '' });
-      fetchProfile();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setModalLoading(false);
-    }
-  };
+    setUploadLoading(true);
+    const formData = new FormData();
+    formData.append('media', file);
 
-  const handleAddExperience = async (e) => {
-    e.preventDefault();
-    setModalLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/users/experience', newExp, {
-         headers: { Authorization: `Bearer ${token}` }
+      // 1. Upload the file
+      const uploadRes = await axios.post('http://localhost:5000/api/upload', formData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
       });
-      setShowExpModal(false);
-      setNewExp({ company: '', role: '', startDate: '', endDate: '', description: '', location: '' });
-      fetchProfile();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setModalLoading(false);
-    }
-  };
 
-  const handleEditProfile = async (e) => {
-    e.preventDefault();
-    setModalLoading(true);
-    try {
-      const res = await updateStoreProfile(editProfileData);
-      if (res.success) {
-         setShowEditProfileModal(false);
-         fetchProfile();
+      const imageUrl = uploadRes.data.urls[0];
+
+      // 2. Update the profile
+      const updateData = type === 'avatar' ? { profileImage: imageUrl } : { coverImage: imageUrl };
+      const profileRes = await axios.put('http://localhost:5000/api/users/profile', updateData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setProfile(profileRes.data);
+      
+      // 3. Sync with global auth store so navbar/sidebar update
+      if (isOwner) {
+        updateAuthProfile(updateData);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Upload failed:', err);
+      alert('Failed to upload image. Please try again.');
     } finally {
-      setModalLoading(false);
+      setUploadLoading(false);
+    }
+  };
+
+  const handleRemovePhoto = async (type) => {
+    try {
+      const updateData = type === 'avatar' ? { profileImage: null } : { coverImage: null };
+      const profileRes = await axios.put('http://localhost:5000/api/users/profile', updateData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setProfile(profileRes.data);
+      
+      // Sync with global auth store
+      if (isOwner) {
+        updateAuthProfile(updateData);
+      }
+    } catch (err) {
+      console.error('Removal failed:', err);
+    }
+  };
+
+  const handleAction = (id, type) => {
+    if (id === 'VIEW') {
+      setViewerUrl(type === 'avatar' ? profile.profileImage : profile.coverImage);
+      setViewerOpen(true);
+    } else if (id === 'UPLOAD') {
+      if (type === 'avatar') avatarInputRef.current?.click();
+      else coverInputRef.current?.click();
+    } else if (id === 'DELETE') {
+      handleRemovePhoto(type);
     }
   };
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center py-40 gap-4">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
-      <p className="text-textMuted font-bold animate-pulse">Loading profile...</p>
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 
   if (!profile) return (
-    <div className="card p-20 text-center">
-      <h2 className="text-2xl font-black text-textMain mb-2">User not found</h2>
-      <p className="text-textMuted">The profile you're looking for doesn't exist.</p>
-      <Link to="/" className="btn-primary mt-6 inline-block">Back Home</Link>
+    <div className="text-center py-20">
+      <h2 className="text-2xl font-black text-textMain">Creator not found</h2>
+      <Link to="/" className="text-primary hover:underline mt-2 inline-block">Return to home</Link>
     </div>
   );
 
-  const fallbackAvatar = 'https://ui-avatars.com/api/?name=' + profile.username + '&background=0A66C2&color=fff';
+  const isOwner = currentUser?.id === profile.id;
 
   return (
-    <div className="max-w-4xl mx-auto pb-20">
-      {/* Header / Banner Area */}
-      <div className="card overflow-hidden">
-        <div className="h-40 bg-gradient-to-r from-primary/80 to-accent/80 relative">
-          <button className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 p-2 rounded-full backdrop-blur-md text-white transition">
-            <Share2 size={18} />
-          </button>
-        </div>
-        
-        <div className="px-6 pb-6 -mt-16 flex flex-col md:flex-row gap-6 relative z-10">
-          <div className="flex-shrink-0">
+    <div className="max-w-7xl mx-auto pb-20">
+      {/* Hero Section */}
+      <div className="relative mb-8">
+        {/* Cover Image */}
+        <div className="h-64 md:h-80 w-full rounded-3xl overflow-hidden relative group shadow-sm bg-gray-200">
+          {(profile.coverImage && profile.coverImage !== "https://images.unsplash.com/photo-1579546929518-9e396f3cc809") ? (
             <img 
-              src={profile.profileImage || fallbackAvatar} 
-              className="w-32 h-32 md:w-40 md:h-40 rounded-3xl border-4 border-white shadow-xl object-cover bg-white" 
-              alt={profile.username}
-              onError={(e) => e.target.src = fallbackAvatar}
+              src={profile.coverImage} 
+              alt="Cover" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
-          </div>
+          ) : (
+            <div className="w-full h-full bg-gray-200"></div>
+          )}
           
-          <div className="flex-1 mt-16 md:mt-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-black text-textMain flex items-center gap-2">
-                  @{profile.username}
-                  {profile.verified && <Star size={18} className="text-primary fill-primary" />}
-                </h1>
-                <p className="text-primary font-bold uppercase tracking-widest text-[10px] mt-1">{profile.profileType || 'Creative Professional'}</p>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-textMuted text-sm font-medium">
-                  <span className="flex items-center gap-1"><MapPin size={14} /> {profile.location || 'Africa'}</span>
-                  <span className="flex items-center gap-1"><Users size={14} /> <span className="text-textMain font-bold">{profile.connectionsCount || 0}</span> connections</span>
-                  <span className="flex items-center gap-1"><Calendar size={14} /> Joined {new Date(profile.createdAt).toLocaleDateString()}</span>
+          {isOwner && (
+            <button 
+              onClick={() => setCoverMenuOpen(true)}
+              className="absolute top-4 right-4 bg-white/50 backdrop-blur-md text-textMain px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/80 transition shadow-sm border border-white/20 z-10"
+            >
+              Change Cover
+            </button>
+          )}
+        </div>
+
+        {/* Profile Info (Below Cover) */}
+        <div className="px-6 md:px-12 flex flex-col md:flex-row gap-6 relative">
+          {/* Avatar Container */}
+          <div className="-mt-16 md:-mt-20 relative group z-10 shrink-0 self-start">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-[6px] border-surface shadow-lg overflow-hidden bg-gray-100 relative">
+              <img 
+                src={profile.profileImage && profile.profileImage !== "https://via.placeholder.com/150" ? profile.profileImage : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.displayName || profile.username)}&background=f3f4f6&color=374151&size=200`} 
+                className="w-full h-full object-cover"
+                alt="Avatar"
+              />
+              {profile.isVerified === 'YES' && (
+                <div className="absolute bottom-2 right-2 bg-primary text-white p-1.5 rounded-full border-4 border-surface shadow-lg z-20">
+                  <CheckCircle size={18} fill="currentColor" />
                 </div>
+              )}
+              {isOwner && (
+                <div 
+                  onClick={() => setAvatarMenuOpen(true)}
+                  className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition cursor-pointer z-10"
+                >
+                  <span className="text-white text-xs font-bold">Edit Avatar</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Text and Actions */}
+          <div className="flex-1 pt-4 pb-4">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div>
+                <div className="flex flex-wrap items-center gap-3 mb-1">
+                  <h1 className="text-3xl font-black text-textMain tracking-tight">
+                    {profile.displayName || profile.username}
+                  </h1>
+                  <span className="text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
+                    {profile.profileType}
+                  </span>
+                  <div className="flex items-center gap-1 bg-green-500/10 text-green-600 px-3 py-1 rounded-full border border-green-500/20">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-[10px] font-black uppercase tracking-wider">{profile.availabilityStatus || 'Available'}</span>
+                  </div>
+                </div>
+                <p className="text-textMuted font-bold text-sm">@{profile.username}</p>
               </div>
 
-              <div className="flex gap-2">
-                {isOwnProfile ? (
-                  <button onClick={() => setShowEditProfileModal(true)} className="btn-outline flex items-center gap-2 py-2 px-6">
-                    <Edit3 size={16} /> Edit Profile
-                  </button>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3">
+                {isOwner ? (
+                  <>
+                    <button 
+                      onClick={() => setIsEditModalOpen(true)}
+                      className="px-6 py-3 bg-white border border-divider text-textMain font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-gray-50 transition shadow-sm"
+                    >
+                      Edit Profile
+                    </button>
+                    <EditProfileModal 
+                      isOpen={isEditModalOpen}
+                      onClose={() => setIsEditModalOpen(false)}
+                      profile={profile}
+                      onUpdate={(updated) => setProfile(updated)}
+                    />
+                  </>
                 ) : (
                   <>
-                    <button className="btn-primary flex items-center gap-2 py-2 px-6">
-                      <Plus size={16} /> Connect
+                    <button className="px-6 py-3 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:scale-105 transition shadow-lg flex items-center gap-2">
+                      <UserPlus size={16} />
+                      Connect
                     </button>
-                    <button className="btn-outline p-2">
-                      <MessageSquare size={18} />
+                    <button className="p-3 bg-surface border border-divider text-textMain rounded-2xl hover:bg-gray-50 transition shadow-sm">
+                      <MessageSquare size={20} />
+                    </button>
+                    <button className="p-3 bg-surface border border-divider text-textMain rounded-2xl hover:bg-gray-50 transition shadow-sm">
+                      <Share2 size={20} />
                     </button>
                   </>
                 )}
-                <button className="btn-outline p-2">
-                  <MoreHorizontal size={18} />
-                </button>
               </div>
             </div>
-            
-            <p className="mt-4 text-sm text-textMain leading-relaxed max-w-2xl">
-              {profile.bio || "Crafting unique experiences and pushing the boundaries of creative expression."}
-            </p>
-          </div>
-        </div>
 
-        {/* Profile Navigation */}
-        <div className="flex border-t border-divider bg-surface px-6 overflow-x-auto no-scrollbar">
-          {[
-            { id: 'portfolio', label: 'Portfolio', icon: Grid },
-            { id: 'activity', label: 'Activity', icon: ActivityIcon },
-            { id: 'about', label: 'Experience', icon: Briefcase }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-6 py-4 text-xs font-black uppercase tracking-widest transition-all border-b-2 ${activeTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
-            >
-              <tab.icon size={16} />
-              {tab.label}
-            </button>
-          ))}
+            {/* Stats */}
+            <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-divider">
+              <div>
+                <p className="text-lg font-black text-textMain">1.2k</p>
+                <p className="text-[10px] text-textMuted font-black uppercase tracking-widest">Followers</p>
+              </div>
+              <div className="border-l border-divider pl-6">
+                <p className="text-lg font-black text-textMain">{profile.reputationScore || 0}</p>
+                <p className="text-[10px] text-textMuted font-black uppercase tracking-widest">Reputation</p>
+              </div>
+              <div className="border-l border-divider pl-6">
+                <p className="text-lg font-black text-textMain">{profile.completionRate || 100}%</p>
+                <p className="text-[10px] text-textMuted font-black uppercase tracking-widest">Success Rate</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Tab Content */}
-      <div className="mt-6">
-        {activeTab === 'portfolio' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-black text-textMain">Featured Projects</h3>
-              {isOwnProfile && (
-                <button 
-                  onClick={() => setShowPortfolioModal(true)}
-                  className="btn-primary flex items-center gap-2 text-xs py-1.5 px-4"
-                >
-                  <Plus size={14} /> Add Project
-                </button>
-              )}
-            </div>
+      {/* Image Management Modals */}
+      <AnimatePresence>
+        {avatarMenuOpen && (
+          <PhotoActionModal 
+            isOpen={avatarMenuOpen}
+            onClose={() => setAvatarMenuOpen(false)}
+            onAction={(id) => handleAction(id, 'avatar')}
+            title="Avatar Settings"
+            type="avatar"
+            hasPhoto={!!profile.profileImage && profile.profileImage !== "https://via.placeholder.com/150"}
+          />
+        )}
+
+        {coverMenuOpen && (
+          <PhotoActionModal 
+            isOpen={coverMenuOpen}
+            onClose={() => setCoverMenuOpen(false)}
+            onAction={(id) => handleAction(id, 'cover')}
+            title="Cover Settings"
+            type="cover"
+            hasPhoto={!!profile.coverImage && profile.coverImage !== "https://images.unsplash.com/photo-1579546929518-9e396f3cc809"}
+          />
+        )}
+
+        {viewerOpen && (
+          <PhotoViewerModal 
+            isOpen={viewerOpen}
+            onClose={() => setViewerOpen(false)}
+            photoUrl={viewerUrl}
+            title={profile.displayName || profile.username}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Hidden File Inputs */}
+      <input 
+        type="file" 
+        ref={avatarInputRef} 
+        className="hidden" 
+        accept="image/*"
+        onChange={(e) => handleFileUpload(e, 'avatar')} 
+      />
+      <input 
+        type="file" 
+        ref={coverInputRef} 
+        className="hidden" 
+        accept="image/*"
+        onChange={(e) => handleFileUpload(e, 'cover')} 
+      />
+
+      {uploadLoading && (
+        <div className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p className="font-black text-xs uppercase tracking-widest text-textMain">Uploading Brand Asset...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-12 gap-8 px-6 md:px-12">
+        {/* Left Sidebar */}
+        <aside className="col-span-12 lg:col-span-4 space-y-6">
+          <div className="card p-6 shadow-sm">
+            <h3 className="text-xs font-black text-textMuted uppercase tracking-widest mb-4">About Creator</h3>
+            <p className="text-sm text-textMain leading-relaxed mb-6 font-medium">
+              {profile.bio}
+            </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {profile.portfolioItems?.length > 0 ? (
-                profile.portfolioItems.map(item => (
-                  <motion.div 
-                    key={item.id}
-                    whileHover={{ y: -4 }}
-                    className="card group cursor-pointer overflow-hidden border-none shadow-md hover:shadow-xl transition-all"
-                  >
-                    <div className="aspect-video bg-gray-100 overflow-hidden relative">
-                      <img src={item.mediaUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="" />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                         <div className="bg-white p-3 rounded-full text-primary scale-0 group-hover:scale-100 transition-transform"><ExternalLink size={24} /></div>
-                      </div>
-                    </div>
-                    <div className="p-4 bg-surface">
-                      <h4 className="font-bold text-textMain group-hover:text-primary transition-colors">{item.title}</h4>
-                      <p className="text-xs text-textMuted mt-1 line-clamp-2">{item.caption}</p>
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="md:col-span-2 card p-20 text-center flex flex-col items-center gap-4 bg-gray-50/50 border-dashed border-2">
-                  <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center text-primary/40"><Grid size={32} /></div>
-                  <p className="text-textMuted font-bold">No projects showcase yet.</p>
-                  {isOwnProfile && <button onClick={() => setShowPortfolioModal(true)} className="text-primary font-black hover:underline text-sm uppercase">Create Your Portfolio</button>}
-                </div>
-              )}
+            <div className="space-y-4 pt-4 border-t border-divider">
+              <div className="flex items-center gap-3 text-textMuted">
+                <MapPin size={18} className="text-primary" />
+                <span className="text-xs font-bold">{profile.location || 'Global'}</span>
+              </div>
+              <div className="flex items-center gap-3 text-textMuted">
+                <Calendar size={18} className="text-primary" />
+                <span className="text-xs font-bold">Joined {new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+              </div>
+              <div className="flex items-center gap-3 text-textMuted">
+                <LinkIcon size={18} className="text-primary" />
+                <a href="#" className="text-xs font-bold hover:text-primary transition">davfilmz.studio</a>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <h4 className="text-[10px] font-black text-textMuted uppercase tracking-widest mb-3">Top Skills</h4>
+              <div className="flex flex-wrap gap-2">
+                {profile.skills?.split(',').map(skill => (
+                  <span key={skill} className="px-3 py-1 bg-surface border border-divider rounded-full text-[10px] font-black uppercase text-textMain">
+                    {skill.trim()}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        )}
 
-        {activeTab === 'activity' && (
-          <div className="space-y-4 max-w-2xl mx-auto">
-             {profile.posts?.length > 0 ? (
-               profile.posts.map(post => <PostCard key={post.id} post={post} />)
-             ) : (
-               <div className="card p-20 text-center text-textMuted font-bold bg-gray-50/50">
-                 No recent activity to show.
-               </div>
-             )}
+          {/* Social Proof Widget */}
+          <div className="card p-6 bg-gradient-to-br from-primary to-indigo-600 text-white shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-black uppercase tracking-widest">Testimonials</h3>
+              <Star size={16} fill="white" />
+            </div>
+            <p className="text-sm italic font-medium opacity-90 leading-relaxed">
+              "One of the most visionary directors I've collaborated with. Truly understands the craft."
+            </p>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-white/20 border border-white/30 overflow-hidden">
+                <img src="https://i.pravatar.cc/150?u=scout" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase">Sarah Jenkins</p>
+                <p className="text-[8px] font-bold opacity-60">Lead Producer @ Greoh</p>
+              </div>
+            </div>
           </div>
-        )}
+        </aside>
 
-        {activeTab === 'about' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             <div className="md:col-span-2 space-y-6">
-                <div className="card p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-black text-textMain uppercase text-xs tracking-widest">Work History</h3>
-                    {isOwnProfile && <button onClick={() => setShowExpModal(true)} className="text-primary p-1 hover:bg-primary/5 rounded-full"><Plus size={20} /></button>}
+        {/* Center Content */}
+        <div className="col-span-12 lg:col-span-8 space-y-6">
+          {/* Tabs Navigation */}
+          <div className="flex border-b border-divider sticky top-0 bg-background/80 backdrop-blur-md z-20">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-4 text-xs font-black uppercase tracking-widest transition-all relative ${
+                  activeTab === tab.id ? 'text-primary' : 'text-textMuted hover:text-textMain'
+                }`}
+              >
+                <tab.icon size={16} />
+                {tab.label}
+                {activeTab === tab.id && (
+                  <motion.div layoutId="profile-tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="py-4">
+            <AnimatePresence mode="wait">
+              {activeTab === 'PORTFOLIO' && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-8"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-black text-textMain tracking-tight">Featured Work</h3>
+                    {isOwner && (
+                      <button className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline">
+                        + Add Project
+                      </button>
+                    )}
                   </div>
                   
-                  <div className="space-y-8">
-                     {profile.experiences?.length > 0 ? (
-                       profile.experiences.map((exp, i) => (
-                         <div key={i} className="flex gap-4 relative">
-                            {i !== profile.experiences.length - 1 && <div className="absolute left-6 top-10 bottom-[-32px] w-0.5 bg-divider" />}
-                            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-textMuted flex-shrink-0 border border-divider">
-                               <Building size={24} />
-                            </div>
-                            <div>
-                               <h4 className="font-bold text-textMain leading-tight">{exp.role}</h4>
-                               <p className="text-sm text-textMuted font-medium">{exp.company}</p>
-                               <p className="text-[10px] text-textLight font-bold mt-0.5 uppercase tracking-wider">
-                                 {exp.startDate} - {exp.endDate || 'Present'} • {exp.location || 'Remote'}
-                               </p>
-                               {exp.description && (
-                                 <p className="text-xs text-textMuted mt-3 leading-relaxed">
-                                   {exp.description}
-                                 </p>
-                               )}
-                            </div>
-                         </div>
-                       ))
-                     ) : (
-                       <div className="text-center py-10">
-                          <p className="text-textMuted text-xs font-bold">No work history added yet.</p>
-                          {isOwnProfile && <button onClick={() => setShowExpModal(true)} className="text-primary font-black hover:underline text-[10px] uppercase mt-2">Add Experience</button>}
-                       </div>
-                     )}
-                  </div>
-                </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Featured Project Large */}
+                    <div className="col-span-1 md:col-span-2 group relative aspect-[21/9] bg-surface rounded-3xl overflow-hidden border border-divider shadow-lg hover:shadow-2xl transition-all duration-700">
+                      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4')] bg-cover bg-center group-hover:scale-105 transition-transform duration-1000"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-8 flex flex-col justify-end">
+                        <div className="flex items-center gap-2 mb-2">
+                           <span className="px-3 py-1 bg-primary text-white text-[9px] font-black uppercase tracking-tighter rounded-full">Featured</span>
+                           <span className="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-tighter rounded-full">Director's Cut</span>
+                        </div>
+                        <h4 className="text-3xl font-black text-white mb-2 tracking-tight">Midnight in Lagos</h4>
+                        <p className="text-white/70 text-sm max-w-xl font-medium mb-4">A cinematic exploration of the city's vibrant nightlife and hidden stories.</p>
+                        <div className="flex items-center gap-6">
+                           <div className="flex -space-x-3">
+                              {[1, 2, 3].map(i => (
+                                <div key={i} className="w-8 h-8 rounded-full border-2 border-black overflow-hidden">
+                                  <img src={`https://i.pravatar.cc/100?u=${i}`} className="w-full h-full object-cover" />
+                                </div>
+                              ))}
+                           </div>
+                           <p className="text-[10px] font-black text-white/50 uppercase tracking-widest">+ 12 Credits</p>
+                        </div>
+                      </div>
+                    </div>
 
-                <div className="card p-6">
-                  <h3 className="font-black text-textMain mb-4 uppercase text-xs tracking-widest">About Me</h3>
-                  <p className="text-sm text-textMain leading-relaxed whitespace-pre-wrap">
-                    {profile.bio || "No biography provided yet."}
-                  </p>
-                </div>
-             </div>
-             
-             <div className="space-y-6">
-                <div className="card p-6">
-                  <h3 className="font-black text-textMain mb-4 uppercase text-xs tracking-widest">Skills & Expertise</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {(profile.skills || 'Creative Direction,Networking').split(',').map(skill => (
-                      <span key={skill} className="px-3 py-1 bg-gray-100 text-textMuted text-[10px] font-bold rounded-full">{skill.trim()}</span>
+                    {/* Standard Portfolio Items */}
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className="group relative aspect-video bg-surface rounded-2xl overflow-hidden border border-divider shadow-sm hover:shadow-xl transition-all duration-500">
+                        <div className="absolute inset-0 bg-gray-200 overflow-hidden">
+                           <img 
+                            src={`https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600&auto=format&fit=crop&u=${i}`} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                           />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
+                          <p className="text-[10px] font-black text-primary uppercase mb-1 tracking-widest">Showcase</p>
+                          <h4 className="text-lg font-black text-white">Project Title {i}</h4>
+                          <div className="flex items-center gap-4 mt-3">
+                             <div className="flex items-center gap-1 text-white/70 text-[10px] font-bold">
+                                <Star size={12} className="text-primary" fill="currentColor" /> 124
+                             </div>
+                             <div className="flex items-center gap-1 text-white/70 text-[10px] font-bold">
+                                <Users size={12} /> 4 Collabs
+                             </div>
+                          </div>
+                        </div>
+                      </div>
                     ))}
                   </div>
-                </div>
+                </motion.div>
+              )}
 
-                <div className="card p-6">
-                  <h3 className="font-black text-textMain mb-4 uppercase text-xs tracking-widest">Creative Mission</h3>
-                  <p className="text-xs text-textMain leading-relaxed italic">
-                    "{profile.creativeMission || "Building the future of African creative expression through collaboration and innovation."}"
+              {activeTab === 'ABOUT' && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="card p-8 space-y-6"
+                >
+                  <h3 className="text-xl font-black text-textMain tracking-tight">The Creative Journey</h3>
+                  <p className="text-textMuted leading-relaxed font-medium">
+                    {profile.longAbout || "No extended biography available yet."}
                   </p>
-                </div>
-             </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Edit Profile Modal */}
-      <AnimatePresence>
-        {showEditProfileModal && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
-              className="bg-surface w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto custom-scrollbar"
-            >
-              <div className="p-6 border-b border-divider flex justify-between items-center sticky top-0 bg-surface z-10">
-                <h2 className="text-xl font-black text-textMain">Edit Profile</h2>
-                <button onClick={() => setShowEditProfileModal(false)} className="text-textMuted hover:bg-gray-100 p-2 rounded-full transition"><X size={20} /></button>
-              </div>
-              
-              <form onSubmit={handleEditProfile} className="p-6 space-y-5">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">What best describes you?</label>
-                  <div className="relative">
-                    <UserCircle className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
-                    <input required value={editProfileData.profileType} onChange={(e) => setEditProfileData({...editProfileData, profileType: e.target.value})} placeholder="e.g. Musician, Producer, Brand" className="w-full bg-background border border-divider rounded-xl py-3 pl-12 pr-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Location</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
-                    <input value={editProfileData.location} onChange={(e) => setEditProfileData({...editProfileData, location: e.target.value})} placeholder="e.g. Lagos, Nigeria" className="w-full bg-background border border-divider rounded-xl py-3 pl-12 pr-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Bio</label>
-                  <textarea value={editProfileData.bio} onChange={(e) => setEditProfileData({...editProfileData, bio: e.target.value})} placeholder="Tell your story..." className="w-full h-24 bg-background border border-divider rounded-xl p-4 text-sm outline-none focus:border-primary resize-none" />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Skills (comma separated)</label>
-                  <input value={editProfileData.skills} onChange={(e) => setEditProfileData({...editProfileData, skills: e.target.value})} placeholder="e.g. Sound Design, Mixing, DJing" className="w-full bg-background border border-divider rounded-xl py-3 px-4 text-sm outline-none focus:border-primary" />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Creative Mission</label>
-                  <textarea value={editProfileData.creativeMission} onChange={(e) => setEditProfileData({...editProfileData, creativeMission: e.target.value})} placeholder="What drives you creatively?" className="w-full h-20 bg-background border border-divider rounded-xl p-4 text-sm outline-none focus:border-primary resize-none" />
-                </div>
-
-                <div className="flex gap-3 pt-2 sticky bottom-0 bg-surface">
-                  <button type="button" onClick={() => setShowEditProfileModal(false)} className="flex-1 py-3 bg-gray-100 text-textMuted font-bold rounded-xl hover:bg-gray-200 transition">Cancel</button>
-                  <button type="submit" disabled={modalLoading} className="flex-[2] py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryHover shadow-lg shadow-primary/20 transition flex items-center justify-center gap-2">
-                    {modalLoading ? <Loader2 className="animate-spin" size={20} /> : 'Save Changes'}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Portfolio Item Modal */}
-      <AnimatePresence>
-        {showPortfolioModal && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
-              className="bg-surface w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="p-6 border-b border-divider flex justify-between items-center bg-surface">
-                <h2 className="text-xl font-black text-textMain">Add New Project</h2>
-                <button onClick={() => setShowPortfolioModal(false)} className="text-textMuted hover:bg-gray-100 p-2 rounded-full transition"><X size={20} /></button>
-              </div>
-              
-              <form onSubmit={handleAddProject} className="p-6 space-y-5">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Project Title</label>
-                  <input required value={newProject.title} onChange={(e) => setNewProject({...newProject, title: e.target.value})} placeholder="e.g. Faces of Lagos Series" className="w-full bg-background border border-divider rounded-xl py-3 px-4 text-sm outline-none focus:border-primary" />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Project Thumbnail (URL)</label>
-                  <div className="relative">
-                    <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
-                    <input required value={newProject.mediaUrl} onChange={(e) => setNewProject({...newProject, mediaUrl: e.target.value})} placeholder="https://images.unsplash.com/..." className="w-full bg-background border border-divider rounded-xl py-3 pl-12 pr-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Project Description</label>
-                  <textarea value={newProject.caption} onChange={(e) => setNewProject({...newProject, caption: e.target.value})} placeholder="Describe your role and the project's impact..." className="w-full h-32 bg-background border border-divider rounded-xl p-4 text-sm outline-none focus:border-primary resize-none" />
-                </div>
-                <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => setShowPortfolioModal(false)} className="flex-1 py-3 bg-gray-100 text-textMuted font-bold rounded-xl hover:bg-gray-200 transition">Cancel</button>
-                  <button type="submit" disabled={modalLoading} className="flex-[2] py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryHover shadow-lg shadow-primary/20 transition flex items-center justify-center gap-2">
-                    {modalLoading ? <Loader2 className="animate-spin" size={20} /> : 'Save Project'}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Experience Modal */}
-      <AnimatePresence>
-        {showExpModal && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
-              className="bg-surface w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <div className="p-6 border-b border-divider flex justify-between items-center bg-surface">
-                <h2 className="text-xl font-black text-textMain">Add Work Experience</h2>
-                <button onClick={() => setShowExpModal(false)} className="text-textMuted hover:bg-gray-100 p-2 rounded-full transition"><X size={20} /></button>
-              </div>
-              
-              <form onSubmit={handleAddExperience} className="p-6 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase text-textMuted ml-1">Role / Title</label>
-                    <input required value={newExp.role} onChange={(e) => setNewExp({...newExp, role: e.target.value})} placeholder="e.g. Lead Producer" className="w-full bg-background border border-divider rounded-xl py-2.5 px-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase text-textMuted ml-1">Company / Studio</label>
-                    <input required value={newExp.company} onChange={(e) => setNewExp({...newExp, company: e.target.value})} placeholder="e.g. Mavin Records" className="w-full bg-background border border-divider rounded-xl py-2.5 px-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase text-textMuted ml-1">Start Date</label>
-                    <input required value={newExp.startDate} onChange={(e) => setNewExp({...newExp, startDate: e.target.value})} placeholder="Jan 2023" className="w-full bg-background border border-divider rounded-xl py-2.5 px-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase text-textMuted ml-1">End Date</label>
-                    <input value={newExp.endDate} onChange={(e) => setNewExp({...newExp, endDate: e.target.value})} placeholder="Present" className="w-full bg-background border border-divider rounded-xl py-2.5 px-4 text-sm outline-none focus:border-primary" />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Location</label>
-                  <input value={newExp.location} onChange={(e) => setNewExp({...newExp, location: e.target.value})} placeholder="e.g. Lagos, Nigeria" className="w-full bg-background border border-divider rounded-xl py-2.5 px-4 text-sm outline-none focus:border-primary" />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-textMuted ml-1">Description</label>
-                  <textarea value={newExp.description} onChange={(e) => setNewExp({...newExp, description: e.target.value})} placeholder="What did you accomplish in this role?" className="w-full h-24 bg-background border border-divider rounded-xl p-4 text-sm outline-none focus:border-primary resize-none" />
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => setShowExpModal(false)} className="flex-1 py-3 bg-gray-100 text-textMuted font-bold rounded-xl hover:bg-gray-200 transition">Cancel</button>
-                  <button type="submit" disabled={modalLoading} className="flex-[2] py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryHover shadow-lg shadow-primary/20 transition flex items-center justify-center gap-2">
-                    {modalLoading ? <Loader2 className="animate-spin" size={20} /> : 'Save Experience'}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

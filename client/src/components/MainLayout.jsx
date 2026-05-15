@@ -79,9 +79,13 @@ const MainLayout = ({ children }) => {
                  </button>
                  <Link to={`/profile/${user?.username}`} className="flex flex-col items-center">
                     <img 
-                      src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}`} 
-                      className="w-7 h-7 rounded-full border border-divider" 
+                      src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=f3f4f6&color=374151`} 
+                      className="w-7 h-7 rounded-full border border-divider object-cover" 
                       alt="" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${user?.username}&background=f3f4f6&color=374151`;
+                      }}
                     />
                     <span className="text-[10px] font-bold text-textMuted hidden md:block">Me ▼</span>
                  </Link>
@@ -105,9 +109,13 @@ const MainLayout = ({ children }) => {
               <div className="h-14 bg-primary/20" />
               <div className="px-4 pb-4 -mt-8 flex flex-col items-center text-center">
                 <img 
-                  src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}`} 
+                  src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=f3f4f6&color=374151`} 
                   className="w-16 h-16 rounded-full border-2 border-white mb-3 shadow-sm bg-white object-cover" 
                   alt="" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${user?.username}&background=f3f4f6&color=374151`;
+                  }}
                 />
                 <Link to={`/profile/${user?.username}`} className="font-bold text-textMain hover:underline">
                   @{user?.username}
@@ -133,13 +141,13 @@ const MainLayout = ({ children }) => {
 
         {/* Center - Main Content */}
         <main className={`space-y-4 ${
-          (isCollabs || location.pathname.startsWith('/circles') || location.pathname === '/notifications') ? 'col-span-12' : (isHome ? 'md:col-span-6' : 'md:col-span-9')
+          (isCollabs || location.pathname.startsWith('/circles') || location.pathname === '/notifications' || location.pathname.startsWith('/profile')) ? 'col-span-12' : (isHome ? 'md:col-span-6' : 'md:col-span-9')
         }`}>
           {children}
         </main>
 
-        {/* Right Sidebar - Discover Collabs (Visible except on Collabs, Circle, and Notification pages) */}
-        {!isCollabs && !location.pathname.startsWith('/circles') && location.pathname !== '/notifications' && (
+        {/* Right Sidebar - Discover Collabs (Visible except on Collabs, Circle, Notification, and Profile pages) */}
+        {!isCollabs && !location.pathname.startsWith('/circles') && location.pathname !== '/notifications' && !location.pathname.startsWith('/profile') && (
           <aside className="md:col-span-3 space-y-4">
             <div className="card p-4">
               <h3 className="font-bold text-textMain text-sm mb-4">Discover Collabs</h3>

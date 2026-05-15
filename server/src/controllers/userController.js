@@ -3,7 +3,9 @@ const prisma = new PrismaClient();
 
 exports.getProfile = async (req, res) => {
   try {
-    const { username } = req.params;
+    const { username: rawUsername } = req.params;
+    const username = rawUsername.toLowerCase();
+    console.log(`[DEBUG] Fetching profile for username: "${username}"`);
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
@@ -11,12 +13,10 @@ exports.getProfile = async (req, res) => {
           where: { isCollabCard: false },
           orderBy: { createdAt: 'desc' },
           include: {
-            creator: { select: { username: true, profileImage: true, profileType: true, isVerified: true } },
-            _count: { select: { likes: true, comments: true } }
+            creator: { select: { username: true, profileImage: true, profileType: true, isVerified: true } }
           }
         },
         portfolioItems: { orderBy: { createdAt: 'desc' } },
-        experiences: { orderBy: { startDate: 'desc' } },
         _count: {
           select: {
             sentRequests: { where: { status: 'ACCEPTED' } },
@@ -26,12 +26,17 @@ exports.getProfile = async (req, res) => {
       }
     });
 
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) {
+      console.log(`[DEBUG] User "${username}" NOT FOUND in database`);
+      return res.status(404).json({ error: 'User not found' });
+    }
 
-    const connectionsCount = (user._count.sentRequests || 0) + (user._count.receivedRequests || 0);
-    const { passwordHash, _count, ...userData } = user;
+    console.log(`[DEBUG] User "${username}" found! Returning data...`);
+    const connectionsCount = (user._count?.sentRequests || 0) + (user._count?.receivedRequests || 0);
+    const { password: passwordHash, _count, ...userData } = user;
     res.json({ ...userData, connectionsCount });
   } catch (error) {
+    console.error(`[DEBUG] Error fetching profile for ${req.params.username}:`, error);
     res.status(500).json({ error: 'Failed to fetch profile' });
   }
 };
@@ -39,28 +44,31 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { bio, profileType, location, skills, creativeMission, availability, profileImage } = req.body;
+    const { 
+      displayName, bio, longAbout, location, 
+      skills, availabilityStatus, profileImage, 
+      coverImage, socialLinks 
+    } = req.body;
 
     const updated = await prisma.user.update({
       where: { id: userId },
       data: {
+        ...(displayName !== undefined && { displayName }),
         ...(bio !== undefined && { bio }),
-        ...(profileType !== undefined && { profileType }),
+        ...(longAbout !== undefined && { longAbout }),
         ...(location !== undefined && { location }),
         ...(skills !== undefined && { skills }),
-        ...(creativeMission !== undefined && { creativeMission }),
-        ...(availability !== undefined && { availability }),
-        ...(profileImage !== undefined && { profileImage })
-      },
-      select: {
-        id: true, username: true, email: true, profileType: true,
-        profileImage: true, bio: true, location: true, skills: true,
-        creativeMission: true, availability: true
+        ...(availabilityStatus !== undefined && { availabilityStatus }),
+        ...(profileImage !== undefined && { profileImage }),
+        ...(coverImage !== undefined && { coverImage }),
+        ...(socialLinks !== undefined && { socialLinks: JSON.stringify(socialLinks) })
       }
     });
 
-    res.json(updated);
+    const { password: _, ...userData } = updated;
+    res.json(userData);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to update profile' });
   }
 };

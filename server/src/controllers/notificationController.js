@@ -6,7 +6,7 @@ exports.getNotifications = async (req, res) => {
     const notifications = await prisma.notification.findMany({
       where: { userId: req.user.id },
       include: {
-        sender: {
+        triggeredBy: {
           select: {
             username: true,
             profileImage: true
@@ -67,16 +67,15 @@ exports.deleteNotification = async (req, res) => {
 };
 
 // Helper for internal use to create notifications
-exports.createNotification = async (userId, senderId, type, title, content, link) => {
+exports.createNotification = async (userId, triggeredById, type, content, relatedId) => {
   try {
     return await prisma.notification.create({
       data: {
         userId,
-        senderId,
+        triggeredById,
         type,
-        title,
         content,
-        link
+        relatedId
       }
     });
   } catch (error) {
