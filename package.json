@@ -1,0 +1,8 @@
+{
+  "name": "micollab-monolith",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd server && npm install && npx prisma generate && npm start",
+    "build": "cd client && npm install && npm run build"
+  }
+}

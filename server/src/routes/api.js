@@ -1,0 +1,84 @@
+const express = require('express');
+const router = express.Router();
+const postController = require('../controllers/postController');
+const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
+const authMiddleware = require('../middlewares/authMiddleware');
+const uploadController = require('../controllers/uploadController');
+const messageController = require('../controllers/messageController');
+
+// Upload Route
+router.post('/upload', authMiddleware, uploadController.uploadMiddleware, uploadController.uploadMedia);
+
+// Health Check
+router.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Micollab API is running' });
+});
+
+// Auth Routes
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/me', authMiddleware, authController.getMe);
+
+// Post Routes
+router.get('/posts', postController.getPosts);
+router.post('/posts', authMiddleware, postController.createPost);
+router.get('/posts/:id', postController.getPostById);
+router.put('/posts/:id', authMiddleware, postController.updatePost);
+router.put('/posts/:id/archive', authMiddleware, postController.archivePost);
+router.delete('/posts/:id', authMiddleware, postController.deletePost);
+
+// User Routes
+router.get('/users/trending', userController.getTrendingCreators);
+router.get('/users/profile/:username', userController.getProfile);
+router.put('/users/profile', authMiddleware, userController.updateProfile);
+router.post('/users/portfolio', authMiddleware, userController.createPortfolioItem);
+router.post('/users/experience', authMiddleware, userController.createExperience);
+
+// Message Routes
+router.get('/messages/conversations', authMiddleware, messageController.getConversations);
+router.get('/messages/history/:conversationId', authMiddleware, messageController.getMessages);
+router.post('/messages/send', authMiddleware, messageController.sendMessage);
+router.post('/messages/conversation', authMiddleware, messageController.getOrCreateConversation);
+
+// Monetization Routes
+const stripeController = require('../controllers/stripeController');
+router.post('/monetization/checkout', authMiddleware, stripeController.createCheckoutSession);
+router.get('/monetization/earnings', authMiddleware, stripeController.getEarnings);
+
+// Collabs Hub Routes
+const collabController = require('../controllers/collabController');
+router.get('/collabs', collabController.getCollabs);
+router.get('/collabs/recommended', authMiddleware, collabController.getRecommendedCollabs);
+router.get('/collabs/my-collabs', authMiddleware, collabController.getMyCollabs);
+router.get('/collabs/my-proposals', authMiddleware, collabController.getMyProposals);
+router.get('/collabs/:id', collabController.getCollabById);
+router.post('/collabs', authMiddleware, collabController.createCollab);
+router.post('/collabs/apply', authMiddleware, collabController.submitProposal);
+router.patch('/collabs/proposals/:proposalId/status', authMiddleware, collabController.updateProposalStatus);
+
+// Network Routes
+const networkController = require('../controllers/networkController');
+router.get('/network/discover', authMiddleware, networkController.discoverUsers);
+router.get('/network/connections', authMiddleware, networkController.getConnections);
+router.get('/network/requests', authMiddleware, networkController.getRequests);
+router.post('/network/connect', authMiddleware, networkController.sendConnectionRequest);
+router.patch('/network/requests/:requestId', authMiddleware, networkController.handleConnectionRequest);
+router.get('/network/feed', authMiddleware, networkController.getNetworkFeed);
+
+// Circle Routes
+const circleController = require('../controllers/circleController');
+router.get('/circles', authMiddleware, circleController.getMyCircles);
+router.post('/circles', authMiddleware, circleController.createCircle);
+router.get('/circles/:id', authMiddleware, circleController.getCircleDetails);
+router.post('/circles/:id/invite', authMiddleware, circleController.inviteMember);
+router.patch('/circles/invites/:inviteId', authMiddleware, circleController.respondToInvite);
+
+// Notification Routes
+const notificationController = require('../controllers/notificationController');
+router.get('/notifications', authMiddleware, notificationController.getNotifications);
+router.patch('/notifications/mark-all', authMiddleware, notificationController.markAllAsRead);
+router.patch('/notifications/:id/read', authMiddleware, notificationController.markAsRead);
+router.delete('/notifications/:id', authMiddleware, notificationController.deleteNotification);
+
+module.exports = router;

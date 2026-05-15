@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  /* Main Colors */
+  --color-primary: #0A66C2;      /* LinkedIn Blue */
+  --color-primaryHover: #004182;
+  
+  /* Backgrounds */
+  --color-background: #F3F2EF;   /* LinkedIn Gray bg */
+  --color-surface: #FFFFFF;      /* White Cards */
+  --color-divider: #EBEBEB;
+  
+  /* Text */
+  --color-textMain: rgba(0, 0, 0, 0.9);
+  --color-textMuted: rgba(0, 0, 0, 0.6);
+  --color-textLight: rgba(0, 0, 0, 0.45);
+
+  /* Categories */
+  --color-music: #8B5CF6;
+  --color-writing: #F59E0B;
+  --color-photography: #14B8A6;
+  --color-dance: #EC4899;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-textMain antialiased font-sans;
+    font-family: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface rounded-xl border border-divider shadow-sm;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white font-bold px-6 py-2 rounded-full hover:bg-primaryHover transition-all;
+  }
+  
+  .btn-outline {
+    @apply border border-primary text-primary font-bold px-6 py-2 rounded-full hover:bg-primary/5 transition-all;
+  }
+}

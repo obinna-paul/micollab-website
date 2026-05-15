@@ -1,0 +1,358 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String           @id @default(uuid())
+  email            String           @unique
+  username         String           @unique
+  password         String
+  profileImage     String?
+  coverImage       String?
+  bio              String?
+  profileType      String           @default("CREATIVE") // CREATIVE, BRAND, SCOUT
+  location         String?
+  skills           String?          // Comma separated
+  isVerified       Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  posts            Post[]
+  likes            Like[]
+  comments         Comment[]
+  portfolio        PortfolioItem[]
+  experience       Experience[]
+  
+  collabs          Collab[]         @relation("CollabPoster")
+  proposals        Proposal[]
+  savedCollabs     SavedCollab[]
+  
+  sentMsgRequests      MessageRequest[] @relation("SentRequests")
+  receivedMsgRequests  MessageRequest[] @relation("ReceivedRequests")
+  messages             Message[]        @relation("SentMessages")
+  reactions            MessageReaction[]
+  conversations        ConversationParticipant[]
+
+  sentConnections      Connection[]     @relation("SentConnections")
+  receivedConnections  Connection[]     @relation("ReceivedConnections")
+  ledCircles           Circle[]         @relation("CircleLead")
+  circleMemberships    CircleMember[]
+  receivedCircleInvites CircleInvitation[] @relation("ReceivedCircleInvites")
+  notifications        Notification[]
+  notificationsSent    Notification[]   @relation("NotificationSender")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  senderId    String?
+  type        String   // COLLAB_PROPOSAL, COLLAB_STATUS, CONNECTION, CIRCLE, SOCIAL
+  title       String
+  content     String
+  link        String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sender      User?    @relation("NotificationSender", fields: [senderId], references: [id])
+}
+
+model OTP {
+  id        String   @id @default(uuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PortfolioItem {
+  id          String   @id @default(uuid())
+  creatorId   String
+  title       String
+  description String?
+  mediaUrl    String
+  mediaType   String   // IMAGE, VIDEO, LINK
+  createdAt   DateTime @default(now())
+
+  creator     User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+}
+
+model Experience {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  company     String
+  startDate   String
+  endDate     String?
+  description String?
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Collab {
+  id              String   @id @default(uuid())
+  posterId        String
+  title           String
+  description     String
+  category        String
+  budget          String
+  location        String?
+  status          String   @default("OPEN") // OPEN, CLOSED
+  projectType     String   @default("ONE_OFF") // ONE_OFF, RECURRING
+  deadline        DateTime?
+  paymentVerified Boolean  @default(false)
+  isVerified      Boolean  @default(false)
+  experienceLevel String?
+  duration        String?
+  crossPostToFeed Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  poster          User     @relation("CollabPoster", fields: [posterId], references: [id], onDelete: Cascade)
+  proposals       Proposal[]
+  requirements    CollabRequirement[]
+  attachments     CollabAttachment[]
+  savedBy         SavedCollab[]
+  posts           Post[]
+  proposalThreads ProposalThread[]
+}
+
+model CollabRequirement {
+  id        String @id @default(uuid())
+  collabId  String
+  skill     String
+
+  collab    Collab @relation(fields: [collabId], references: [id], onDelete: Cascade)
+}
+
+model CollabAttachment {
+  id        String @id @default(uuid())
+  collabId  String
+  fileUrl   String
+  fileType  String // IMAGE, VIDEO, DOCUMENT
+
+  collab    Collab @relation(fields: [collabId], references: [id], onDelete: Cascade)
+}
+
+model Proposal {
+  id             String   @id @default(uuid())
+  collabId       String
+  creatorId      String
+  coverLetter    String
+  portfolioLinks String?
+  status         String   @default("SUBMITTED") // SUBMITTED, VIEWED, SHORTLISTED, ACCEPTED, REJECTED, CLOSED
+  createdAt      DateTime @default(now())
+
+  collab         Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  creator        User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  attachments    ProposalAttachment[]
+}
+
+model ProposalAttachment {
+  id          String @id @default(uuid())
+  proposalId  String
+  fileUrl     String
+  fileType    String // IMAGE, VIDEO, DOCUMENT, AUDIO
+
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+}
+
+model SavedCollab {
+  userId      String
+  collabId    String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collab      Collab   @relation(fields: [collabId], references: [id], onDelete: Cascade)
+
+  @@id([userId, collabId])
+}
+
+model Post {
+  id             String    @id @default(uuid())
+  creatorId      String
+  contentType    String    // IMAGE, VIDEO, TEXT
+  postCategory   String    @default("UPDATE") // UPDATE, MEDIA, EVENT
+  caption        String?
+  mediaUrl       String?
+  eventDate      String?
+  eventTime      String?
+  eventLocation  String?
+  inviteTarget   String?   // NONE, ALL_NETWORK, SELECTED
+  isCollabCard   Boolean   @default(false)
+  collabId       String?
+  isArchived     Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+
+  creator        User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  likes          Like[]
+  comments       Comment[]
+  collab         Collab?   @relation(fields: [collabId], references: [id], onDelete: SetNull)
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Conversation {
+  id           String                    @id @default(uuid())
+  type         String                    @default("DIRECT") // DIRECT, GROUP, PROPOSAL
+  updatedAt    DateTime                  @updatedAt
+  participants ConversationParticipant[]
+  messages     Message[]
+  proposalThread ProposalThread?
+  circle       Circle?                   @relation("CircleConversation")
+}
+
+model ConversationParticipant {
+  conversationId String
+  userId         String
+  role           String?                 @default("MEMBER")
+  lastReadAt     DateTime?               @default(now())
+  
+  conversation   Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@id([conversationId, userId])
+}
+
+model Message {
+  id             String                  @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String
+  messageType    String                  @default("TEXT")
+  replyToId      String?
+  createdAt      DateTime                @default(now())
+  editedAt       DateTime?
+  deletedAt      DateTime?
+  
+  conversation   Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User                    @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo        Message?                @relation("Replies", fields: [replyToId], references: [id])
+  replies        Message[]               @relation("Replies")
+  reactions      MessageReaction[]
+  attachments    MessageAttachment[]
+}
+
+model MessageReaction {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    String
+  emoji     String
+  
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MessageAttachment {
+  id        String   @id @default(uuid())
+  messageId String
+  fileUrl   String
+  fileType  String
+  
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}
+
+model MessageRequest {
+  id          String   @id @default(uuid())
+  senderId    String
+  receiverId  String
+  status      String   @default("PENDING")
+  initialMsg  String?
+  createdAt   DateTime @default(now())
+  
+  sender      User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model ProposalThread {
+  id             String       @id @default(uuid())
+  conversationId String       @unique
+  collabId       String
+  creatorId      String
+  scoutId        String
+  status         String       @default("SUBMITTED")
+  
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  collab         Collab       @relation(fields: [collabId], references: [id], onDelete: Cascade)
+}
+
+model Connection {
+  id          String   @id @default(uuid())
+  requesterId String
+  receiverId  String
+  status      String   @default("PENDING") // PENDING, ACCEPTED, BLOCKED
+  createdAt   DateTime @default(now())
+  
+  requester   User     @relation("SentConnections", fields: [requesterId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("ReceivedConnections", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  @@unique([requesterId, receiverId])
+}
+
+model Circle {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  leadId      String
+  status      String   @default("PLANNING") // PLANNING, ACTIVE, COMPLETED
+  startDate   DateTime?
+  duration    String?  // e.g., "3 months"
+  createdAt   DateTime @default(now())
+  
+  lead        User     @relation("CircleLead", fields: [leadId], references: [id], onDelete: Cascade)
+  members     CircleMember[]
+  invitations CircleInvitation[]
+  
+  conversationId String? @unique
+  conversation   Conversation? @relation("CircleConversation", fields: [conversationId], references: [id])
+}
+
+model CircleMember {
+  circleId  String
+  userId    String
+  role      String   @default("MEMBER")
+  joinedAt  DateTime @default(now())
+  
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@id([circleId, userId])
+}
+
+model CircleInvitation {
+  id        String   @id @default(uuid())
+  circleId  String
+  inviteeId String
+  inviterId String
+  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt DateTime @default(now())
+  
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  invitee   User     @relation("ReceivedCircleInvites", fields: [inviteeId], references: [id], onDelete: Cascade)
+}
+
