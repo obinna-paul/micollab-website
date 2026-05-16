@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { X, Eye, Upload, Trash2 } from 'lucide-react';
 
-const PhotoActionModal = ({ onClose, onAction, title, hasPhoto, type }) => {
+const PhotoActionModal = ({ isOpen, onClose, onAction, title, hasPhoto, type }) => {
+  if (!isOpen) return null;
   const actions = [
     ...(type === 'avatar' && hasPhoto ? [{ id: 'VIEW', label: 'View Photo', icon: Eye, color: 'text-textMain' }] : []),
     { id: 'UPLOAD', label: hasPhoto ? 'Change Photo' : 'Upload Photo', icon: Upload, color: 'text-primary' },

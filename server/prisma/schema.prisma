@@ -22,6 +22,7 @@ model User {
   location          String?   @default("Lagos, Nigeria")
   skills            String?   // comma-separated
   availabilityStatus String?  @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB
+  website            String?
   
   // Reputation Metrics
   reputationScore   Int       @default(0)
@@ -50,6 +51,15 @@ model User {
   givenTestimonials Testimonial[] @relation("GivenTestimonials")
   analytics         UserAnalytics?
   credits           PortfolioCredit[] @relation("UserCredits")
+  comments          Comment[]
+  postLikes         PostLike[]
+
+  // New Circle Relations
+  ownedCircles      Circle[]         @relation("CircleOwner")
+  circleTasks       CircleTask[]     @relation("AssignedTasks")
+  circleMessages    CircleMessage[]
+  projectCredits    ProjectCredit[]
+  taskComments      TaskComment[]
 }
 
 model PortfolioItem {
@@ -131,8 +141,45 @@ model Post {
   creator       User      @relation(fields: [creatorId], references: [id])
   creatorId     String
 
+  // Repost logic
+  originalPostId String?
+  originalPost   Post?    @relation("Reposts", fields: [originalPostId], references: [id])
+  reposts        Post[]   @relation("Reposts")
+
+  // Social interactions
   likes         Int       @default(0)
-  comments      Int       @default(0)
+  commentsCount Int       @default(0)
+  
+  postComments  Comment[]
+  postLikes     PostLike[]
+
+  isEdited      Boolean   @default(false)
+  isArchived    Boolean   @default(false)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+}
+
+model PostLike {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@unique([postId, userId])
 }
 
 model Collab {
@@ -218,39 +265,152 @@ model ConnectionRequest {
 }
 
 model Circle {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  image       String?
-  collabId    String?  @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                String    @id @default(cuid())
+  ownerId           String
+  owner             User      @relation("CircleOwner", fields: [ownerId], references: [id])
+  title             String
+  slug              String    @unique
+  description       String?
+  category          String
+  coverImage        String?
+  visibility        String    @default("PRIVATE") // PUBLIC, PRIVATE, HIDDEN
+  compensationType  String    @default("NONE") // PAID, REVENUE_SHARE, NONE
+  status            String    @default("ACTIVE") // ACTIVE, COMPLETED, ARCHIVED
+  collabId          String?   @unique
+  
+  members           CircleMember[]
+  roles             CircleRole[]
+  tasks             CircleTask[]
+  messages          CircleMessage[]
+  files             CircleFile[]
+  milestones        CircleMilestone[]
+  credits           ProjectCredit[]
+  invitations       CircleInvitation[]
 
-  members     CircleMember[]
-  messages    CircleMessage[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model CircleMember {
   id        String   @id @default(cuid())
   circleId  String
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
   userId    String
-  role      String   @default("MEMBER") // ADMIN, MEMBER
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("CONTRIBUTOR") // OWNER, ADMIN, CONTRIBUTOR, REVIEWER
   joinedAt  DateTime @default(now())
-
-  circle    Circle   @relation(fields: [circleId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
 
   @@unique([circleId, userId])
 }
 
-model CircleMessage {
-  id        String   @id @default(cuid())
-  content   String
-  circleId  String
-  senderId  String
-  createdAt DateTime @default(now())
+model CircleRole {
+  id          String   @id @default(cuid())
+  circleId    String
+  circle      Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  isOpen      Boolean  @default(true)
+  assignedTo  String? // userId
+}
 
-  circle    Circle   @relation(fields: [circleId], references: [id])
+model CircleTask {
+  id          String   @id @default(cuid())
+  circleId    String
+  circle      Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      String   @default("TODO") // TODO, IN_PROGRESS, REVIEW, APPROVED, COMPLETED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  deadline    DateTime?
+  assignedTo  String? // userId
+  assignee    User?    @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  createdBy   String
+  
+  comments    TaskComment[]
+  attachments TaskAttachment[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TaskComment {
+  id          String   @id @default(cuid())
+  taskId      String
+  task        CircleTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  content     String
+  createdAt   DateTime @default(now())
+}
+
+model TaskAttachment {
+  id          String   @id @default(cuid())
+  taskId      String
+  task        CircleTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  fileUrl     String
+  type        String
+  createdAt   DateTime @default(now())
+}
+
+model CircleMessage {
+  id          String   @id @default(cuid())
+  circleId    String
+  circle      Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User     @relation(fields: [senderId], references: [id])
+  content     String
+  type        String   @default("TEXT") // TEXT, MEDIA, SYSTEM
+  replyToId   String?
+  
+  reactions   MessageReaction[]
+  createdAt   DateTime @default(now())
+}
+
+model MessageReaction {
+  id          String   @id @default(cuid())
+  messageId   String
+  message     CircleMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId      String
+  emoji       String
+}
+
+model CircleFile {
+  id          String    @id @default(cuid())
+  circleId    String
+  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  uploadedBy  String
+  fileUrl     String
+  type        String
+  version     Int       @default(1)
+  createdAt   DateTime  @default(now())
+}
+
+model CircleMilestone {
+  id          String    @id @default(cuid())
+  circleId    String
+  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  deadline    DateTime?
+  status      String    @default("PENDING") // PENDING, COMPLETED
+}
+
+model ProjectCredit {
+  id          String    @id @default(cuid())
+  circleId    String
+  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  creditRole  String
+}
+
+model CircleInvitation {
+  id          String    @id @default(cuid())
+  circleId    String
+  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  inviterId   String
+  inviteeId   String
+  status      String    @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt   DateTime  @default(now())
 }
 
 model Conversation {

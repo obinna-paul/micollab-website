@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
 import { Briefcase, ArrowRight, ChevronRight } from 'lucide-react';
@@ -18,10 +19,17 @@ const Feed = () => {
     fetchPosts();
   }, [feedMode]);
 
+  // Listen for posts created via mobile sheet
+  useEffect(() => {
+    const handler = () => fetchPosts();
+    window.addEventListener('postCreated', handler);
+    return () => window.removeEventListener('postCreated', handler);
+  }, [feedMode]);
+
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const endpoint = feedMode === 'NETWORK' ? 'http://localhost:5000/api/network/feed' : 'http://localhost:5000/api/posts';
+      const endpoint = feedMode === 'NETWORK' ? '/api/network/feed' : '/api/posts';
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       
       const res = await axios.get(endpoint, { headers });
@@ -73,8 +81,8 @@ const Feed = () => {
 
   return (
     <div className="max-w-2xl mx-auto py-2">
-      {/* Route to Collabs */}
-      <div className="card mb-6 overflow-hidden border-none bg-white shadow-sm ring-1 ring-primary/5">
+      {/* Route to Collabs (Desktop Only) */}
+      <div className="hidden md:block card mb-6 overflow-hidden border-none bg-white shadow-sm ring-1 ring-primary/5">
         <div className="bg-primary/[0.03] p-4 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-black text-primary uppercase tracking-widest">Looking to hire?</p>
@@ -90,9 +98,31 @@ const Feed = () => {
           </button>
         </div>
       </div>
+
+      {/* Mobile Feed Tabs (TikTok/X Style) */}
+      <div className="flex border-b border-divider mb-4 sticky top-14 bg-background/80 backdrop-blur-xl z-40 md:hidden">
+        <button
+          onClick={() => setFeedMode('GLOBAL')}
+          className={`flex-1 py-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative ${feedMode === 'GLOBAL' ? 'text-primary' : 'text-textMuted'}`}
+        >
+          For You
+          {feedMode === 'GLOBAL' && (
+            <motion.div layoutId="feed-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
+          )}
+        </button>
+        <button
+          onClick={() => setFeedMode('NETWORK')}
+          className={`flex-1 py-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative ${feedMode === 'NETWORK' ? 'text-primary' : 'text-textMuted'}`}
+        >
+          Network
+          {feedMode === 'NETWORK' && (
+            <motion.div layoutId="feed-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
+          )}
+        </button>
+      </div>
       
-      {/* Feed Toggle */}
-      <div className="flex bg-white/40 backdrop-blur-xl p-1.5 rounded-2xl border border-divider mb-8 sticky top-2 z-40">
+      {/* Desktop Feed Toggle */}
+      <div className="hidden md:flex bg-white/40 backdrop-blur-xl p-1.5 rounded-2xl border border-divider mb-8 sticky top-2 z-40">
         <button
           onClick={() => setFeedMode('GLOBAL')}
           className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${feedMode === 'GLOBAL' ? 'bg-white text-primary shadow-sm' : 'text-textMuted hover:text-textMain'}`}
@@ -107,7 +137,9 @@ const Feed = () => {
         </button>
       </div>
 
-      <CreatePost onPostCreated={handlePostCreated} />
+      <div className="hidden md:block">
+        <CreatePost onPostCreated={handlePostCreated} />
+      </div>
 
       {loading ? (
         <div className="py-20 text-center flex flex-col items-center gap-4">

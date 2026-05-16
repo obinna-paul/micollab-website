@@ -61,7 +61,7 @@ const Messages = () => {
     }
     setSearching(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/network/discover?search=${q}`, {
+      const res = await axios.get(`/api/network/discover?search=${q}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSearchResults(res.data);

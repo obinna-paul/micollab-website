@@ -31,7 +31,7 @@ const Wallet = () => {
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/monetization/earnings');
+        const res = await axios.get('/api/monetization/earnings');
         setStats(res.data);
       } catch (err) {
         console.error(err);

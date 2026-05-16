@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { X, Download, Share2 } from 'lucide-react';
 
-const PhotoViewerModal = ({ onClose, photoUrl, title }) => {
+const PhotoViewerModal = ({ isOpen, onClose, photoUrl, title }) => {
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center">
       {/* Backdrop */}

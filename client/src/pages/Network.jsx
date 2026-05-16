@@ -32,16 +32,16 @@ const Network = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       if (activeTab === 'DISCOVER') {
-        const res = await axios.get(`http://localhost:5000/api/network/discover?search=${search}`, { headers });
+        const res = await axios.get(`/api/network/discover?search=${search}`, { headers });
         setUsers(res.data);
       } else if (activeTab === 'CONNECTIONS') {
-        const res = await axios.get('http://localhost:5000/api/network/connections', { headers });
+        const res = await axios.get('/api/network/connections', { headers });
         setConnections(res.data);
       } else if (activeTab === 'REQUESTS') {
-        const res = await axios.get('http://localhost:5000/api/network/requests', { headers });
+        const res = await axios.get('/api/network/requests', { headers });
         setRequests(res.data);
       } else if (activeTab === 'CIRCLES') {
-        const res = await axios.get('http://localhost:5000/api/circles', { headers });
+        const res = await axios.get('/api/circles', { headers });
         setCircles(res.data);
       }
     } catch (err) {
@@ -53,7 +53,7 @@ const Network = () => {
 
   const handleConnect = async (receiverId) => {
     try {
-      await axios.post('http://localhost:5000/api/network/connect', { receiverId }, {
+      await axios.post('/api/network/connect', { receiverId }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Update local state
@@ -65,7 +65,7 @@ const Network = () => {
 
   const handleRequest = async (requestId, action) => {
     try {
-      await axios.patch(`http://localhost:5000/api/network/requests/${requestId}`, { action }, {
+      await axios.patch(`/api/network/requests/${requestId}`, { action }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRequests(requests.filter(r => r.id !== requestId));
@@ -74,31 +74,124 @@ const Network = () => {
     }
   };
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      {/* Header Area */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 text-primary font-black uppercase text-[10px] tracking-[0.2em]">
-            <Globe size={14} /> Global Creative Network
-          </div>
-          <h1 className="text-5xl font-black text-textMain tracking-tighter leading-none">
-            Expand Your <span className="text-primary italic">Circle</span>
-          </h1>
-          <p className="text-textMuted font-medium max-w-lg">
-            Connect with verified creatives, form project teams, and build your professional reputation on Micollab.
-          </p>
-        </div>
+  const TAB_META = {
+    DISCOVER: {
+      label:   'Discover',
+      heading: 'Build your Network',
+      sub:     'Find and connect with talented creatives.',
+      // desktop-specific
+      eyebrow: 'Global Creative Network',
+      desktopHeading: ['Discover ', 'New Creatives'],
+      desktopSub: 'Search for designers, developers, writers, and more. Send a connection request and start building your professional circle.',
+    },
+    CONNECTIONS: {
+      label:   'Connect',
+      heading: 'Your Connections',
+      sub:     "People you've already connected with.",
+      eyebrow: 'Your Network',
+      desktopHeading: ['People in ', 'Your Network'],
+      desktopSub: "Everyone you've connected with. Visit their profiles, explore their portfolios, send a message, or recruit them into a Circle.",
+    },
+    REQUESTS: {
+      label:   'Requests',
+      heading: 'Connection Requests',
+      sub:     'Accept or decline incoming requests.',
+      eyebrow: 'Pending Requests',
+      desktopHeading: ['Connection ', 'Requests'],
+      desktopSub: 'Creatives who want to join your network. Accept to connect, or decline to keep your network curated.',
+    },
+    CIRCLES: {
+      label:   'Circle',
+      heading: 'Your Circles',
+      sub:     'Project groups built from your network.',
+      eyebrow: 'Collaboration Circles',
+      desktopHeading: ['Your ', 'Circles'],
+      desktopSub: 'Project groups built from your network. Recruit trusted connections, share updates in your private chat, and ship together.',
+    },
+  };
 
-        <div className="flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-divider">
-          {['DISCOVER', 'CONNECTIONS', 'REQUESTS', 'CIRCLES'].map(tab => (
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6 md:py-12">
+
+      {/* ── MOBILE ONLY ── */}
+      <div className="md:hidden">
+        {/* Dynamic heading */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18 }}
+            className="pb-3"
+          >
+            <h1 className="text-2xl font-black text-textMain tracking-tighter">
+              {TAB_META[activeTab].heading}
+            </h1>
+            <p className="text-xs text-textMuted font-medium mt-0.5">
+              {TAB_META[activeTab].sub}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Sticky tab bar */}
+        <div className="flex border-b border-divider sticky top-14 bg-white/95 backdrop-blur-xl z-40 -mx-4 px-0 mb-5">
+          {Object.entries(TAB_META).map(([key, meta]) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'text-textMuted hover:text-textMain'}`}
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider transition-all relative ${
+                activeTab === key ? 'text-primary' : 'text-textMuted'
+              }`}
             >
-              {tab.replace('_', ' ')}
-              {tab === 'REQUESTS' && requests.length > 0 && (
+              {meta.label}
+              {key === 'REQUESTS' && requests.length > 0 && (
+                <span className="ml-1 bg-red-500 text-white px-1 py-0.5 rounded-full text-[7px]">{requests.length}</span>
+              )}
+              {activeTab === key && (
+                <motion.div layoutId="network-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── DESKTOP ONLY ── */}
+      <div className="hidden md:flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+
+        {/* Animated heading block */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="space-y-3 max-w-xl"
+          >
+            <div className="flex items-center gap-2.5 text-primary font-black uppercase text-[10px] tracking-[0.2em]">
+              <Globe size={13} /> {TAB_META[activeTab].eyebrow}
+            </div>
+            <h1 className="text-5xl font-black text-textMain tracking-tighter leading-none">
+              {TAB_META[activeTab].desktopHeading[0]}
+              <span className="text-primary italic">{TAB_META[activeTab].desktopHeading[1]}</span>
+            </h1>
+            <p className="text-textMuted font-medium leading-relaxed text-sm">
+              {TAB_META[activeTab].desktopSub}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Desktop Tab Pills */}
+        <div className="flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-divider flex-shrink-0">
+          {Object.entries(TAB_META).map(([key, meta]) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === key ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'text-textMuted hover:text-textMain'}`}
+            >
+              {meta.label}
+              {key === 'REQUESTS' && requests.length > 0 && (
                 <span className="ml-2 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-[8px]">{requests.length}</span>
               )}
             </button>
@@ -240,22 +333,23 @@ const Network = () => {
           )}
 
           {activeTab === 'CIRCLES' && (
-            <div className="space-y-8">
-               <div className="flex justify-between items-center bg-surface border border-divider p-8 rounded-3xl">
-                  <div className="flex items-center gap-6">
-                     <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                        <Layers size={32} />
+            <div className="space-y-5">
+               {/* Start a Circle CTA */}
+               <div className="flex items-center justify-between bg-primary/5 border border-primary/15 p-4 md:p-8 rounded-2xl md:rounded-3xl">
+                  <div className="flex items-center gap-3 md:gap-6 min-w-0">
+                     <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl md:rounded-2xl flex-shrink-0 flex items-center justify-center text-primary">
+                        <Layers size={20} />
                      </div>
-                     <div>
-                        <h2 className="text-2xl font-black text-textMain tracking-tight">Collaboration Circles</h2>
-                        <p className="text-sm text-textMuted font-medium">Recruit talent from your network for high-stakes projects.</p>
+                     <div className="min-w-0">
+                        <h2 className="text-base md:text-2xl font-black text-textMain tracking-tight">Collaboration Circles</h2>
+                        <p className="text-xs text-textMuted font-medium mt-0.5">Recruit talent from your network for high-stakes projects.</p>
                      </div>
                   </div>
                   <button 
                     onClick={() => setIsCircleModalOpen(true)}
-                    className="btn-primary py-4 px-8 rounded-2xl flex items-center gap-3 font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20"
+                    className="btn-primary py-2.5 px-4 md:py-4 md:px-8 rounded-xl md:rounded-2xl flex items-center gap-2 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 flex-shrink-0 ml-3"
                   >
-                     <Plus size={18} /> Start a Circle
+                     <Plus size={14} /> <span className="hidden sm:inline">Start a</span> Circle
                   </button>
                </div>
 
@@ -276,7 +370,7 @@ const Network = () => {
                        
                        <div className="flex justify-between items-start mb-6">
                           <div>
-                             <h3 className="text-2xl font-black text-textMain tracking-tighter mb-2">{circle.name}</h3>
+                             <h3 className="text-2xl font-black text-textMain tracking-tighter mb-2">{circle.title}</h3>
                              <div className="flex items-center gap-2 text-primary font-black uppercase text-[9px] tracking-widest">
                                 <Target size={12} /> {circle.status}
                              </div>

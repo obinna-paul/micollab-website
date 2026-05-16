@@ -1,0 +1,18 @@
+{
+  "short_name": "Micollab",
+  "name": "Micollab: Creator Identity",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3b82f6",
+  "description": "Africa's First Professional-Creative Ecosystem. Build your identity, showcase your work, and find collabs."
+}

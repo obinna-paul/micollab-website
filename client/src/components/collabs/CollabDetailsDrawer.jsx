@@ -20,7 +20,7 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
   const fetchDetails = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/collabs/${collabId}`);
+      const res = await axios.get(`/api/collabs/${collabId}`);
       setCollab(res.data);
     } catch (err) {
       console.error(err);

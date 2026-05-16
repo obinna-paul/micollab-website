@@ -24,7 +24,7 @@ const CollabManage = () => {
 
   const fetchCollab = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/collabs/${id}`);
+      const res = await axios.get(`/api/collabs/${id}`);
       setCollab(res.data);
     } catch (err) {
       console.error(err);
@@ -36,7 +36,7 @@ const CollabManage = () => {
   const handleUpdateStatus = async (proposalId, status) => {
     setUpdating(proposalId);
     try {
-      await axios.patch(`http://localhost:5000/api/collabs/proposals/${proposalId}/status`, { status }, {
+      await axios.patch(`/api/collabs/proposals/${proposalId}/status`, { status }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Refresh data
@@ -51,7 +51,7 @@ const CollabManage = () => {
 
   const handleStartChat = async (creatorId) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/messages/conversation', {
+      const res = await axios.post('/api/messages/conversation', {
         targetUserId: creatorId,
         type: 'PROPOSAL'
       }, {

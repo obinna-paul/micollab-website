@@ -28,7 +28,13 @@ router.put('/posts/:id', authMiddleware, postController.updatePost);
 router.put('/posts/:id/archive', authMiddleware, postController.archivePost);
 router.delete('/posts/:id', authMiddleware, postController.deletePost);
 
+// Social Interactions
+router.post('/posts/:id/repost', authMiddleware, postController.repost);
+router.get('/posts/:id/comments', postController.getComments);
+router.post('/posts/:id/comments', authMiddleware, postController.addComment);
+
 // User Routes
+router.get('/users/search', authMiddleware, userController.searchUsers);
 router.get('/users/trending', userController.getTrendingCreators);
 router.get('/users/profile/:username', userController.getProfile);
 router.put('/users/profile', authMiddleware, userController.updateProfile);
@@ -71,8 +77,16 @@ const circleController = require('../controllers/circleController');
 router.get('/circles', authMiddleware, circleController.getMyCircles);
 router.post('/circles', authMiddleware, circleController.createCircle);
 router.get('/circles/:id', authMiddleware, circleController.getCircleDetails);
+router.post('/circles/:id/messages', authMiddleware, circleController.sendCircleMessage);
 router.post('/circles/:id/invite', authMiddleware, circleController.inviteMember);
 router.patch('/circles/invites/:inviteId', authMiddleware, circleController.respondToInvite);
+
+// Circle Task Routes
+const taskController = require('../controllers/taskController');
+router.get('/circles/:id/tasks', authMiddleware, taskController.getCircleTasks);
+router.post('/circles/:id/tasks', authMiddleware, taskController.createTask);
+router.patch('/tasks/:id', authMiddleware, taskController.updateTask);
+router.post('/tasks/:id/comments', authMiddleware, taskController.addTaskComment);
 
 // Notification Routes
 const notificationController = require('../controllers/notificationController');

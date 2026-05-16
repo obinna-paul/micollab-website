@@ -1,15 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Briefcase, Search, MapPin, Users, Clock, 
-  Plus, LayoutDashboard, AlertCircle, FileText
+  Plus, LayoutDashboard, AlertCircle, FileText, Filter, X
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import FilterSidebar from '../components/collabs/FilterSidebar';
 import CollabDetailsDrawer from '../components/collabs/CollabDetailsDrawer';
 import ProposalModal from '../components/collabs/ProposalModal';
 import useAuthStore from '../store/useAuthStore';
+
+const FilterChip = ({ label, active, onClick }) => (
+  <button 
+    onClick={onClick}
+    className={`flex-shrink-0 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
+      active 
+        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
+        : 'bg-white text-textMuted border-divider hover:border-primary/30'
+    }`}
+  >
+    {label}
+  </button>
+);
 
 const Collabs = () => {
   const { token } = useAuthStore();
@@ -29,6 +42,7 @@ const Collabs = () => {
   const [selectedCollabId, setSelectedCollabId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [activeProposalCollab, setActiveProposalCollab] = useState(null);
 
   const navigate = useNavigate();
@@ -53,10 +67,10 @@ const Collabs = () => {
         experienceLevel: filters.experienceLevel,
         verifiedOnly: filters.verifiedOnly
       });
-      const res = await axios.get(`http://localhost:5000/api/collabs?${params.toString()}`);
+      const res = await axios.get(`/api/collabs?${params.toString()}`);
       setCollabs(res.data);
     } catch (err) {
-      console.error(err);
+      console.error('[COLLABS_FETCH_ERROR]', err);
     } finally {
       setLoading(false);
     }
@@ -65,12 +79,12 @@ const Collabs = () => {
   const fetchMyCollabs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/collabs/my-collabs', {
+      const res = await axios.get('/api/collabs/my-collabs', {
          headers: { Authorization: `Bearer ${token}` }
       });
-      setCollabs(res.data);
+      setCollabs(res.data || []);
     } catch (err) {
-      console.error(err);
+      console.error('[MY_COLLABS_ERROR]', err);
     } finally {
       setLoading(false);
     }
@@ -79,12 +93,12 @@ const Collabs = () => {
   const fetchMyProposals = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/collabs/my-proposals', {
+      const res = await axios.get('/api/collabs/my-proposals', {
          headers: { Authorization: `Bearer ${token}` }
       });
-      setCollabs(res.data);
+      setCollabs(res.data || []);
     } catch (err) {
-      console.error(err);
+      console.error('[MY_PROPOSALS_ERROR]', err);
     } finally {
       setLoading(false);
     }
@@ -93,8 +107,8 @@ const Collabs = () => {
   return (
     <div className="max-w-7xl mx-auto pb-20">
       {/* Header */}
-      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
+      <div className="mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 px-4 md:px-0">
+        <div className="hidden md:block">
           <h1 className="text-4xl font-black text-textMain tracking-tighter flex items-center gap-3">
             <Briefcase size={40} className="text-primary" />
             Collabs Hub
@@ -102,32 +116,37 @@ const Collabs = () => {
           <p className="text-textMuted mt-1 text-sm font-medium">Discover premium creative collabs and professional partnerships.</p>
         </div>
         
+        <h1 className="md:hidden text-2xl font-black text-textMain tracking-tighter flex items-center gap-2">
+          <Briefcase size={24} className="text-primary" />
+          Collabs
+        </h1>
+
         <button 
           onClick={() => navigate('/collabs/new')}
-          className="btn-primary flex items-center gap-2 py-3 px-8 shadow-xl shadow-primary/25 rounded-2xl"
+          className="hidden md:flex btn-primary items-center gap-2 py-3 px-8 shadow-xl shadow-primary/25 rounded-2xl"
         >
           <Plus size={20} /> Post a collab
         </button>
       </div>
 
-      <div className="flex border-b border-divider mb-10 overflow-x-auto no-scrollbar">
+      <div className="flex border-b border-divider mb-4 md:mb-10 overflow-x-auto no-scrollbar px-4 md:px-0 sticky top-0 bg-background/90 backdrop-blur-xl z-40 md:static md:bg-transparent md:backdrop-blur-none">
         <button 
           onClick={() => setActiveView('EXPLORE')}
-          className={`px-8 py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'EXPLORE' ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
+          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'EXPLORE' ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
         >
           Explore
         </button>
         <button 
           onClick={() => setActiveView('POSTINGS')}
-          className={`px-8 py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'POSTINGS' ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
+          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'POSTINGS' ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
         >
-          My Postings
+          Postings
         </button>
         <button 
           onClick={() => setActiveView('APPLICATIONS')}
-          className={`px-8 py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'APPLICATIONS' ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
+          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'APPLICATIONS' ? 'border-primary text-primary' : 'border-transparent text-textMuted hover:text-textMain'}`}
         >
-          My Proposals
+          Proposals
         </button>
       </div>
 
@@ -138,20 +157,36 @@ const Collabs = () => {
            <FilterSidebar filters={filters} setFilters={setFilters} />
         </div>
 
-        {/* Center: Content */}
-        <div className="lg:col-span-9 space-y-6">
+          {/* Center: Content */}
+        <div className="lg:col-span-9 space-y-6 px-0 md:px-0">
           {activeView === 'EXPLORE' && (
             <>
-              <div className="relative mb-8 group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-textMuted group-focus-within:text-primary transition-colors" size={24} />
-                <input 
-                  type="text" 
-                  placeholder="Search by title, role, or creative category..."
-                  className="w-full bg-white border border-divider rounded-2xl py-5 pl-14 pr-6 text-base font-medium focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none shadow-sm transition-all"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && fetchCollabs()}
-                />
+              <div className="sticky top-[52px] md:relative z-30 bg-background/80 backdrop-blur-xl pb-4 px-4 md:px-0 md:bg-transparent md:backdrop-blur-none">
+                <div className="relative mb-4 group">
+                  <Search className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-textMuted group-focus-within:text-primary transition-colors" size={20} />
+                  <input 
+                    type="text" 
+                    placeholder="Search collabs..."
+                    className="w-full bg-white border border-divider rounded-2xl py-4 md:py-5 pl-12 md:pl-14 pr-6 text-sm md:text-base font-medium focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none shadow-sm transition-all"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && fetchCollabs()}
+                  />
+                </div>
+
+                {/* Mobile Filter Chips & Button */}
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar md:hidden">
+                   <button 
+                     onClick={() => setIsFilterModalOpen(true)}
+                     className="flex-shrink-0 w-10 h-8 rounded-full border border-divider flex items-center justify-center bg-white text-textMain"
+                   >
+                     <Filter size={14} />
+                   </button>
+                   <div className="w-[1px] h-4 bg-divider flex-shrink-0" />
+                   <FilterChip label="All" active={!filters.category} onClick={() => setFilters({...filters, category: ''})} />
+                   <FilterChip label="Remote" active={filters.locationType === 'REMOTE'} onClick={() => setFilters({...filters, locationType: filters.locationType === 'REMOTE' ? '' : 'REMOTE'})} />
+                   <FilterChip label="Verified" active={filters.verifiedOnly} onClick={() => setFilters({...filters, verifiedOnly: !filters.verifiedOnly})} />
+                </div>
               </div>
 
               {loading ? (
@@ -161,7 +196,7 @@ const Collabs = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-6">
-                  {collabs.length > 0 ? (
+                  {collabs && collabs.length > 0 ? (
                     collabs.map(collab => (
                       <motion.div 
                         key={collab.id}
@@ -172,53 +207,48 @@ const Collabs = () => {
                           setSelectedCollabId(collab.id);
                           setIsDrawerOpen(true);
                         }}
-                        className="bg-white border border-divider p-8 rounded-3xl cursor-pointer hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all group relative overflow-hidden"
+                        className="bg-white border border-divider p-4 md:p-8 rounded-2xl md:rounded-3xl cursor-pointer hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all group relative overflow-hidden"
                       >
-                        <div className="flex justify-between items-start mb-6">
+                        <div className="flex justify-between items-start mb-4 md:mb-6">
                           <div className="flex-1 min-w-0">
-                             <div className="flex flex-wrap items-center gap-2 mb-3">
-                               <span className="bg-primary/5 text-primary text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">{collab.category}</span>
-                               <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">
-                                 {collab.projectType === 'RECURRING' ? 'Recurring Potential' : 'One-off Project'}
+                             <div className="flex flex-wrap items-center gap-2 mb-2 md:mb-3">
+                               <span className="bg-primary/5 text-primary text-[8px] md:text-[9px] font-black px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase tracking-tighter">{collab.category}</span>
+                               <span className="bg-emerald-50 text-emerald-600 text-[8px] md:text-[9px] font-black px-2 md:px-3 py-0.5 md:py-1 rounded-full uppercase tracking-tighter">
+                                 {collab.projectType === 'RECURRING' ? 'Recurring' : 'One-off'}
                                </span>
-                               {collab.isVerified && (
-                                 <span className="bg-blue-50 text-blue-600 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-tighter flex items-center gap-1">
-                                    Verified Opportunity
-                                 </span>
-                               )}
                              </div>
-                             <h3 className="text-2xl font-black text-textMain group-hover:text-primary transition-colors tracking-tight truncate pr-4">{collab.title}</h3>
+                             <h3 className="text-lg md:text-2xl font-black text-textMain group-hover:text-primary transition-colors tracking-tight truncate pr-4">{collab.title}</h3>
                           </div>
                           <div className="text-right flex-shrink-0">
-                             <p className="text-2xl font-black text-textMain">{collab.budget}</p>
-                             <p className="text-[9px] text-textMuted font-black uppercase tracking-widest mt-1">Budget Allocation</p>
+                             <p className="text-lg md:text-2xl font-black text-textMain">{collab.budget}</p>
+                             <p className="text-[8px] md:text-[9px] text-textMuted font-black uppercase tracking-widest mt-1">Budget</p>
                           </div>
                         </div>
 
-                        <p className="text-sm text-textMuted line-clamp-3 mb-8 leading-relaxed font-medium">
+                        <p className="hidden md:block text-sm text-textMuted line-clamp-3 mb-8 leading-relaxed font-medium">
                           {collab.description}
                         </p>
 
-                        <div className="flex flex-wrap items-center justify-between gap-6 pt-6 border-t border-divider/50">
-                          <div className="flex items-center gap-8">
-                            <div className="flex items-center gap-2 text-textMuted text-xs font-black uppercase tracking-tighter">
-                              <MapPin size={16} className="text-primary" />
+                        <div className="flex flex-wrap items-center justify-between gap-4 md:gap-6 pt-4 md:pt-6 border-t border-divider/50">
+                          <div className="flex items-center gap-4 md:gap-8">
+                            <div className="flex items-center gap-2 text-textMuted text-[10px] md:text-xs font-black uppercase tracking-tighter">
+                              <MapPin size={14} className="text-primary" />
                               {collab.location || 'Remote'}
                             </div>
-                            <div className="flex items-center gap-2 text-textMuted text-xs font-black uppercase tracking-tighter">
-                              <Users size={16} className="text-primary" />
+                            <div className="flex items-center gap-2 text-textMuted text-[10px] md:text-xs font-black uppercase tracking-tighter">
+                              <Users size={14} className="text-primary" />
                               {collab._count?.proposals || 0} Proposals
                             </div>
                           </div>
                           
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-3 md:gap-4">
                             <div className="text-right hidden sm:block">
-                               <p className="text-[9px] text-textMuted font-black uppercase tracking-widest">{collab.poster?.profileType}</p>
-                               <p className="text-sm font-black text-textMain">@{collab.poster?.username}</p>
+                               <p className="text-[8px] md:text-[9px] text-textMuted font-black uppercase tracking-widest">{collab.poster?.profileType}</p>
+                               <p className="text-xs md:text-sm font-black text-textMain">@{collab.poster?.username || 'creator'}</p>
                             </div>
                             <img 
-                              src={collab.poster?.profileImage || `https://ui-avatars.com/api/?name=${collab.poster?.username}`} 
-                              className="w-12 h-12 rounded-2xl border-2 border-divider group-hover:border-primary transition-colors object-cover shadow-sm" 
+                              src={collab.poster?.profileImage || `https://ui-avatars.com/api/?name=${collab.poster?.username || 'C'}`} 
+                              className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl border border-divider group-hover:border-primary transition-colors object-cover shadow-sm" 
                               alt="" 
                             />
                           </div>
@@ -350,6 +380,39 @@ const Collabs = () => {
           setActiveView('APPLICATIONS');
         }}
       />
+
+      {/* Mobile Filter Modal */}
+      <AnimatePresence>
+        {isFilterModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              onClick={() => setIsFilterModalOpen(false)}
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-sm bg-white rounded-[2.5rem] shadow-2xl overflow-hidden p-8"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-black text-textMain tracking-tight">Filters</h2>
+                <button onClick={() => setIsFilterModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <X size={20} className="text-textMuted" />
+                </button>
+              </div>
+              <FilterSidebar filters={filters} setFilters={setFilters} />
+              <button 
+                onClick={() => setIsFilterModalOpen(false)}
+                className="w-full bg-primary text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl mt-8 shadow-lg shadow-primary/20"
+              >
+                Apply Filters
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -9,7 +9,7 @@ const TrendingSidebar = () => {
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/users/trending');
+        const res = await axios.get('/api/users/trending');
         setCreators(res.data);
       } catch (err) {
         console.error(err);

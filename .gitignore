@@ -5,3 +5,4 @@ server/prisma/dev.db-journal
 client/dist/
 .DS_Store
 *.log
+server/uploads/

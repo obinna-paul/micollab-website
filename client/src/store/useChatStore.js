@@ -13,7 +13,7 @@ const useChatStore = create((set, get) => ({
   initSocket: (token) => {
     if (get().socket) return;
 
-    const socket = io('http://localhost:5000', {
+    const socket = io('', {
       auth: { token }
     });
 
@@ -53,7 +53,7 @@ const useChatStore = create((set, get) => ({
   fetchConversations: async (token, tab = 'PRIMARY') => {
     set({ loading: true });
     try {
-      const res = await axios.get(`http://localhost:5000/api/messages/conversations?tab=${tab}`, {
+      const res = await axios.get(`/api/messages/conversations?tab=${tab}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       set({ conversations: res.data });
@@ -67,7 +67,7 @@ const useChatStore = create((set, get) => ({
   setActiveConversation: async (token, conversation) => {
     set({ activeConversation: conversation, messages: [], loading: true });
     try {
-      const res = await axios.get(`http://localhost:5000/api/messages/history/${conversation.id}`, {
+      const res = await axios.get(`/api/messages/history/${conversation.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       set({ messages: res.data });
@@ -86,7 +86,7 @@ const useChatStore = create((set, get) => ({
     if (!activeConversation) return;
 
     try {
-      await axios.post('http://localhost:5000/api/messages/send', {
+      await axios.post('/api/messages/send', {
         conversationId: activeConversation.id,
         content,
         messageType
@@ -112,7 +112,7 @@ const useChatStore = create((set, get) => ({
 
   startConversation: async (token, targetUserId) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/messages/conversation', {
+      const res = await axios.post('/api/messages/conversation', {
         targetUserId,
         type: 'DIRECT'
       }, {
@@ -121,7 +121,7 @@ const useChatStore = create((set, get) => ({
       
       const conversation = res.data;
       // Fetch full conversation details to match the structure
-      const fullRes = await axios.get(`http://localhost:5000/api/messages/conversations?tab=PRIMARY`, {
+      const fullRes = await axios.get(`/api/messages/conversations?tab=PRIMARY`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const fullConv = fullRes.data.find(c => c.id === conversation.id);

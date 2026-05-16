@@ -169,22 +169,22 @@ exports.getConnections = async (req, res) => {
     const connections = await prisma.connection.findMany({
       where: {
         OR: [
-          { requesterId: userId, status: 'ACCEPTED' },
-          { receiverId: userId, status: 'ACCEPTED' }
+          { userId: userId, status: 'ACCEPTED' },
+          { connectedId: userId, status: 'ACCEPTED' }
         ]
       },
       include: {
-        requester: {
+        user: {
           select: { id: true, username: true, profileImage: true, profileType: true, isVerified: true }
         },
-        receiver: {
+        connectedTo: {
           select: { id: true, username: true, profileImage: true, profileType: true, isVerified: true }
         }
       }
     });
 
     // Map to get the other user's info
-    const network = connections.map(c => c.requesterId === userId ? c.receiver : c.requester);
+    const network = connections.map(c => c.userId === userId ? c.connectedTo : c.user);
 
     res.json(network);
   } catch (error) {

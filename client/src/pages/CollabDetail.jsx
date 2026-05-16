@@ -26,7 +26,7 @@ const CollabDetail = () => {
 
   const fetchCollab = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/collabs/${id}`);
+      const res = await axios.get(`/api/collabs/${id}`);
       setCollab(res.data);
       // Check if user already applied
       const hasApplied = res.data.proposals?.some(app => app.creatorId === user?.id);

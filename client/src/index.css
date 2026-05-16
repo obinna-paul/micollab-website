@@ -31,7 +31,11 @@
 
 @layer components {
   .card {
-    @apply bg-surface rounded-xl border border-divider shadow-sm;
+    @apply bg-white border border-divider rounded-3xl shadow-sm;
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
   
   .btn-primary {

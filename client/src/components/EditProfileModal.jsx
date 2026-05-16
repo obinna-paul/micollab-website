@@ -23,7 +23,7 @@ const EditProfileModal = ({ isOpen, onClose, profile, onUpdate }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.put('http://localhost:5000/api/users/profile', formData, {
+      const res = await axios.put('/api/users/profile', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       onUpdate(res.data);

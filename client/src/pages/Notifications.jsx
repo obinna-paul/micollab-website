@@ -21,7 +21,7 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/notifications', {
+      const res = await axios.get('/api/notifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(res.data);
@@ -34,7 +34,7 @@ const Notifications = () => {
 
   const markAsRead = async (id) => {
     try {
-      await axios.patch(`http://localhost:5000/api/notifications/${id}/read`, {}, {
+      await axios.patch(`/api/notifications/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));
@@ -45,7 +45,7 @@ const Notifications = () => {
 
   const deleteNotification = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/notifications/${id}`, {
+      await axios.delete(`/api/notifications/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifications.filter(n => n.id !== id));
@@ -56,7 +56,7 @@ const Notifications = () => {
 
   const markAllAsRead = async () => {
     try {
-      await axios.patch('http://localhost:5000/api/notifications/mark-all', {}, {
+      await axios.patch('/api/notifications/mark-all', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifications.map(n => ({ ...n, isRead: true })));
@@ -82,28 +82,27 @@ const Notifications = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+      <div className="flex items-center justify-between gap-4 mb-8 md:mb-10">
         <div>
-           <div className="flex items-center gap-3 text-primary font-black uppercase text-[10px] tracking-widest mb-1">
-              <Zap size={12} /> Real-time Activity
+           <div className="flex items-center gap-2 text-primary font-black uppercase text-[9px] tracking-widest mb-1">
+              <Zap size={10} /> Live Activity
            </div>
-           <h1 className="text-4xl font-black text-textMain tracking-tighter leading-none">Notifications</h1>
+           <h1 className="text-3xl md:text-4xl font-black text-textMain tracking-tighter leading-none">Notifications</h1>
         </div>
         
-        <div className="flex items-center gap-3">
-           <button 
-             onClick={markAllAsRead}
-             className="px-6 py-3 bg-white border border-divider rounded-2xl text-[10px] font-black uppercase tracking-widest hover:text-primary transition-all shadow-sm flex items-center gap-2"
-           >
-              <Check size={14} /> Mark all read
-           </button>
-        </div>
+        <button 
+          onClick={markAllAsRead}
+          className="p-3 md:px-6 md:py-3 bg-white border border-divider rounded-2xl text-[10px] font-black uppercase tracking-widest hover:text-primary transition-all shadow-sm flex items-center gap-2"
+        >
+          <Check size={14} /> <span className="hidden md:inline">Mark all read</span>
+        </button>
       </div>
 
-      <div className="grid grid-cols-12 gap-8">
-        {/* Filters Sidebar */}
+      <div className="grid grid-cols-12 gap-6 md:gap-8">
+        {/* Filters - Sidebar on desktop, Chips on mobile */}
         <div className="col-span-12 md:col-span-3">
-           <div className="bg-white border border-divider rounded-[2rem] p-6 sticky top-24 shadow-sm">
+           {/* Desktop Sidebar */}
+           <div className="hidden md:block bg-white border border-divider rounded-[2rem] p-6 sticky top-24 shadow-sm">
               <h3 className="text-xs font-black text-textMuted uppercase tracking-widest mb-6 flex items-center gap-2">
                  <Filter size={12} /> Filter by
               </h3>
@@ -129,6 +128,30 @@ const Notifications = () => {
                    </button>
                  ))}
               </div>
+           </div>
+
+           {/* Mobile Horizontal Chips */}
+           <div className="flex md:hidden items-center gap-2 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 sticky top-14 bg-background/80 backdrop-blur-xl z-20">
+              {[
+                { id: 'ALL', label: 'All', icon: Zap },
+                { id: 'COLLAB_PROPOSAL', label: 'Projects', icon: Briefcase },
+                { id: 'CONNECTION', label: 'Network', icon: UserPlus },
+                { id: 'CIRCLE', label: 'Circles', icon: Shield },
+                { id: 'SOCIAL', label: 'Social', icon: Heart },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setFilter(item.id)}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
+                    filter === item.id 
+                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
+                    : 'bg-white text-textMuted border-divider'
+                  }`}
+                >
+                  <item.icon size={12} />
+                  {item.label}
+                </button>
+              ))}
            </div>
         </div>
 

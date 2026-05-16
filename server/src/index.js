@@ -18,7 +18,19 @@ initSocket(httpServer);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    // Allow localhost and any local network IP
+    if (
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.match(/http:\/\/10\.\d+\.\d+\.\d+:\d+/)
+    ) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   credentials: true
 }));
@@ -34,6 +46,6 @@ app.use('/api', apiRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on http://10.59.144.84:${PORT}`);
 });

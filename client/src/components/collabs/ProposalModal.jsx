@@ -24,8 +24,8 @@ const ProposalModal = ({ collab, isOpen, onClose, onSuccess }) => {
 
   const fetchPortfolio = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/profile/${user.username}`);
-      setUserPortfolio(res.data.portfolio || []);
+      const res = await axios.get(`/api/users/profile/${user.username}`);
+      setUserPortfolio(res.data.portfolioItems || []);
     } catch (err) {
       console.error(err);
     }
@@ -38,7 +38,7 @@ const ProposalModal = ({ collab, isOpen, onClose, onSuccess }) => {
       const formData = new FormData();
       files.forEach(file => formData.append('media', file));
       
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
+      const res = await axios.post('/api/upload', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}` 
@@ -57,7 +57,7 @@ const ProposalModal = ({ collab, isOpen, onClose, onSuccess }) => {
     if (!coverLetter) return alert('Please write a cover letter');
     setSubmitting(true);
     try {
-      await axios.post('http://localhost:5000/api/collabs/apply', {
+      await axios.post('/api/collabs/apply', {
         collabId: collab.id,
         coverLetter,
         portfolioLinks: selectedPortfolio.map(p => p.mediaUrl).join(','),
@@ -136,11 +136,11 @@ const ProposalModal = ({ collab, isOpen, onClose, onSuccess }) => {
                        className={`p-3 border rounded-2xl cursor-pointer transition-all flex items-center gap-3 ${selectedPortfolio.find(p => p.id === item.id) ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-divider hover:border-textMuted'}`}
                      >
                         <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
-                           {item.mediaType === 'IMAGE' ? (
-                             <img src={item.mediaUrl} className="w-full h-full object-cover" alt="" />
+                           {item.media && item.media[0] ? (
+                             <img src={item.media[0].url} className="w-full h-full object-cover" alt="" />
                            ) : (
                              <div className="w-full h-full flex items-center justify-center text-textMuted">
-                                <LinkIcon size={20} />
+                                <Briefcase size={20} />
                              </div>
                            )}
                         </div>

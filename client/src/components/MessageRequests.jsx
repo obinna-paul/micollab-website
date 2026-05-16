@@ -16,7 +16,7 @@ const MessageRequests = ({ onRequestHandled }) => {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/message-requests', {
+      const res = await axios.get('/api/message-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRequests(res.data);
@@ -29,7 +29,7 @@ const MessageRequests = ({ onRequestHandled }) => {
 
   const handleRespond = async (requestId, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/message-requests/${requestId}`, 
+      await axios.put(`/api/message-requests/${requestId}`, 
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );

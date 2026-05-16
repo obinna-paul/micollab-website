@@ -4,7 +4,7 @@ import { Image, Video, FileText, Send, Loader2, Link as LinkIcon, Calendar, Brie
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 
-const CreatePost = ({ onPostCreated }) => {
+const CreatePost = ({ onPostCreated, mobile }) => {
   const [caption, setCaption] = useState('');
   const [mediaUrl, setMediaUrl] = useState('');
   const [activeTab, setActiveTab] = useState('UPDATE');
@@ -70,7 +70,7 @@ const CreatePost = ({ onPostCreated }) => {
         const formData = new FormData();
         mediaFiles.forEach(file => formData.append('media', file));
         
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', formData, {
+        const uploadRes = await axios.post('/api/upload', formData, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
@@ -94,11 +94,10 @@ const CreatePost = ({ onPostCreated }) => {
         payload.inviteTarget = inviteTarget;
       }
 
-      const res = await axios.post('http://localhost:5000/api/posts', payload, {
+      const res = await axios.post('/api/posts', payload, {
          headers: { Authorization: `Bearer ${token}` }
       });
       
-      onPostCreated(res.data);
       onPostCreated(res.data);
       setCaption('');
       setMediaFiles([]);
@@ -156,9 +155,13 @@ const CreatePost = ({ onPostCreated }) => {
                 <div className="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
                   <Image className={`w-8 h-8 mb-3 ${isDragging ? 'text-primary' : 'text-textMuted'}`} />
                   <p className={`mb-2 text-sm ${isDragging ? 'text-primary' : 'text-textMuted'}`}>
-                    <span className="font-bold text-primary">Drop it like it's hot!</span>
+                    <span className="font-bold text-primary">
+                      {mobile ? 'Upload Media' : "Drop it like it's hot!"}
+                    </span>
                   </p>
-                  <p className="text-xs text-textMuted text-center px-4">Or click to select Images/Videos</p>
+                  <p className="text-xs text-textMuted text-center px-4">
+                    {mobile ? 'Tap to select photos or videos' : 'Or click to select Images/Videos'}
+                  </p>
                 </div>
                 <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileChange} />
               </label>

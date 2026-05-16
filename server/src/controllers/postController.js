@@ -14,10 +14,18 @@ exports.getPosts = async (req, res) => {
             isVerified: true
           }
         },
-        _count: {
-          select: { likes: true, comments: true }
-        },
-        collab: true
+        originalPost: {
+          include: {
+            creator: {
+              select: {
+                username: true,
+                profileImage: true,
+                profileType: true,
+                isVerified: true
+              }
+            }
+          }
+        }
       },
       orderBy: { createdAt: 'desc' }
     });
@@ -42,10 +50,15 @@ exports.getPostById = async (req, res) => {
             bio: true
           }
         },
-        comments: {
+        originalPost: {
           include: {
-            user: {
-              select: { username: true, profileImage: true }
+            creator: {
+              select: {
+                username: true,
+                profileImage: true,
+                profileType: true,
+                isVerified: true
+              }
             }
           }
         }
@@ -55,39 +68,27 @@ exports.getPostById = async (req, res) => {
     if (!post) return res.status(404).json({ error: 'Post not found' });
     res.json(post);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch post' });
   }
 };
 
 exports.createPost = async (req, res) => {
   try {
-    const { 
-      caption, mediaUrl, contentType, postCategory,
-      eventDate, eventTime, eventLocation, inviteTarget
-    } = req.body;
+    const { caption, mediaUrl, contentType, postCategory } = req.body;
     const creatorId = req.user.id;
 
-    // postCategory must be a feed type — collab posts go through the gigs endpoint
     const validCategories = ['UPDATE', 'MEDIA', 'EVENT'];
     const category = validCategories.includes(postCategory) ? postCategory : 'UPDATE';
 
-    const postData = {
-      caption,
-      mediaUrl,
-      contentType: contentType || 'TEXT',
-      postCategory: category,
-      creatorId
-    };
-
-    if (category === 'EVENT') {
-      postData.eventDate = eventDate;
-      postData.eventTime = eventTime;
-      postData.eventLocation = eventLocation;
-      postData.inviteTarget = inviteTarget || 'NONE';
-    }
-
     const post = await prisma.post.create({
-      data: postData,
+      data: {
+        caption,
+        mediaUrl: mediaUrl || null,
+        contentType: contentType || 'TEXT',
+        postCategory: category,
+        creatorId
+      },
       include: {
         creator: {
           select: {
@@ -96,9 +97,6 @@ exports.createPost = async (req, res) => {
             profileType: true,
             isVerified: true
           }
-        },
-        _count: {
-          select: { likes: true, comments: true }
         }
       }
     });
@@ -107,6 +105,93 @@ exports.createPost = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create post' });
+  }
+};
+
+exports.repost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const creatorId = req.user.id;
+
+    const originalPost = await prisma.post.findUnique({ where: { id } });
+    if (!originalPost) return res.status(404).json({ error: 'Post not found' });
+
+    const repost = await prisma.post.create({
+      data: {
+        postCategory: 'REPOST',
+        creatorId,
+        originalPostId: id,
+        caption: `Reposted from @${originalPost.creatorId}`, // Optional placeholder or logic
+        contentType: 'TEXT'
+      },
+      include: {
+        creator: {
+          select: { username: true, profileImage: true, profileType: true, isVerified: true }
+        },
+        originalPost: {
+          include: {
+            creator: { select: { username: true, profileImage: true, profileType: true, isVerified: true } }
+          }
+        }
+      }
+    });
+
+    res.status(201).json(repost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to repost' });
+  }
+};
+
+exports.getComments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const comments = await prisma.comment.findMany({
+      where: { postId: id },
+      include: {
+        user: {
+          select: { username: true, profileImage: true, profileType: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch comments' });
+  }
+};
+
+exports.addComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+    const userId = req.user.id;
+
+    if (!content) return res.status(400).json({ error: 'Comment content is required' });
+
+    const comment = await prisma.comment.create({
+      data: {
+        content,
+        postId: id,
+        userId
+      },
+      include: {
+        user: {
+          select: { username: true, profileImage: true, profileType: true }
+        }
+      }
+    });
+
+    // Increment comment count on post
+    await prisma.post.update({
+      where: { id },
+      data: { commentsCount: { increment: 1 } }
+    });
+
+    res.status(201).json(comment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to add comment' });
   }
 };
 
@@ -128,15 +213,7 @@ exports.updatePost = async (req, res) => {
       },
       include: {
         creator: {
-          select: {
-            username: true,
-            profileImage: true,
-            profileType: true,
-            isVerified: true
-          }
-        },
-        _count: {
-          select: { likes: true, comments: true }
+          select: { username: true, profileImage: true, profileType: true, isVerified: true }
         }
       }
     });
@@ -152,20 +229,13 @@ exports.archivePost = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
-
-    const post = await prisma.post.findUnique({ where: { id } });
-    if (!post) return res.status(404).json({ error: 'Post not found' });
-    if (post.creatorId !== userId) return res.status(403).json({ error: 'Unauthorized' });
-
     await prisma.post.update({
-      where: { id },
+      where: { id, creatorId: userId },
       data: { isArchived: true }
     });
-
-    res.json({ message: 'Post archived successfully' });
+    res.json({ message: 'Post archived' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to archive post' });
+    res.status(500).json({ error: 'Failed to archive' });
   }
 };
 
@@ -173,16 +243,11 @@ exports.deletePost = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
-
-    const post = await prisma.post.findUnique({ where: { id } });
-    if (!post) return res.status(404).json({ error: 'Post not found' });
-    if (post.creatorId !== userId) return res.status(403).json({ error: 'Unauthorized' });
-
-    await prisma.post.delete({ where: { id } });
-
-    res.json({ message: 'Post deleted successfully' });
+    await prisma.post.delete({
+      where: { id, creatorId: userId }
+    });
+    res.json({ message: 'Post deleted' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to delete post' });
+    res.status(500).json({ error: 'Failed to delete' });
   }
 };
