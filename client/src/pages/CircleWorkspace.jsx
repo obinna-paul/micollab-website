@@ -40,6 +40,7 @@ const CircleWorkspace = () => {
   const [taskMyTasksOnly, setTaskMyTasksOnly]       = useState(false);
   const [taskSortField, setTaskSortField]           = useState('createdAt');
   const [taskSortOrder, setTaskSortOrder]           = useState('desc');
+  const [taskDueDateFilter, setTaskDueDateFilter]   = useState('ALL');
 
   // Task Creation States
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -397,8 +398,7 @@ const CircleWorkspace = () => {
     </div>
   );
 
-  // State for due date filter
-  const [taskDueDateFilter, setTaskDueDateFilter] = useState('ALL');
+
 
   const TaskProgressBar = () => {
     if (tasks.length === 0) {
@@ -433,7 +433,7 @@ const CircleWorkspace = () => {
       <div className="bg-white border border-divider rounded-[2rem] p-6 shadow-sm mb-6 relative overflow-hidden">
         <div className="flex justify-between items-center mb-3">
           <span className="text-[10px] font-black text-textMain uppercase tracking-widest flex items-center gap-1.5">
-            <Zap size={12} className="text-primary animate-pulse" /> Jira Progress Tracker
+            <Zap size={12} className="text-primary animate-pulse" /> Progress Tracker
           </span>
           <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
             {progressPercent.toFixed(0)}% Shipped ({approvedCount}/{total} parent tasks)
