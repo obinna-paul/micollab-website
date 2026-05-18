@@ -12,6 +12,7 @@ import CollabManage from './pages/CollabManage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Network from './pages/Network';
+import Circles from './pages/Circles';
 import CircleWorkspace from './pages/CircleWorkspace';
 import Notifications from './pages/Notifications';
 import useAuthStore from './store/useAuthStore';
@@ -49,6 +50,12 @@ function App() {
       <Route path="/network" element={
         <MainLayout>
           <Network />
+        </MainLayout>
+      } />
+
+      <Route path="/circles" element={
+        <MainLayout>
+          <Circles />
         </MainLayout>
       } />
 

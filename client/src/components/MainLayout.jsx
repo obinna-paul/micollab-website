@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Home, Users, Briefcase, MessageSquare, Bell, LogOut, X } from 'lucide-react';
+import { Home, Users, Briefcase, MessageSquare, Bell, LogOut, X, Circle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
 import FloatingChatWidget from './chat/FloatingChatWidget';
@@ -83,6 +83,7 @@ const MainLayout = ({ children }) => {
           <nav className="hidden md:flex h-full">
             <NavItem to="/" icon={Home} label="Home" />
             <NavItem to="/network" icon={Users} label="My Network" />
+            <NavItem to="/circles" icon={Circle} label="Circle" />
             <NavItem to="/collabs" icon={Briefcase} label="Collabs" />
             <NavItem to="/messages" icon={MessageSquare} label="Messaging" />
             <div className="relative">

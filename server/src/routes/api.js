@@ -81,6 +81,12 @@ router.post('/circles/:id/messages', authMiddleware, circleController.sendCircle
 router.post('/circles/:id/invite', authMiddleware, circleController.inviteMember);
 router.patch('/circles/invites/:inviteId', authMiddleware, circleController.respondToInvite);
 
+// Circle File Routes
+const fileController = require('../controllers/fileController');
+router.get('/circles/:id/files', authMiddleware, fileController.getCircleFiles);
+router.post('/circles/:id/files', authMiddleware, fileController.uploadMiddleware, fileController.uploadCircleFile);
+router.delete('/circles/files/:fileId', authMiddleware, fileController.deleteCircleFile);
+
 // Circle Task Routes
 const taskController = require('../controllers/taskController');
 router.get('/circles/:id/tasks', authMiddleware, taskController.getCircleTasks);
