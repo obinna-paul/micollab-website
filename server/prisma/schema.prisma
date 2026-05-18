@@ -57,6 +57,7 @@ model User {
   // New Circle Relations
   ownedCircles      Circle[]         @relation("CircleOwner")
   circleTasks       CircleTask[]     @relation("AssignedTasks")
+  reportedTasks     CircleTask[]     @relation("ReportedTasks")
   circleMessages    CircleMessage[]
   projectCredits    ProjectCredit[]
   taskComments      TaskComment[]
@@ -314,22 +315,35 @@ model CircleRole {
 }
 
 model CircleTask {
-  id          String   @id @default(cuid())
-  circleId    String
-  circle      Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  status      String   @default("TODO") // TODO, IN_PROGRESS, REVIEW, APPROVED, COMPLETED
-  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
-  deadline    DateTime?
-  assignedTo  String? // userId
-  assignee    User?    @relation("AssignedTasks", fields: [assignedTo], references: [id])
-  createdBy   String
+  id              String   @id @default(cuid())
+  circleId        String
+  circle          Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  status          String   @default("TODO") // TODO, IN_PROGRESS, REVIEW, APPROVED, COMPLETED
+  priority        String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  deadline        DateTime?
+  assignedTo      String? // userId
+  assignee        User?    @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  createdBy       String
+  reporter        User     @relation("ReportedTasks", fields: [createdBy], references: [id])
   
-  comments    TaskComment[]
-  attachments TaskAttachment[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  taskCode        String?
+  estimatedEffort Int?
+  labels          String?  // comma-separated tags
+  rejectionComment String?
+  activityLog     String?  // JSON stringified history log
+  dependencies    String?  // JSON array of task IDs
+  linkedTasks     String?  // JSON array of task IDs
+
+  parentId        String?
+  parent          CircleTask?   @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  subtasks        CircleTask[]  @relation("TaskSubtasks")
+
+  comments        TaskComment[]
+  attachments     TaskAttachment[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model TaskComment {
