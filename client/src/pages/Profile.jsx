@@ -366,14 +366,6 @@ const Profile = () => {
                 ))
               )}
             </div>
-            
-            <div className="flex justify-center mt-5">
-              <div className="bg-white text-[#0B0F19] font-bold text-sm px-6 py-2 rounded-full flex items-center gap-6 shadow-lg cursor-pointer hover:bg-gray-100 transition">
-                <ChevronLeft size={16} />
-                <span className="tracking-wide text-[13px]">10 / 16</span>
-                <ChevronRight size={16} />
-              </div>
-            </div>
           </div>
 
           {/* Portfolio */}
