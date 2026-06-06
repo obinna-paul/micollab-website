@@ -11,14 +11,6 @@ const CATEGORIES = [
   "Event & Entertainment", "Education"
 ];
 
-const BUDGET_RANGES = [
-  { label: 'All Budgets', value: 'ALL' },
-  { label: 'Unpaid (Collab)', value: 'UNPAID' },
-  { label: '₦10k - ₦50k', value: 'LOW' },
-  { label: '₦50k - ₦200k', value: 'MID' },
-  { label: '₦200k+', value: 'HIGH' }
-];
-
 const FilterSidebar = ({ filters, setFilters }) => {
   
   const handleToggle = (key, value) => {
@@ -29,16 +21,16 @@ const FilterSidebar = ({ filters, setFilters }) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="bg-[#0F131E] border border-white/[0.04] p-6 rounded-3xl space-y-8">
       {/* Category */}
       <div>
-        <h3 className="text-[10px] font-black text-textMuted uppercase tracking-widest mb-4 flex items-center gap-2">
-           <Briefcase size={14} /> Category
+        <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4 flex items-center gap-2">
+           <Briefcase size={14} className="text-[#7B5CFA]" /> Category
         </h3>
         <select 
           value={filters.category}
           onChange={(e) => setFilters(p => ({ ...p, category: e.target.value }))}
-          className="w-full bg-gray-50 border border-divider rounded-xl py-3 px-4 text-xs font-bold text-textMain focus:border-primary outline-none transition-all cursor-pointer"
+          className="w-full bg-[#181D2A] border border-white/[0.06] rounded-xl py-3 px-4 text-xs font-bold text-white focus:border-[#7B5CFA]/40 outline-none transition-all cursor-pointer appearance-none"
         >
           <option value="">All Categories</option>
           {CATEGORIES.map(cat => (
@@ -49,20 +41,20 @@ const FilterSidebar = ({ filters, setFilters }) => {
 
       {/* Location */}
       <div>
-        <h3 className="text-[10px] font-black text-textMuted uppercase tracking-widest mb-4 flex items-center gap-2">
-           <Globe size={14} /> Work Type
+        <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4 flex items-center gap-2">
+           <Globe size={14} className="text-[#7B5CFA]" /> Work Type
         </h3>
         <div className="flex flex-col gap-2">
            <button 
              onClick={() => handleToggle('locationType', 'REMOTE')}
-             className={`flex items-center justify-between py-2 px-3 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'REMOTE' ? 'border-primary bg-primary/5 text-primary' : 'border-divider text-textMuted hover:bg-gray-50'}`}
+             className={`flex items-center justify-between py-2.5 px-4 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'REMOTE' ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-[#7B5CFA]' : 'border-white/[0.06] bg-[#181D2A] text-[#5A6478] hover:text-white hover:border-white/10'}`}
            >
               Remote
               {filters.locationType === 'REMOTE' && <CheckCircle size={14} />}
            </button>
            <button 
              onClick={() => handleToggle('locationType', 'IN_PERSON')}
-             className={`flex items-center justify-between py-2 px-3 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'IN_PERSON' ? 'border-primary bg-primary/5 text-primary' : 'border-divider text-textMuted hover:bg-gray-50'}`}
+             className={`flex items-center justify-between py-2.5 px-4 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'IN_PERSON' ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-[#7B5CFA]' : 'border-white/[0.06] bg-[#181D2A] text-[#5A6478] hover:text-white hover:border-white/10'}`}
            >
               In-Person
               {filters.locationType === 'IN_PERSON' && <CheckCircle size={14} />}
@@ -72,19 +64,19 @@ const FilterSidebar = ({ filters, setFilters }) => {
 
       {/* Experience Level */}
       <div>
-        <h3 className="text-[10px] font-black text-textMuted uppercase tracking-widest mb-4 flex items-center gap-2">
-           <Filter size={14} /> Experience
+        <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4 flex items-center gap-2">
+           <Filter size={14} className="text-[#7B5CFA]" /> Experience
         </h3>
-        <div className="space-y-1.5">
-           {['BEGINNER', 'INTERMEDIATE', 'PROFESSIONAL'].map(level => (
-             <label key={level} className="flex items-center gap-2 cursor-pointer group">
+        <div className="space-y-3">
+           {['BEGINNER', 'INTERMEDIATE', 'EXPERT'].map(level => (
+             <label key={level} className="flex items-center gap-3 cursor-pointer group">
                 <input 
                   type="checkbox"
-                  className="w-4 h-4 rounded border-divider text-primary focus:ring-primary"
+                  className="w-4 h-4 rounded bg-[#181D2A] border-white/[0.06] text-[#7B5CFA] focus:ring-[#7B5CFA]"
                   checked={filters.experienceLevel === level}
                   onChange={() => handleToggle('experienceLevel', level)}
                 />
-                <span className={`text-xs font-bold uppercase transition-colors ${filters.experienceLevel === level ? 'text-primary' : 'text-textMuted group-hover:text-textMain'}`}>
+                <span className={`text-xs font-bold uppercase transition-colors ${filters.experienceLevel === level ? 'text-white' : 'text-[#5A6478] group-hover:text-[#8B95A5]'}`}>
                   {level.toLowerCase()}
                 </span>
              </label>
@@ -93,21 +85,21 @@ const FilterSidebar = ({ filters, setFilters }) => {
       </div>
 
       {/* Verified Only */}
-      <div className="pt-4 border-t border-divider">
-         <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-xs font-black text-textMain uppercase">Verified Only</span>
+      <div className="pt-6 border-t border-white/[0.04]">
+         <label className="flex items-center justify-between cursor-pointer group">
+            <span className={`text-xs font-black uppercase transition-colors ${filters.verifiedOnly ? 'text-white' : 'text-[#8B95A5] group-hover:text-white'}`}>Verified Postings Only</span>
             <div 
               onClick={() => setFilters(p => ({ ...p, verifiedOnly: !p.verifiedOnly }))}
-              className={`w-10 h-5 rounded-full relative transition-colors ${filters.verifiedOnly ? 'bg-primary' : 'bg-divider'}`}
+              className={`w-10 h-5 rounded-full relative transition-colors ${filters.verifiedOnly ? 'bg-[#7B5CFA]' : 'bg-[#181D2A] border border-white/[0.06]'}`}
             >
-               <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${filters.verifiedOnly ? 'right-1' : 'left-1'}`} />
+               <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${filters.verifiedOnly ? 'right-0.5' : 'left-0.5'}`} />
             </div>
          </label>
       </div>
 
       <button 
         onClick={() => setFilters({ category: '', locationType: '', experienceLevel: '', budgetRange: 'ALL', verifiedOnly: false })}
-        className="w-full py-3 text-[10px] font-black uppercase text-textMuted hover:text-primary transition-colors mt-8"
+        className="w-full py-3 text-[10px] font-black uppercase text-[#5A6478] hover:text-[#7B5CFA] transition-colors mt-8 bg-white/[0.02] hover:bg-[#7B5CFA]/10 rounded-xl"
       >
         Clear All Filters
       </button>
