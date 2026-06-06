@@ -147,16 +147,16 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-2xl bg-[#0F131E] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-white/10"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-8 py-6 border-b border-divider">
+        <div className="flex items-center justify-between px-8 py-6 border-b border-white/5 bg-[#181D2A]">
           <div>
-            <h2 className="text-2xl font-black text-textMain tracking-tight">Showcase New Project</h2>
-            <p className="text-xs text-textMuted font-bold uppercase tracking-widest mt-1">Step {step} of 3</p>
+            <h2 className="text-2xl font-black text-white tracking-tight">Showcase New Project</h2>
+            <p className="text-xs text-[#8B95A5] font-bold uppercase tracking-widest mt-1">Step {step} of 3</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition">
-            <X size={24} className="text-textMuted" />
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition">
+            <X size={24} className="text-[#8B95A5] hover:text-white transition-colors" />
           </button>
         </div>
 
@@ -169,45 +169,45 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
                 className="space-y-6"
               >
                 <div>
-                  <label className="block text-[10px] font-black text-textMuted uppercase tracking-widest mb-2">Project Title</label>
+                  <label className="block text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Project Title</label>
                   <input 
                     type="text" value={title} onChange={e => setTitle(e.target.value)}
                     placeholder="e.g. Midnight in Lagos"
-                    className="w-full bg-background border border-divider rounded-2xl px-5 py-4 text-sm font-bold text-textMain outline-none focus:border-primary transition"
+                    className="w-full bg-[#181D2A] border border-white/5 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-[#7B5CFA] transition"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-[10px] font-black text-textMuted uppercase tracking-widest mb-2">Description</label>
+                  <label className="block text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Description</label>
                   <textarea 
                     value={description} onChange={e => setDescription(e.target.value)}
                     placeholder="Tell the story behind this project..."
-                    className="w-full bg-background border border-divider rounded-2xl px-5 py-4 text-sm font-medium text-textMain outline-none focus:border-primary transition min-h-[120px] resize-none"
+                    className="w-full bg-[#181D2A] border border-white/5 rounded-2xl px-5 py-4 text-sm font-medium text-white outline-none focus:border-[#7B5CFA] transition min-h-[120px] resize-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-black text-textMuted uppercase tracking-widest mb-2">Category</label>
+                    <label className="block text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Category</label>
                     <select 
                       value={category} onChange={e => setCategory(e.target.value)}
-                      className="w-full bg-background border border-divider rounded-2xl px-5 py-4 text-sm font-bold text-textMain outline-none focus:border-primary transition appearance-none"
+                      className="w-full bg-[#181D2A] border border-white/5 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-[#7B5CFA] transition appearance-none"
                     >
-                      <option value="VIDEO">Video</option>
-                      <option value="PHOTOGRAPHY">Photography</option>
-                      <option value="MUSIC">Music/Audio</option>
-                      <option value="WRITING">Writing</option>
-                      <option value="DESIGN">Design</option>
+                      <option value="VIDEO" className="bg-[#181D2A]">Video</option>
+                      <option value="PHOTOGRAPHY" className="bg-[#181D2A]">Photography</option>
+                      <option value="MUSIC" className="bg-[#181D2A]">Music/Audio</option>
+                      <option value="WRITING" className="bg-[#181D2A]">Writing</option>
+                      <option value="DESIGN" className="bg-[#181D2A]">Design</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-textMuted uppercase tracking-widest mb-2">Project Type</label>
+                    <label className="block text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Project Type</label>
                     <div className="flex gap-2">
                       {['PERSONAL', 'CLIENT'].map(t => (
                         <button 
                           key={t} onClick={() => setProjectType(t)}
                           className={`flex-1 py-4 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all ${
-                            projectType === t ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-background border-divider text-textMuted'
+                            projectType === t ? 'bg-[#7B5CFA] border-[#7B5CFA] text-white shadow-[0_0_15px_rgba(123,92,250,0.3)]' : 'bg-[#181D2A] border-white/5 text-[#8B95A5] hover:text-white'
                           }`}
                         >
                           {t}
@@ -226,13 +226,13 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
               >
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-4 border-dashed border-divider rounded-[2rem] py-12 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                  className="border-4 border-dashed border-white/5 rounded-[2rem] py-12 flex flex-col items-center justify-center cursor-pointer hover:border-[#7B5CFA]/30 hover:bg-[#7B5CFA]/5 transition-all group bg-[#181D2A]/50"
                 >
-                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-[#7B5CFA]/10 rounded-2xl flex items-center justify-center text-[#7B5CFA] mb-4 group-hover:scale-110 transition-transform">
                     <Plus size={32} />
                   </div>
-                  <h3 className="font-black text-textMain tracking-tight">Upload Project Assets</h3>
-                  <p className="text-xs text-textMuted font-bold mt-1">High-quality Images or Videos (up to 50MB)</p>
+                  <h3 className="font-black text-white tracking-tight">Upload Project Assets</h3>
+                  <p className="text-xs text-[#8B95A5] font-bold mt-1">High-quality Images or Videos (up to 50MB)</p>
                 </div>
                 <input type="file" ref={fileInputRef} className="hidden" multiple accept="image/*,video/*,audio/*" onChange={handleFileUpload} />
 
@@ -260,28 +260,28 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
               >
                 {/* Credits */}
                 <div>
-                  <label className="block text-[10px] font-black text-textMuted uppercase tracking-widest mb-2">Collaborators (Credits)</label>
+                  <label className="block text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Collaborators (Credits)</label>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
                     <input 
                       type="text" value={searchQuery} onChange={e => handleSearchUsers(e.target.value)}
                       placeholder="Search for fellow creatives..."
-                      className="w-full bg-background border border-divider rounded-2xl pl-12 pr-5 py-4 text-sm font-bold text-textMain outline-none focus:border-primary transition"
+                      className="w-full bg-[#181D2A] border border-white/5 rounded-2xl pl-12 pr-5 py-4 text-sm font-bold text-white outline-none focus:border-[#7B5CFA] transition"
                     />
                   </div>
                   
                   {/* Search Results */}
                   <AnimatePresence>
                     {searchResults.length > 0 && (
-                      <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-2 bg-white border border-divider rounded-2xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+                      <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-2 bg-[#181D2A] border border-white/5 rounded-2xl shadow-xl overflow-hidden max-h-48 overflow-y-auto custom-scrollbar">
                         {searchResults.map(u => (
-                          <button key={u.id} onClick={() => addCredit(u)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left border-b border-divider last:border-0">
+                          <button key={u.id} onClick={() => addCredit(u)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-left border-b border-white/5 last:border-0 transition">
                             <img src={u.profileImage} className="w-8 h-8 rounded-full" />
                             <div className="min-w-0">
-                              <p className="text-xs font-black text-textMain">@{u.username}</p>
-                              <p className="text-[9px] text-textMuted uppercase font-bold">{u.profileType}</p>
+                              <p className="text-xs font-black text-white">@{u.username}</p>
+                              <p className="text-[9px] text-[#8B95A5] uppercase font-bold">{u.profileType}</p>
                             </div>
-                            <UserPlus size={14} className="ml-auto text-primary" />
+                            <UserPlus size={14} className="ml-auto text-[#7B5CFA]" />
                           </button>
                         ))}
                       </motion.div>
@@ -291,7 +291,7 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
                   {/* Added Credits */}
                   <div className="flex flex-wrap gap-2 mt-3">
                     {credits.map((c, i) => (
-                      <div key={i} className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-2 rounded-xl border border-primary/20">
+                      <div key={i} className="flex items-center gap-2 bg-[#7B5CFA]/10 text-[#7B5CFA] px-3 py-2 rounded-xl border border-[#7B5CFA]/20">
                         <img src={c.profileImage} className="w-5 h-5 rounded-full" />
                         <span className="text-[10px] font-black">@{c.username} ({c.role})</span>
                         <button onClick={() => setCredits(prev => prev.filter((_, idx) => idx !== i))} className="hover:text-red-500">
@@ -304,20 +304,20 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
 
                 {/* Tags */}
                 <div>
-                  <label className="block text-[10px] font-black text-textMuted uppercase tracking-widest mb-2">Project Tags</label>
+                  <label className="block text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Project Tags</label>
                   <div className="relative">
-                    <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
+                    <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
                     <input 
                       type="text" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={addTag}
                       placeholder="Type a tag and press Enter (e.g. Cinematic, VFX)..."
-                      className="w-full bg-background border border-divider rounded-2xl pl-12 pr-5 py-4 text-sm font-bold text-textMain outline-none focus:border-primary transition"
+                      className="w-full bg-[#181D2A] border border-white/5 rounded-2xl pl-12 pr-5 py-4 text-sm font-bold text-white outline-none focus:border-[#7B5CFA] transition"
                     />
                   </div>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {tags.map(t => (
-                      <span key={t} className="px-3 py-1 bg-surface border border-divider rounded-full text-[10px] font-black uppercase text-textMain flex items-center gap-2">
+                      <span key={t} className="px-3 py-1 bg-[#181D2A] border border-white/5 rounded-full text-[10px] font-black uppercase text-[#8B95A5] flex items-center gap-2">
                         {t}
-                        <button onClick={() => setTags(prev => prev.filter(tag => tag !== t))} className="hover:text-primary">
+                        <button onClick={() => setTags(prev => prev.filter(tag => tag !== t))} className="hover:text-white">
                           <X size={10} />
                         </button>
                       </span>
@@ -330,11 +330,11 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-6 border-t border-divider bg-gray-50 flex items-center justify-between">
+        <div className="px-8 py-6 border-t border-white/5 bg-[#181D2A] flex items-center justify-between">
           <button 
             onClick={() => setStep(prev => prev - 1)}
             disabled={step === 1 || loading}
-            className="px-6 py-3 text-xs font-black uppercase tracking-widest text-textMuted hover:text-textMain disabled:opacity-30 transition"
+            className="px-6 py-3 text-xs font-black uppercase tracking-widest text-[#8B95A5] hover:text-white disabled:opacity-30 transition"
           >
             Back
           </button>
@@ -344,7 +344,7 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
               <button 
                 onClick={() => setStep(prev => prev + 1)}
                 disabled={step === 1 && !title}
-                className="px-8 py-3 bg-textMain text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-black transition shadow-lg disabled:opacity-30"
+                className="px-8 py-3 bg-[#7B5CFA] text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-30"
               >
                 Next Step
               </button>
@@ -352,7 +352,7 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
               <button 
                 onClick={handleSubmit}
                 disabled={loading || !media.length}
-                className="px-10 py-3 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:scale-105 transition shadow-lg shadow-primary/30 flex items-center gap-2"
+                className="px-10 py-3 bg-[#7B5CFA] text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2 disabled:opacity-50"
               >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                 {loading ? 'Publishing...' : 'Publish Project'}

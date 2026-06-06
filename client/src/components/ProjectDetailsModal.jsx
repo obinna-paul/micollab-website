@@ -35,7 +35,7 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="relative w-full max-w-6xl bg-white md:bg-surface rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-[90vh]"
+        className="relative w-full max-w-6xl bg-[#0F131E] md:bg-[#181D2A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-[90vh] border border-white/10"
       >
         {/* Left: Media Display */}
         <div className="flex-[1.5] bg-black flex flex-col relative group">
@@ -50,7 +50,7 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
               >
                 {isAudio ? (
                   <div className="flex flex-col items-center justify-center p-12 bg-gray-900 rounded-3xl border border-white/10 w-full max-w-lg">
-                    <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center text-primary mb-6 animate-pulse">
+                    <div className="w-24 h-24 bg-[#7B5CFA]/20 rounded-full flex items-center justify-center text-[#7B5CFA] mb-6 animate-pulse">
                       <Play size={48} fill="currentColor" />
                     </div>
                     <audio 
@@ -101,14 +101,13 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
             </div>
           </div>
 
-          {/* Media Thumbnails (Optional strip at bottom) */}
           <div className="h-20 bg-black/20 border-t border-white/5 flex items-center gap-2 px-6 overflow-x-auto no-scrollbar">
             {project.media.map((m, i) => (
               <button 
                 key={i} 
                 onClick={() => setActiveMediaIndex(i)}
                 className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${
-                  activeMediaIndex === i ? 'border-primary scale-110 shadow-lg' : 'border-transparent opacity-50'
+                  activeMediaIndex === i ? 'border-[#7B5CFA] scale-110 shadow-[0_0_15px_rgba(123,92,250,0.3)]' : 'border-transparent opacity-50'
                 }`}
               >
                 <img src={m.url} className="w-full h-full object-cover" />
@@ -118,26 +117,26 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
         </div>
 
         {/* Right: Info Panel */}
-        <div className="flex-1 flex flex-col bg-white border-l border-divider">
+        <div className="flex-1 flex flex-col bg-[#0F131E] md:bg-[#181D2A] border-l border-white/5">
           {/* Header */}
-          <div className="p-8 pb-6 border-b border-divider">
+          <div className="p-8 pb-6 border-b border-white/5">
             <div className="flex justify-between items-start mb-4">
-              <span className="px-4 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-tighter rounded-full border border-primary/20">
+              <span className="px-4 py-1 bg-[#7B5CFA]/10 text-[#7B5CFA] text-[10px] font-black uppercase tracking-tighter rounded-full border border-[#7B5CFA]/20">
                 {project.category}
               </span>
-              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition">
-                <X size={24} className="text-textMuted" />
+              <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition">
+                <X size={24} className="text-[#8B95A5] hover:text-white transition-colors" />
               </button>
             </div>
-            <h2 className="text-3xl font-black text-textMain tracking-tight mb-2 leading-tight">
+            <h2 className="text-3xl font-black text-white tracking-tight mb-2 leading-tight">
               {project.title}
             </h2>
-            <div className="flex items-center gap-4 text-textMuted">
+            <div className="flex items-center gap-4 text-[#8B95A5]">
               <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest">
-                <Calendar size={12} className="text-primary" /> {new Date(project.createdAt).toLocaleDateString()}
+                <Calendar size={12} className="text-[#7B5CFA]" /> {new Date(project.createdAt).toLocaleDateString()}
               </div>
               <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest">
-                <Briefcase size={12} className="text-primary" /> {project.projectType}
+                <Briefcase size={12} className="text-[#7B5CFA]" /> {project.projectType}
               </div>
             </div>
           </div>
@@ -146,10 +145,10 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
           <div className="flex-1 overflow-y-auto p-8 space-y-8">
             {/* Description */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black text-textMuted uppercase tracking-widest flex items-center gap-2">
-                Project Background <div className="h-px flex-1 bg-divider"></div>
+              <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest flex items-center gap-2">
+                Project Background <div className="h-px flex-1 bg-white/5"></div>
               </h4>
-              <p className="text-sm text-textMain leading-relaxed font-medium whitespace-pre-wrap">
+              <p className="text-sm text-white leading-relaxed font-medium whitespace-pre-wrap">
                 {project.description || "No project description provided."}
               </p>
             </div>
@@ -157,24 +156,24 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
             {/* Collaborators */}
             {project.credits?.length > 0 && (
               <div className="space-y-4">
-                <h4 className="text-[10px] font-black text-textMuted uppercase tracking-widest flex items-center gap-2">
-                  Credits <div className="h-px flex-1 bg-divider"></div>
+                <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest flex items-center gap-2">
+                  Credits <div className="h-px flex-1 bg-white/5"></div>
                 </h4>
                 <div className="grid grid-cols-1 gap-3">
                   {project.credits.map((credit, i) => (
                     <Link 
                       key={i} to={`/profile/${credit.user.username}`}
-                      className="flex items-center justify-between p-3 bg-background border border-divider rounded-2xl hover:border-primary transition group"
+                      className="flex items-center justify-between p-3 bg-[#0F131E] border border-white/5 rounded-2xl hover:border-[#7B5CFA] transition group"
                     >
                       <div className="flex items-center gap-3">
                         <img src={credit.user.profileImage} className="w-10 h-10 rounded-full" />
                         <div>
-                          <p className="text-xs font-black text-textMain group-hover:text-primary transition">@{credit.user.username}</p>
-                          <p className="text-[9px] text-textMuted font-bold uppercase">{credit.user.profileType}</p>
+                          <p className="text-xs font-black text-white group-hover:text-[#7B5CFA] transition">@{credit.user.username}</p>
+                          <p className="text-[9px] text-[#8B95A5] font-bold uppercase">{credit.user.profileType}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-[10px] font-black text-textMain uppercase">{credit.role}</p>
+                        <p className="text-[10px] font-black text-white uppercase">{credit.role}</p>
                       </div>
                     </Link>
                   ))}
@@ -185,12 +184,12 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
             {/* Tags */}
             {project.tags?.length > 0 && (
               <div className="space-y-3">
-                <h4 className="text-[10px] font-black text-textMuted uppercase tracking-widest flex items-center gap-2">
-                  Tags <div className="h-px flex-1 bg-divider"></div>
+                <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest flex items-center gap-2">
+                  Tags <div className="h-px flex-1 bg-white/5"></div>
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag, i) => (
-                    <span key={i} className="px-3 py-1.5 bg-surface border border-divider rounded-full text-[10px] font-black uppercase text-textMain">
+                    <span key={i} className="px-3 py-1.5 bg-[#0F131E] border border-white/5 rounded-full text-[10px] font-black uppercase text-[#8B95A5]">
                       {tag.name}
                     </span>
                   ))}
@@ -200,18 +199,18 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
           </div>
 
           {/* Footer Actions */}
-          <div className="p-8 pt-6 border-t border-divider bg-gray-50 flex items-center justify-between">
+          <div className="p-8 pt-6 border-t border-white/5 bg-[#0F131E] flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div className="flex flex-col">
-                <p className="text-sm font-black text-textMain">{project.viewCount || 0}</p>
-                <p className="text-[9px] text-textMuted font-black uppercase tracking-widest">Views</p>
+                <p className="text-sm font-black text-white">{project.viewCount || 0}</p>
+                <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Views</p>
               </div>
-              <div className="flex flex-col border-l border-divider pl-6">
-                <p className="text-sm font-black text-textMain">{project.media.length}</p>
-                <p className="text-[9px] text-textMuted font-black uppercase tracking-widest">Assets</p>
+              <div className="flex flex-col border-l border-white/5 pl-6">
+                <p className="text-sm font-black text-white">{project.media.length}</p>
+                <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Assets</p>
               </div>
             </div>
-            <button className="px-8 py-3 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:scale-105 transition shadow-lg shadow-primary/30 flex items-center gap-2">
+            <button className="px-8 py-3 bg-[#7B5CFA] text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2">
                Appreciate <Star size={16} />
             </button>
           </div>
