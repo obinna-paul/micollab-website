@@ -179,12 +179,7 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Carousel indicator bottom */}
-        <div className="hidden lg:flex absolute bottom-12 left-1/2 -translate-x-1/2 bg-white rounded-full items-center px-4 py-2 gap-6 shadow-xl">
-          <button className="text-gray-400 hover:text-black transition"><ChevronLeft size={20} /></button>
-          <span className="text-black font-bold text-sm">1 / 16</span>
-          <button className="text-black hover:opacity-70 transition"><ChevronRight size={20} /></button>
-        </div>
+
       </div>
 
       {/* Right Form Section */}
