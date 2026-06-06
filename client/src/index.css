@@ -2,18 +2,18 @@
 
 @theme {
   /* Main Colors */
-  --color-primary: #0A66C2;      /* LinkedIn Blue */
-  --color-primaryHover: #004182;
+  --color-primary: #7B5CFA;
+  --color-primaryHover: #684CE0;
   
   /* Backgrounds */
-  --color-background: #F3F2EF;   /* LinkedIn Gray bg */
-  --color-surface: #FFFFFF;      /* White Cards */
-  --color-divider: #EBEBEB;
+  --color-background: #0F131E;
+  --color-surface: #181D2A;
+  --color-divider: rgba(255, 255, 255, 0.05);
   
   /* Text */
-  --color-textMain: rgba(0, 0, 0, 0.9);
-  --color-textMuted: rgba(0, 0, 0, 0.6);
-  --color-textLight: rgba(0, 0, 0, 0.45);
+  --color-textMain: #FFFFFF;
+  --color-textMuted: #8B95A5;
+  --color-textLight: rgba(255, 255, 255, 0.3);
 
   /* Categories */
   --color-music: #8B5CF6;
@@ -31,7 +31,7 @@
 
 @layer components {
   .card {
-    @apply bg-white border border-divider rounded-3xl shadow-sm;
+    @apply bg-surface border border-white/5 rounded-3xl shadow-sm;
   }
 
   .safe-area-bottom {

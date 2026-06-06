@@ -116,183 +116,69 @@ const CreatePost = ({ onPostCreated, mobile }) => {
 
   return (
     <>
-      <div className="card mb-6 overflow-hidden">
-
-      <div className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <img 
-            src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}`} 
-            className="w-10 h-10 rounded-full border border-divider object-cover" 
-            alt="" 
-          />
-          <h3 className="font-bold text-textMain">Share something cool</h3>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <textarea
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            placeholder={
-              activeTab === 'UPDATE' ? "What's new in your creative journey?" :
-              activeTab === 'EVENT' ? "Describe your event... (Agenda, Speakers, Requirements)" :
-              "Drop a caption for your media..."
-            }
-            className="w-full bg-transparent resize-none outline-none text-textMain placeholder:text-textMuted/60 min-h-[80px]"
-          />
-
-          {activeTab === 'MEDIA' && (
-            <div className="mb-4">
-              <label 
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
-                  isDragging 
-                    ? 'border-primary bg-primary/10' 
-                    : 'border-divider hover:border-primary/50 bg-background'
-                }`}
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
-                  <Image className={`w-8 h-8 mb-3 ${isDragging ? 'text-primary' : 'text-textMuted'}`} />
-                  <p className={`mb-2 text-sm ${isDragging ? 'text-primary' : 'text-textMuted'}`}>
-                    <span className="font-bold text-primary">
-                      {mobile ? 'Upload Media' : "Drop it like it's hot!"}
-                    </span>
-                  </p>
-                  <p className="text-xs text-textMuted text-center px-4">
-                    {mobile ? 'Tap to select photos or videos' : 'Or click to select Images/Videos'}
-                  </p>
-                </div>
-                <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileChange} />
-              </label>
-            </div>
-          )}
-
-          {activeTab === 'EVENT' && (
-             <div className="mb-4 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2 bg-background border border-divider rounded-xl px-3 py-2">
-                    <Calendar size={16} className="text-textMuted" />
-                    <input 
-                      type="date" 
-                      value={eventDate}
-                      onChange={(e) => setEventDate(e.target.value)}
-                      className="bg-transparent border-none outline-none text-sm w-full text-textMain"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 bg-background border border-divider rounded-xl px-3 py-2">
-                    <Clock size={16} className="text-textMuted" />
-                    <input 
-                      type="time" 
-                      value={eventTime}
-                      onChange={(e) => setEventTime(e.target.value)}
-                      className="bg-transparent border-none outline-none text-sm w-full text-textMain"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 bg-background border border-divider rounded-xl px-3 py-2">
-                  <MapPin size={16} className="text-textMuted" />
-                  <input 
-                    type="text" 
-                    value={eventLocation}
-                    onChange={(e) => setEventLocation(e.target.value)}
-                    placeholder="Event Location (e.g. Lagos, Zoom, etc.)"
-                    className="bg-transparent border-none outline-none text-sm w-full text-textMain"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 bg-background border border-divider rounded-xl px-3 py-2 cursor-pointer hover:border-primary/50 relative">
-                  <Image size={16} className="text-textMuted" />
-                  <span className="text-sm text-textMuted">{mediaFiles.length > 0 ? `${mediaFiles.length} file(s) selected` : 'Upload Event Flyer Image/Video (Optional)'}</span>
-                  <input 
-                    type="file" 
-                    multiple
-                    accept="image/*,video/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 bg-background border border-divider rounded-xl px-3 py-2">
-                  <Users size={16} className="text-textMuted" />
-                  <select 
-                    value={inviteTarget}
-                    onChange={(e) => setInviteTarget(e.target.value)}
-                    className="bg-transparent border-none outline-none text-sm w-full text-textMain font-medium"
-                  >
-                    <option value="NONE">No Special Invitations</option>
-                    <option value="ALL_NETWORK">Invite Entire Network</option>
-                    <option value="SELECTED">Invite Select Connections</option>
-                  </select>
-                </div>
-                
-                {inviteTarget === 'SELECTED' && (
-                  <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl text-xs text-primary font-bold">
-                    * Selective invitations feature will prompt you to select connections after posting.
-                  </div>
-                )}
-             </div>
-          )}
-
-          {/* PREVIEWS */}
-          {previewUrls.length > 0 && (
-            <div className="mb-4 flex gap-2 overflow-x-auto pb-2 snap-x">
-              {previewUrls.map((url, idx) => (
-                <div key={idx} className="relative flex-shrink-0 snap-start">
-                  {mediaFiles[idx]?.type.startsWith('video/') ? (
-                    <video src={url} className="w-32 h-32 object-cover rounded-xl border border-divider" muted />
-                  ) : (
-                    <img src={url} className="w-32 h-32 object-cover rounded-xl border border-divider" alt="Preview" />
-                  )}
-                  <button 
-                    type="button" 
-                    onClick={() => removeFile(idx)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-md hover:bg-red-600"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex items-center justify-between pt-4 border-t border-divider">
-            <div className="flex gap-2 overflow-x-auto no-scrollbar">
-              <button
-                type="button"
-                onClick={() => setActiveTab('UPDATE')}
-                className={`p-2 rounded-full transition-colors flex items-center gap-2 px-4 text-xs font-bold whitespace-nowrap ${activeTab === 'UPDATE' ? 'bg-primary/10 text-primary' : 'text-textMuted hover:bg-gray-100'}`}
-              >
-                <FileText size={18} /> <span className="hidden sm:inline">Update</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('MEDIA')}
-                className={`p-2 rounded-full transition-colors flex items-center gap-2 px-4 text-xs font-bold whitespace-nowrap ${activeTab === 'MEDIA' ? 'bg-primary/10 text-primary' : 'text-textMuted hover:bg-gray-100'}`}
-              >
-                <Image size={18} /> <span className="hidden sm:inline">Media</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('EVENT')}
-                className={`p-2 rounded-full transition-colors flex items-center gap-2 px-4 text-xs font-bold whitespace-nowrap ${activeTab === 'EVENT' ? 'bg-primary/10 text-primary' : 'text-textMuted hover:bg-gray-100'}`}
-              >
-                <Calendar size={18} /> <span className="hidden sm:inline">Event</span>
-              </button>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading || (!caption.trim() && mediaFiles.length === 0 && activeTab !== 'EVENT')}
-              className="btn-primary py-2 px-6 flex items-center gap-2 shadow-lg shadow-primary/20"
-            >
-              {loading ? <Loader2 className="animate-spin" size={18} /> : <><Send size={18} /> Post</>}
-            </button>
-          </div>
-        </form>
-        </div>
+    <div className="bg-[#181D2A] rounded-2xl border border-white/5 p-4 mb-8">
+      <div className="flex gap-3 mb-4">
+        <img 
+          src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=7B5CFA&color=fff`} 
+          className="w-10 h-10 rounded-full object-cover border border-[#181D2A]" 
+          alt="" 
+        />
+        <textarea
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          placeholder="Share a brief, concept, or current project..."
+          className="w-full bg-transparent resize-none outline-none text-white placeholder-[#8B95A5] min-h-[40px] pt-2"
+        />
       </div>
+
+      {/* PREVIEWS */}
+      {previewUrls.length > 0 && (
+        <div className="mb-4 flex gap-2 overflow-x-auto pb-2 snap-x ml-13">
+          {previewUrls.map((url, idx) => (
+            <div key={idx} className="relative flex-shrink-0 snap-start">
+              {mediaFiles[idx]?.type.startsWith('video/') ? (
+                <video src={url} className="w-24 h-24 object-cover rounded-xl border border-white/5" muted />
+              ) : (
+                <img src={url} className="w-24 h-24 object-cover rounded-xl border border-white/5" alt="Preview" />
+              )}
+              <button 
+                type="button" 
+                onClick={() => removeFile(idx)}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md hover:bg-red-600 text-xs"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-center justify-between pt-3 border-t border-white/5 ml-13">
+        <div className="flex gap-4">
+          <label className="cursor-pointer group relative">
+            <Image size={18} className="text-[#00B5D8] group-hover:opacity-80 transition" />
+            <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileChange} />
+          </label>
+          <label className="cursor-pointer group relative">
+            <FileText size={18} className="text-[#EC4899] group-hover:opacity-80 transition" />
+            <input type="file" multiple accept=".pdf,.doc,.docx" className="hidden" onChange={handleFileChange} />
+          </label>
+          <button type="button" className="group">
+             <Flame size={18} className="text-[#FF5C00] group-hover:opacity-80 transition" />
+          </button>
+        </div>
+
+        <button
+          onClick={handleSubmit}
+          disabled={loading || (!caption.trim() && mediaFiles.length === 0)}
+          className="bg-[#7B5CFA] hover:bg-[#684CE0] text-white text-xs font-bold py-2 px-5 rounded-full flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_10px_rgba(123,92,250,0.3)]"
+        >
+          {loading ? <Loader2 className="animate-spin" size={14} /> : (
+            <>Post <Send size={14} /></>
+          )}
+        </button>
+      </div>
+    </div>
     </>
   );
 };

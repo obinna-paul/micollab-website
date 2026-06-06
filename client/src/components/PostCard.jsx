@@ -143,7 +143,7 @@ const PostCard = ({ post }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="card mb-3 md:mb-4 md:rounded-3xl rounded-none border-x-0 md:border border-divider bg-white"
+        className="bg-[#181D2A] rounded-2xl border border-white/5 mb-6 overflow-hidden"
       >
         {/* Repost Header */}
         {originalPost && (
@@ -156,23 +156,22 @@ const PostCard = ({ post }) => {
         )}
 
         {/* Header */}
-        <div className="p-3 flex items-start justify-between">
-          <div className="flex gap-2 min-w-0">
+        <div className="p-4 flex items-start justify-between">
+          <div className="flex gap-3 min-w-0">
             <Link to={`/profile/${originalPost ? originalPost.creator.username : creator.username}`}>
               <img src={(originalPost ? originalPost.creator.profileImage : creator.profileImage) || fallbackAvatar} alt={originalPost ? originalPost.creator.username : creator.username}
-                className="w-11 h-11 rounded-full object-cover border border-divider"
+                className="w-10 h-10 rounded-full object-cover border border-[#181D2A]"
                 onError={e => e.target.src = fallbackAvatar} />
             </Link>
             <div className="min-w-0">
               <div className="flex items-center gap-1 flex-wrap">
-                <Link to={`/profile/${originalPost ? originalPost.creator.username : creator.username}`} className="font-bold text-sm text-textMain hover:text-primary hover:underline truncate">
-                  @{originalPost ? originalPost.creator.username : creator.username}
+                <Link to={`/profile/${originalPost ? originalPost.creator.username : creator.username}`} className="font-bold text-sm text-white hover:text-[#7B5CFA] hover:underline truncate tracking-tight">
+                  {originalPost ? originalPost.creator.name || originalPost.creator.username : creator.name || creator.username}
                 </Link>
-                {(originalPost ? originalPost.creator.isVerified : creator.isVerified) && <Star size={11} className="text-primary fill-primary flex-shrink-0" />}
+                {(originalPost ? originalPost.creator.isVerified : creator.isVerified) && <Star size={11} className="text-[#7B5CFA] fill-[#7B5CFA] flex-shrink-0" />}
               </div>
-              <p className="text-[10px] text-textMuted leading-tight">{originalPost ? originalPost.creator.profileType : (creator.profileType || 'Creative')}</p>
-              <p className="text-[10px] text-textMuted flex items-center gap-1 mt-0.5">
-                {new Date(createdAt).toLocaleDateString()} · <Globe size={9} />
+              <p className="text-[11px] text-[#8B95A5] leading-tight">
+                {originalPost ? originalPost.creator.profileType : (creator.profileType || 'Creative')} • {new Date(createdAt).toLocaleDateString()}
               </p>
             </div>
           </div>
@@ -221,78 +220,76 @@ const PostCard = ({ post }) => {
         </div>
 
         {/* Content */}
-        <div className="px-3 pb-3">
+        <div className="px-4 pb-3">
           {isEditing ? (
             <div className="space-y-3">
               <textarea value={caption} onChange={e => setCaption(e.target.value)}
-                className="w-full bg-background border border-divider rounded-xl p-3 text-sm text-textMain outline-none focus:border-primary transition min-h-[100px] resize-none"
+                className="w-full bg-[#0F131E] border border-white/5 rounded-xl p-3 text-sm text-white outline-none focus:border-[#7B5CFA] transition min-h-[100px] resize-none"
                 autoFocus />
               <div className="flex justify-end gap-2">
                 <button onClick={() => { setIsEditing(false); setCaption(initialCaption); }}
-                  className="px-4 py-1.5 text-xs font-bold text-textMuted hover:bg-gray-100 rounded-full">Cancel</button>
+                  className="px-4 py-1.5 text-xs font-bold text-[#8B95A5] hover:bg-white/5 rounded-full">Cancel</button>
                 <button onClick={handleUpdate} disabled={loading || !caption.trim()}
-                  className="px-4 py-1.5 text-xs font-bold bg-primary text-white rounded-full disabled:opacity-50">
+                  className="px-4 py-1.5 text-xs font-bold bg-[#7B5CFA] text-white rounded-full disabled:opacity-50">
                   {loading ? 'Saving...' : 'Save'}
                 </button>
               </div>
             </div>
           ) : (
-            <p className="text-sm text-textMain whitespace-pre-wrap leading-relaxed">
+            <p className="text-[13px] text-white whitespace-pre-wrap leading-relaxed">
               {originalPost ? originalPost.caption : caption}
-              {isEdited && <span className="text-[10px] text-textMuted ml-2">(edited)</span>}
+              {isEdited && <span className="text-[10px] text-[#8B95A5] ml-2">(edited)</span>}
             </p>
           )}
         </div>
 
         {/* Media */}
         {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length > 0 && (
-          <div className="border-y border-divider flex overflow-x-auto snap-x snap-mandatory no-scrollbar">
-            {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).map((url, i) => (
-              <div key={i} className="w-full flex-shrink-0 snap-center flex justify-center items-center max-h-[480px] bg-black/5 relative">
-                {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length > 1 && (
-                  <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full font-bold z-10">
-                    {i + 1}/{(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length}
-                  </div>
-                )}
-                {isVideo(url)
-                  ? <video src={url} controls className="w-full h-auto max-h-[480px] object-contain bg-black" />
-                  : <img src={url} alt="Post" className="w-full h-auto max-h-[480px] object-contain" />}
-              </div>
-            ))}
+          <div className="px-4 pb-4">
+            <div className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar rounded-xl overflow-hidden relative">
+              {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).map((url, i) => (
+                <div key={i} className="w-full flex-shrink-0 snap-center flex justify-center items-center max-h-[480px] bg-[#0F131E]">
+                  {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length > 1 && (
+                    <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full font-bold z-10">
+                      {i + 1}/{(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length}
+                    </div>
+                  )}
+                  {isVideo(url)
+                    ? <video src={url} controls className="w-full h-auto max-h-[480px] object-cover" />
+                    : <img src={url} alt="Post" className="w-full h-auto max-h-[480px] object-cover" />}
+                </div>
+              ))}
+              
+              {/* If it's a collab post (isCollabCard), we show the Collab Request pill inside the media container at bottom right */}
+              {post.isCollabCard && (
+                <Link to={`/collabs/${post.collabId}`} className="absolute bottom-4 right-4 bg-[#7B5CFA] hover:bg-[#684CE0] text-white text-xs font-bold py-2 px-4 rounded-xl flex items-center gap-2 shadow-lg transition">
+                  <Briefcase size={14} />
+                  Collab Request
+                </Link>
+              )}
+            </div>
           </div>
         )}
 
-        {/* Stats */}
-        <div className="px-3 py-2 flex items-center justify-between border-b border-divider">
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-              <ThumbsUp size={8} className="text-white" />
-            </div>
-            <span className="text-[10px] text-textMuted font-bold ml-1">{likesCount}</span>
-          </div>
-          <span 
-            className="text-[10px] text-textMuted font-bold cursor-pointer hover:underline"
-            onClick={() => setShowComments(!showComments)}
-          >
-            {commentCount || 0} comments
-          </span>
-        </div>
-
-        {/* Actions */}
-        <div className="px-1 py-1 grid grid-cols-4 gap-0.5">
-          {[
-            { icon: ThumbsUp,     label: 'Like',    active: liked,      fill: liked, onClick: handleLike },
-            { icon: MessageSquare,label: 'Comment', active: showComments, fill: false, onClick: () => setShowComments(!showComments) },
-            { icon: Repeat2,      label: 'Repost',  active: reposted || isReposting, fill: reposted, onClick: handleRepost },
-            { icon: Share2,       label: 'Share',   active: showShare,  fill: false, onClick: () => setShowShare(true) },
-          ].map(({ icon: Icon, label, active, fill, onClick }) => (
-            <button key={label} onClick={onClick}
-              className={`flex flex-col md:flex-row items-center justify-center gap-1 py-2 rounded-xl text-[10px] md:text-xs font-bold transition-all
-                ${active ? 'text-primary bg-primary/5' : 'text-textMuted hover:bg-gray-50 hover:text-textMain'}`}>
-              <Icon size={19} className={fill ? 'fill-primary text-primary' : ''} />
-              <span>{label}</span>
+        {/* Actions Footer */}
+        <div className="px-4 py-3 flex items-center justify-between border-t border-white/5">
+          <div className="flex items-center gap-6">
+            <button onClick={handleLike} className={`flex items-center gap-1.5 text-[11px] font-bold transition group ${liked ? 'text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}>
+              <ThumbsUp size={16} className={liked ? 'fill-[#7B5CFA]' : 'group-hover:text-white'} />
+              <span>{likesCount}</span>
             </button>
-          ))}
+            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-[11px] font-bold text-[#8B95A5] hover:text-white transition group">
+              <MessageSquare size={16} />
+              <span>{commentCount}</span>
+            </button>
+            <button onClick={() => setShowShare(true)} className="flex items-center gap-1.5 text-[11px] font-bold text-[#8B95A5] hover:text-white transition group">
+              <Share2 size={16} />
+            </button>
+          </div>
+
+          <button className="text-[#8B95A5] hover:text-white transition">
+            <Archive size={16} />
+          </button>
         </div>
 
         {/* Desktop Inline Comments */}
@@ -307,19 +304,19 @@ const PostCard = ({ post }) => {
               <div className="p-4 space-y-4">
                 {/* Input */}
                 <form onSubmit={handleCommentSubmit} className="flex gap-3">
-                  <img src={user?.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full border border-divider" alt="Your avatar" />
+                  <img src={user?.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full object-cover border border-[#181D2A]" alt="Your avatar" />
                   <div className="flex-1 relative">
                     <input 
                       type="text" 
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="Add a comment..."
-                      className="w-full bg-background border border-divider rounded-full px-4 py-2 text-xs outline-none focus:border-primary transition"
+                      className="w-full bg-[#0F131E] border border-white/5 rounded-full px-4 py-2 text-xs text-white outline-none focus:border-[#7B5CFA] transition"
                     />
                     <button 
                       type="submit" 
                       disabled={!newComment.trim() || isPostingComment}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:bg-primary/10 p-1.5 rounded-full transition disabled:opacity-30"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7B5CFA] hover:bg-[#7B5CFA]/10 p-1.5 rounded-full transition disabled:opacity-30"
                     >
                       {isPostingComment ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                     </button>
@@ -330,20 +327,20 @@ const PostCard = ({ post }) => {
                 <div className="space-y-4 pt-2">
                   {comments.map((comment) => (
                     <div key={comment.id} className="flex gap-3">
-                      <img src={comment.user.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full border border-divider" alt={comment.user.username} />
-                      <div className="flex-1 bg-background rounded-2xl p-3">
+                      <img src={comment.user.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full object-cover border border-white/5" alt={comment.user.username} />
+                      <div className="flex-1 bg-[#0F131E] rounded-2xl p-3 border border-white/5">
                         <div className="flex justify-between items-start mb-1">
                           <div>
-                            <span className="text-xs font-bold text-textMain">@{comment.user.username}</span>
-                            <span className="text-[9px] text-textMuted ml-2">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                            <span className="text-xs font-bold text-white">@{comment.user.username}</span>
+                            <span className="text-[9px] text-[#8B95A5] ml-2">{new Date(comment.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
-                        <p className="text-xs text-textMain leading-relaxed">{comment.content}</p>
+                        <p className="text-xs text-white leading-relaxed">{comment.content}</p>
                       </div>
                     </div>
                   ))}
                   {comments.length === 0 && (
-                    <p className="text-xs text-textMuted text-center py-2">No comments yet. Be the first to share your thoughts!</p>
+                    <p className="text-xs text-[#8B95A5] text-center py-2">No comments yet. Be the first to share your thoughts!</p>
                   )}
                 </div>
               </div>
@@ -357,33 +354,33 @@ const PostCard = ({ post }) => {
         {showComments && (
           <div className="md:hidden fixed inset-0 z-[400] flex items-end">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowComments(false)} />
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowComments(false)} />
             <motion.div
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="relative w-full bg-white rounded-t-3xl shadow-2xl z-10 max-h-[90svh] flex flex-col"
+              className="relative w-full bg-[#181D2A] rounded-t-3xl shadow-2xl z-10 max-h-[90svh] flex flex-col border border-white/10"
             >
-              <div className="flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-200 rounded-full" /></div>
-              <div className="flex items-center justify-between px-5 py-3 border-b border-divider">
-                <h3 className="font-black text-textMain tracking-tight">Comments</h3>
-                <button onClick={() => setShowComments(false)} className="p-1.5 hover:bg-gray-100 rounded-xl text-textMuted"><X size={17} /></button>
+              <div className="flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-white/20 rounded-full" /></div>
+              <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
+                <h3 className="font-black text-white tracking-tight">Comments</h3>
+                <button onClick={() => setShowComments(false)} className="p-1.5 hover:bg-white/5 rounded-xl text-[#8B95A5]"><X size={17} /></button>
               </div>
 
               <div className="overflow-y-auto flex-1 p-4 space-y-5">
                 {comments.map((comment) => (
                   <div key={comment.id} className="flex gap-3">
-                    <img src={comment.user.profileImage || fallbackAvatar} className="w-9 h-9 rounded-full border border-divider" alt={comment.user.username} />
+                    <img src={comment.user.profileImage || fallbackAvatar} className="w-9 h-9 rounded-full object-cover border border-white/5" alt={comment.user.username} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-black text-textMain">@{comment.user.username}</span>
-                        <span className="text-[9px] text-textMuted">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                        <span className="text-xs font-black text-white">@{comment.user.username}</span>
+                        <span className="text-[9px] text-[#8B95A5]">{new Date(comment.createdAt).toLocaleDateString()}</span>
                       </div>
-                      <p className="text-xs text-textMain leading-relaxed">{comment.content}</p>
+                      <p className="text-xs text-white leading-relaxed">{comment.content}</p>
                     </div>
                   </div>
                 ))}
                 {comments.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-10 opacity-50">
+                  <div className="flex flex-col items-center justify-center py-10 opacity-50 text-[#8B95A5]">
                     <MessageSquare size={40} className="mb-2" />
                     <p className="text-xs font-bold">No comments yet</p>
                   </div>
@@ -391,19 +388,19 @@ const PostCard = ({ post }) => {
               </div>
 
               {/* Mobile Input (Sticky at bottom) */}
-              <div className="p-4 border-t border-divider pb-safe bg-white">
+              <div className="p-4 border-t border-white/10 pb-safe bg-[#181D2A]">
                 <form onSubmit={handleCommentSubmit} className="flex items-center gap-3">
-                  <img src={user?.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full border border-divider" alt="You" />
+                  <img src={user?.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full border border-white/5 object-cover" alt="You" />
                   <div className="flex-1 relative">
                     <input 
                       type="text" 
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="Add a comment..."
-                      className="w-full bg-background border border-divider rounded-full px-4 py-2.5 text-xs outline-none focus:border-primary transition"
+                      className="w-full bg-[#0F131E] border border-white/5 rounded-full px-4 py-2.5 text-xs text-white outline-none focus:border-[#7B5CFA] transition"
                       autoFocus
                     />
-                    <button type="submit" disabled={!newComment.trim() || isPostingComment} className="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-1.5">
+                    <button type="submit" disabled={!newComment.trim() || isPostingComment} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7B5CFA] p-1.5 disabled:opacity-30">
                       {isPostingComment ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                     </button>
                   </div>
@@ -420,36 +417,36 @@ const PostCard = ({ post }) => {
           <div className="fixed inset-0 z-[400] flex items-end md:items-center justify-center">
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
               onClick={() => setShowShare(false)}
             />
             <motion.div
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="relative w-full md:max-w-sm bg-white rounded-t-3xl md:rounded-3xl shadow-2xl z-10 overflow-hidden"
+              className="relative w-full md:max-w-sm bg-[#181D2A] rounded-t-3xl md:rounded-3xl shadow-2xl z-10 overflow-hidden border border-white/10"
             >
-              <div className="flex justify-center pt-3 pb-1 md:hidden"><div className="w-10 h-1 bg-gray-200 rounded-full" /></div>
-              <div className="flex items-center justify-between px-5 py-4 border-b border-divider">
-                <h3 className="font-black text-textMain tracking-tight">Share Post</h3>
-                <button onClick={() => setShowShare(false)} className="p-1.5 hover:bg-gray-100 rounded-xl text-textMuted"><X size={17} /></button>
+              <div className="flex justify-center pt-3 pb-1 md:hidden"><div className="w-10 h-1 bg-white/20 rounded-full" /></div>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                <h3 className="font-black text-white tracking-tight">Share Post</h3>
+                <button onClick={() => setShowShare(false)} className="p-1.5 hover:bg-white/5 rounded-xl text-[#8B95A5]"><X size={17} /></button>
               </div>
               <div className="p-5">
                 <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center gap-3 p-4 rounded-2xl border border-divider hover:border-primary hover:bg-primary/5 transition-all group text-left">
-                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary flex-shrink-0"><Users size={18} /></div>
+                  <button className="flex items-center gap-3 p-4 rounded-2xl border border-white/10 hover:border-[#7B5CFA] hover:bg-[#7B5CFA]/5 transition-all group text-left">
+                    <div className="w-10 h-10 bg-[#7B5CFA]/10 rounded-xl flex items-center justify-center text-[#7B5CFA] flex-shrink-0"><Users size={18} /></div>
                     <div className="min-w-0">
-                      <p className="text-xs font-black text-textMain group-hover:text-primary leading-tight">Network</p>
-                      <p className="text-[9px] text-textMuted mt-0.5">Share to connections</p>
+                      <p className="text-xs font-black text-white group-hover:text-[#7B5CFA] leading-tight">Network</p>
+                      <p className="text-[9px] text-[#8B95A5] mt-0.5">Share to connections</p>
                     </div>
                   </button>
                   <button onClick={handleCopyLink}
-                    className="flex items-center gap-3 p-4 rounded-2xl border border-divider hover:border-primary hover:bg-primary/5 transition-all group text-left">
-                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 group-hover:text-primary text-textMuted transition-all">
+                    className="flex items-center gap-3 p-4 rounded-2xl border border-white/10 hover:border-[#7B5CFA] hover:bg-[#7B5CFA]/5 transition-all group text-left">
+                    <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#7B5CFA]/10 group-hover:text-[#7B5CFA] text-[#8B95A5] transition-all">
                       {copied ? <Check size={18} className="text-emerald-500" /> : <Copy size={18} />}
                     </div>
                     <div>
-                      <p className="text-xs font-black text-textMain group-hover:text-primary leading-tight">{copied ? 'Copied!' : 'Copy Link'}</p>
-                      <p className="text-[9px] text-textMuted mt-0.5">Share anywhere</p>
+                      <p className="text-xs font-black text-white group-hover:text-[#7B5CFA] leading-tight">{copied ? 'Copied!' : 'Copy Link'}</p>
+                      <p className="text-[9px] text-[#8B95A5] mt-0.5">Share anywhere</p>
                     </div>
                   </button>
                 </div>

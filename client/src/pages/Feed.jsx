@@ -80,62 +80,8 @@ const Feed = () => {
   );
 
   return (
-    <div className="max-w-2xl mx-auto py-2">
-      {/* Route to Collabs (Desktop Only) */}
-      <div className="hidden md:block card mb-6 overflow-hidden border-none bg-white shadow-sm ring-1 ring-primary/5">
-        <div className="bg-primary/[0.03] p-4 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] font-black text-primary uppercase tracking-widest">Looking to hire?</p>
-            <p className="text-sm text-textMain font-medium mt-0.5">Post gigs and find talent in the Collabs Hub.</p>
-          </div>
-          <button 
-            onClick={() => navigate('/collabs/new')}
-            className="bg-white text-primary text-xs font-bold px-4 py-2 rounded-xl shadow-sm border border-divider hover:border-primary/50 transition-all flex items-center gap-2 group"
-          >
-            <Briefcase size={14} className="group-hover:scale-110 transition-transform" /> 
-            <span>Post Collab</span>
-            <ChevronRight size={14} />
-          </button>
-        </div>
-      </div>
+    <div className="w-full pb-8">
 
-      {/* Mobile Feed Tabs (TikTok/X Style) */}
-      <div className="flex border-b border-divider mb-4 sticky top-14 bg-background/80 backdrop-blur-xl z-40 md:hidden">
-        <button
-          onClick={() => setFeedMode('GLOBAL')}
-          className={`flex-1 py-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative ${feedMode === 'GLOBAL' ? 'text-primary' : 'text-textMuted'}`}
-        >
-          For You
-          {feedMode === 'GLOBAL' && (
-            <motion.div layoutId="feed-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
-          )}
-        </button>
-        <button
-          onClick={() => setFeedMode('NETWORK')}
-          className={`flex-1 py-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative ${feedMode === 'NETWORK' ? 'text-primary' : 'text-textMuted'}`}
-        >
-          Network
-          {feedMode === 'NETWORK' && (
-            <motion.div layoutId="feed-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
-          )}
-        </button>
-      </div>
-      
-      {/* Desktop Feed Toggle */}
-      <div className="hidden md:flex bg-white/40 backdrop-blur-xl p-1.5 rounded-2xl border border-divider mb-8 sticky top-2 z-40">
-        <button
-          onClick={() => setFeedMode('GLOBAL')}
-          className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${feedMode === 'GLOBAL' ? 'bg-white text-primary shadow-sm' : 'text-textMuted hover:text-textMain'}`}
-        >
-          For You
-        </button>
-        <button
-          onClick={() => setFeedMode('NETWORK')}
-          className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${feedMode === 'NETWORK' ? 'bg-white text-primary shadow-sm' : 'text-textMuted hover:text-textMain'}`}
-        >
-          My Network
-        </button>
-      </div>
 
       <div className="hidden md:block">
         <CreatePost onPostCreated={handlePostCreated} />
