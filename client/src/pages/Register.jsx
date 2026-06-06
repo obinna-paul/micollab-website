@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Lock, User, Loader2, AlertCircle, ChevronRight, ChevronLeft, Check, 
   Music, Film, Camera, PenTool, Mic2, Scissors, Palette, Smartphone, 
-  Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles
+  Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles, Target, Search
 } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 
@@ -87,6 +87,7 @@ const Register = () => {
   
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSpecializations, setSelectedSpecializations] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [accountDetails, setAccountDetails] = useState({
     username: '',
     email: '',
@@ -159,22 +160,73 @@ const Register = () => {
         </Link>
         
         <div className="max-w-xl">
-          <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-            Define Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Craft.</span>
-          </h2>
-          <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
-            Tell us what you do so we can tailor your multiverse experience and connect you with the right collaborators.
-          </p>
-          
-          <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
-            <div className="w-10 h-10 rounded-full bg-[#7B5CFA]/10 flex items-center justify-center">
-              <Sparkles size={20} className="text-[#A37BFF]" />
-            </div>
-            <div>
-              <p className="text-white text-sm font-bold">Personalized Feed</p>
-              <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Based on your selections</p>
-            </div>
-          </div>
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div key="m-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                  Define Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Craft.</span>
+                </h2>
+                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                  Tell us what you do so we can tailor your multiverse experience and connect you with the right collaborators.
+                </p>
+                
+                <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
+                  <div className="w-10 h-10 rounded-full bg-[#7B5CFA]/10 flex items-center justify-center">
+                    <Sparkles size={20} className="text-[#A37BFF]" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-bold">Personalized Feed</p>
+                    <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Based on your selections</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div key="m-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                  Refine Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Focus.</span>
+                </h2>
+                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                  Dive deeper into your expertise. This helps us suggest the perfect projects, briefs, and creative circles for you.
+                </p>
+                
+                <div className="flex flex-col gap-4 bg-[#181D2A] w-fit p-5 rounded-2xl border border-white/5 shadow-xl max-w-sm">
+                  <div className="flex items-center gap-3">
+                    <Target size={18} className="text-[#00B5D8]" />
+                    <p className="text-white text-sm font-bold">Match Accuracy</p>
+                  </div>
+                  <div className="w-full h-1.5 bg-[#0F131E] rounded-full overflow-hidden">
+                    <div className="w-1/2 h-full bg-gradient-to-r from-[#7B5CFA] to-[#00B5D8] rounded-full" />
+                  </div>
+                  <p className="text-[#8B95A5] text-[11px] font-medium leading-relaxed">
+                    Adding specific tags increases your visibility to the right collaborators.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {step >= 3 && (
+              <motion.div key="m-step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                  Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>
+                </h2>
+                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                  Set up your account details to finalize your profile and enter the Micollab ecosystem.
+                </p>
+                
+                <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
+                  <div className="w-10 h-10 rounded-full bg-[#10B981]/10 flex items-center justify-center">
+                    <Lock size={20} className="text-[#10B981]" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-bold">Secure Profile</p>
+                    <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Your data is safe with us</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -267,36 +319,64 @@ const Register = () => {
               <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                 <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
-                    <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
-                  <span>Step 2 of 3</span>
+                  <span>STEP 3 OF 4</span>
                 </div>
 
-                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
-                  <ArrowLeft size={14} /> Back to categories
+                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-4 flex items-center gap-1">
+                  <ArrowLeft size={14} /> Back
                 </button>
 
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-white mb-2">Select your specializations</h2>
-                  <p className="text-[#8B95A5] font-medium text-sm">Choose specific roles to help us tailor your experience.</p>
+                {selectedCategories.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedCategories.map(catId => {
+                      const cat = CATEGORIES.find(c => c.id === catId);
+                      const Icon = cat ? cat.icon : null;
+                      if (!cat) return null;
+                      return (
+                        <div key={cat.id} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7B5CFA]/10 border border-[#7B5CFA]/30 rounded-full">
+                          {Icon && <Icon size={12} className="text-[#A37BFF]" />}
+                          <span className="text-[#A37BFF] text-[10px] font-bold tracking-wide">{cat.label}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+
+                <div className="mb-6">
+                  <h2 className="text-2xl lg:text-3xl font-black text-white mb-2">What's your specialty?</h2>
+                  <p className="text-[#8B95A5] font-medium text-sm">Select tags that define your specific skills within your chosen categories.</p>
                 </div>
 
-                <div className="max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar border border-white/5 rounded-xl p-3 bg-[#0F131E]">
+                <div className="relative mb-6">
+                  <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" />
+                  <input 
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search skills (e.g., Mixing, Beatmaking)..."
+                    className="w-full bg-[#181D2A] border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white outline-none focus:border-[#7B5CFA]/50 transition font-medium placeholder-[#8B95A5] text-sm"
+                  />
+                </div>
+
+                <div className="max-h-[35vh] overflow-y-auto pr-2 custom-scrollbar">
                    {availableSpecializations.length === 0 ? (
-                     <p className="p-4 text-center text-[#8B95A5] text-sm font-bold">Please go back and select a category.</p>
+                     <p className="py-8 text-center text-[#8B95A5] text-sm font-bold">Please go back and select a category.</p>
                    ) : (
-                     <div className="flex flex-wrap gap-2 p-1">
-                       {availableSpecializations.map(spec => {
+                     <div className="flex flex-wrap gap-2.5 pb-4">
+                       {availableSpecializations.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase())).map(spec => {
                           const isSelected = selectedSpecializations.includes(spec);
                           return (
                             <button
                               key={spec}
                               onClick={() => handleSpecializationToggle(spec)}
-                              className={`px-4 py-2 rounded-full border text-xs font-bold transition-all ${
+                              className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all ${
                                 isSelected 
-                                  ? 'bg-[#7B5CFA] text-white border-[#7B5CFA] shadow-md shadow-[#7B5CFA]/20' 
+                                  ? 'bg-[#7B5CFA]/10 text-white border-[#7B5CFA] shadow-[0_0_10px_rgba(123,92,250,0.15)]' 
                                   : 'bg-[#181D2A] text-[#8B95A5] border-white/5 hover:border-white/20 hover:text-white'
                               }`}
                             >
@@ -311,7 +391,7 @@ const Register = () => {
                 <button 
                   onClick={() => setStep(3)}
                   disabled={selectedSpecializations.length === 0}
-                  className="w-full py-3.5 mt-6 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
                   Next Step <ChevronRight size={18} />
                 </button>
