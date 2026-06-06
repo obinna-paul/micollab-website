@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Mail, Lock, User, Loader2, AlertCircle, ChevronRight, Check, 
+  Mail, Lock, User, Loader2, AlertCircle, ChevronRight, ChevronLeft, Check, 
   Music, Film, Camera, PenTool, Mic2, Scissors, Palette, Smartphone, 
   Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff
 } from 'lucide-react';
@@ -141,202 +141,276 @@ const Register = () => {
     .filter((value, index, self) => self.indexOf(value) === index);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <Link to="/" className="flex items-center gap-2 mb-8">
-        <div className="w-10 h-10 bg-primary rounded flex items-center justify-center font-black text-white text-xl">M</div>
-        <h1 className="text-2xl font-black text-primary tracking-tighter">Micollab</h1>
-      </Link>
+    <div className="min-h-screen bg-[#0F131E] flex flex-col lg:flex-row relative overflow-hidden font-sans">
+      {/* Subtle Grid Background */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-40" 
+        style={{ 
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)', 
+          backgroundSize: '40px 40px' 
+        }} 
+      />
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-xl bg-surface p-8 rounded-2xl border border-divider shadow-xl"
-      >
-        <AnimatePresence mode="wait">
+      {/* Left Marketing Section */}
+      <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-20 relative z-10 min-h-[50vh] lg:min-h-screen">
+        <Link to="/" className="flex items-center gap-3 mb-16 lg:mb-24 w-fit group">
+          <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20 group-hover:bg-[#684CE0] transition-colors">M</div>
+          <h1 className="text-2xl font-black text-white tracking-tighter">Micollab</h1>
+        </Link>
+        
+        <div className="max-w-xl">
+          <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+            Enter the Creative <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Multiverse.</span>
+          </h2>
+          <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+            Connect, collaborate, and create with the world's most vibrant community of avant-garde professionals.
+          </p>
           
-          {/* STEP 1: CATEGORIES */}
-          {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-black text-textMain mb-2">What describes you best?</h2>
-                <p className="text-textMuted">Select one or more broad categories.</p>
-              </div>
+          <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-3 pr-6 rounded-2xl border border-white/5 shadow-xl">
+            <div className="flex -space-x-3">
+              <img src="https://ui-avatars.com/api/?name=Alice&background=7B5CFA&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
+              <img src="https://ui-avatars.com/api/?name=Bob&background=00B5D8&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
+              <img src="https://ui-avatars.com/api/?name=Charlie&background=10B981&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
+            </div>
+            <div>
+              <p className="text-white text-sm font-bold">Join 50k+ creators</p>
+              <p className="text-[#00B5D8] text-xs font-bold">Building the future</p>
+            </div>
+          </div>
+        </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                {CATEGORIES.map(category => {
-                  const Icon = category.icon;
-                  const isSelected = selectedCategories.includes(category.id);
-                  return (
-                    <button
-                      key={category.id}
-                      onClick={() => handleCategoryToggle(category.id)}
-                      className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left ${
-                        isSelected 
-                          ? 'border-primary bg-primary/5 text-primary' 
-                          : 'border-divider hover:border-primary/50 text-textMain'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon size={20} strokeWidth={isSelected ? 3 : 2} />
-                        <span className="font-bold text-sm leading-tight">{category.label}</span>
-                      </div>
-                      {isSelected && <Check size={18} className="text-primary" />}
-                    </button>
-                  );
-                })}
-              </div>
+        {/* Carousel indicator bottom */}
+        <div className="hidden lg:flex absolute bottom-12 left-1/2 -translate-x-1/2 bg-white rounded-full items-center px-4 py-2 gap-6 shadow-xl">
+          <button className="text-gray-400 hover:text-black transition"><ChevronLeft size={20} /></button>
+          <span className="text-black font-bold text-sm">1 / 16</span>
+          <button className="text-black hover:opacity-70 transition"><ChevronRight size={20} /></button>
+        </div>
+      </div>
 
-              <button 
-                onClick={() => setStep(2)}
-                disabled={selectedCategories.length === 0}
-                className="w-full py-3 mt-6 bg-primary hover:bg-primaryHover disabled:bg-divider disabled:text-textMuted text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-              >
-                Next Step <ChevronRight size={18} />
-              </button>
-              
-              <p className="text-center text-sm text-textMuted pt-4">
-                Already on Micollab? <Link to="/login" className="text-primary font-bold hover:underline">Sign in</Link>
-              </p>
-            </motion.div>
-          )}
-
-          {/* STEP 2: SPECIALIZATIONS */}
-          {step === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-              <button onClick={() => setStep(1)} className="text-xs font-bold text-primary hover:underline mb-6 flex items-center gap-1">
-                <ArrowLeft size={14} /> Back to categories
-              </button>
-
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-black text-textMain mb-2">Select your specializations</h2>
-                <p className="text-textMuted text-sm">Choose specific roles to help us tailor your experience.</p>
-              </div>
-
-              <div className="max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar border border-divider rounded-xl p-2 bg-gray-50">
-                 {availableSpecializations.length === 0 ? (
-                   <p className="p-4 text-center text-textMuted text-sm">Please go back and select a category.</p>
-                 ) : (
-                   <div className="flex flex-wrap gap-2 p-2">
-                     {availableSpecializations.map(spec => {
-                        const isSelected = selectedSpecializations.includes(spec);
-                        return (
-                          <button
-                            key={spec}
-                            onClick={() => handleSpecializationToggle(spec)}
-                            className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
-                              isSelected 
-                                ? 'bg-primary text-white border-primary shadow-md shadow-primary/20' 
-                                : 'bg-white text-textMuted border-divider hover:border-primary/50 hover:text-primary'
-                            }`}
-                          >
-                            {spec}
-                          </button>
-                        )
-                     })}
-                   </div>
-                 )}
-              </div>
-
-              <button 
-                onClick={() => setStep(3)}
-                disabled={selectedSpecializations.length === 0}
-                className="w-full py-3 mt-6 bg-primary hover:bg-primaryHover disabled:bg-divider disabled:text-textMuted text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-              >
-                Next Step <ChevronRight size={18} />
-              </button>
-            </motion.div>
-          )}
-
-          {/* STEP 3: ACCOUNT DETAILS */}
-          {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-              <button onClick={() => setStep(2)} className="text-xs font-bold text-primary hover:underline mb-6 flex items-center gap-1">
-                <ArrowLeft size={14} /> Back to specializations
-              </button>
-              
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-black text-textMain mb-2">Create your account</h2>
-                <p className="text-textMuted text-sm">You're almost there.</p>
-              </div>
-
-              {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 text-sm">
-                  <AlertCircle size={18} />
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-textMuted ml-1">Username</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
-                    <input 
-                      type="text" 
-                      required
-                      value={accountDetails.username}
-                      onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
-                      placeholder="creative_soul"
-                      className="w-full bg-background border border-divider rounded-xl py-2.5 pl-10 pr-4 text-textMain outline-none focus:border-primary transition"
-                    />
+      {/* Right Form Section */}
+      <div className="w-full lg:w-[45%] flex items-center justify-center p-4 lg:p-12 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="w-full max-w-xl bg-[#181D2A] p-8 md:p-10 rounded-[2rem] border border-white/5 relative overflow-hidden"
+          style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
+        >
+          {/* Top colored indicator line */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7B5CFA] to-[#4D38A0]" />
+          
+          <AnimatePresence mode="wait">
+            
+            {/* STEP 1: CATEGORIES */}
+            {step === 1 && (
+              <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                  <div className="flex gap-1.5 items-center">
+                    <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
+                  <span>Step 1 of 3</span>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-textMuted ml-1">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
-                    <input 
-                      type="email" 
-                      required
-                      value={accountDetails.email}
-                      onChange={(e) => setAccountDetails({...accountDetails, email: e.target.value})}
-                      placeholder="you@example.com"
-                      className="w-full bg-background border border-divider rounded-xl py-2.5 pl-10 pr-4 text-textMain outline-none focus:border-primary transition"
-                    />
-                  </div>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-black text-white mb-2">What describes you best?</h2>
+                  <p className="text-[#8B95A5] font-medium text-sm">Select one or more broad categories.</p>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-textMuted ml-1">Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-textMuted" size={18} />
-                    <input 
-                      type={showPassword ? "text" : "password"} 
-                      required
-                      value={accountDetails.password}
-                      onChange={(e) => setAccountDetails({...accountDetails, password: e.target.value})}
-                      placeholder="••••••••"
-                      className="w-full bg-background border border-divider rounded-xl py-2.5 pl-10 pr-12 text-textMain outline-none focus:border-primary transition"
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-textMuted hover:text-textMain transition"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar">
+                  {CATEGORIES.map(category => {
+                    const Icon = category.icon;
+                    const isSelected = selectedCategories.includes(category.id);
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => handleCategoryToggle(category.id)}
+                        className={`flex items-center justify-between p-4 rounded-xl border transition-all text-left ${
+                          isSelected 
+                            ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-white shadow-md shadow-[#7B5CFA]/10' 
+                            : 'border-white/5 bg-[#0F131E] hover:border-white/20 text-[#8B95A5] hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icon size={20} strokeWidth={isSelected ? 3 : 2} className={isSelected ? 'text-[#A37BFF]' : ''} />
+                          <span className="font-bold text-xs leading-tight">{category.label}</span>
+                        </div>
+                        {isSelected && <Check size={18} className="text-[#A37BFF]" />}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <button 
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-xl shadow-primary/20"
+                  onClick={() => setStep(2)}
+                  disabled={selectedCategories.length === 0}
+                  className="w-full py-3.5 mt-6 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
-                  {loading ? <Loader2 className="animate-spin" size={20} /> : 'Create Account'}
+                  Next Step <ChevronRight size={18} />
+                </button>
+                
+                <p className="text-center text-xs font-bold text-[#8B95A5] pt-6">
+                  Already on Micollab? <Link to="/login" className="text-[#00B5D8] hover:text-white transition">Sign in</Link>
+                </p>
+              </motion.div>
+            )}
+
+            {/* STEP 2: SPECIALIZATIONS */}
+            {step === 2 && (
+              <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                  <div className="flex gap-1.5 items-center">
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full" />
+                    <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                  </div>
+                  <span>Step 2 of 3</span>
+                </div>
+
+                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
+                  <ArrowLeft size={14} /> Back to categories
                 </button>
 
-                <p className="pt-2 text-center text-textMuted text-xs font-medium">
-                  Already have an account? {' '}
-                  <Link to="/login" className="text-primary font-bold hover:underline">Log in</Link>
-                </p>
-              </form>
-            </motion.div>
-          )}
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-black text-white mb-2">Select your specializations</h2>
+                  <p className="text-[#8B95A5] font-medium text-sm">Choose specific roles to help us tailor your experience.</p>
+                </div>
 
-        </AnimatePresence>
-      </motion.div>
+                <div className="max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar border border-white/5 rounded-xl p-3 bg-[#0F131E]">
+                   {availableSpecializations.length === 0 ? (
+                     <p className="p-4 text-center text-[#8B95A5] text-sm font-bold">Please go back and select a category.</p>
+                   ) : (
+                     <div className="flex flex-wrap gap-2 p-1">
+                       {availableSpecializations.map(spec => {
+                          const isSelected = selectedSpecializations.includes(spec);
+                          return (
+                            <button
+                              key={spec}
+                              onClick={() => handleSpecializationToggle(spec)}
+                              className={`px-4 py-2 rounded-full border text-xs font-bold transition-all ${
+                                isSelected 
+                                  ? 'bg-[#7B5CFA] text-white border-[#7B5CFA] shadow-md shadow-[#7B5CFA]/20' 
+                                  : 'bg-[#181D2A] text-[#8B95A5] border-white/5 hover:border-white/20 hover:text-white'
+                              }`}
+                            >
+                              {spec}
+                            </button>
+                          )
+                       })}
+                     </div>
+                   )}
+                </div>
+
+                <button 
+                  onClick={() => setStep(3)}
+                  disabled={selectedSpecializations.length === 0}
+                  className="w-full py-3.5 mt-6 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                >
+                  Next Step <ChevronRight size={18} />
+                </button>
+              </motion.div>
+            )}
+
+            {/* STEP 3: ACCOUNT DETAILS */}
+            {step === 3 && (
+              <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                  <div className="flex gap-1.5 items-center">
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full" />
+                    <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
+                  </div>
+                  <span>Step 3 of 3</span>
+                </div>
+
+                <button onClick={() => setStep(2)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
+                  <ArrowLeft size={14} /> Back to specializations
+                </button>
+                
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-black text-white mb-2">Create your account</h2>
+                  <p className="text-[#8B95A5] font-medium text-sm">You're almost there.</p>
+                </div>
+
+                {error && (
+                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-xs font-bold">
+                    <AlertCircle size={16} />
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleRegisterSubmit} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-white ml-1">Username</label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <input 
+                        type="text" 
+                        required
+                        value={accountDetails.username}
+                        onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
+                        placeholder="creative_soul"
+                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-white ml-1">Email Address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <input 
+                        type="email" 
+                        required
+                        value={accountDetails.email}
+                        onChange={(e) => setAccountDetails({...accountDetails, email: e.target.value})}
+                        placeholder="you@example.com"
+                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-white ml-1">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <input 
+                        type={showPassword ? "text" : "password"} 
+                        required
+                        value={accountDetails.password}
+                        onChange={(e) => setAccountDetails({...accountDetails, password: e.target.value})}
+                        placeholder="••••••••"
+                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-12 text-white outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B95A5] hover:text-white transition"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
+                  >
+                    {loading ? <Loader2 className="animate-spin" size={20} /> : 'Create Account'}
+                  </button>
+
+                  <p className="pt-4 text-center text-[#8B95A5] text-xs font-bold">
+                    Already have an account? {' '}
+                    <Link to="/login" className="text-[#00B5D8] hover:text-white transition">Log in</Link>
+                  </p>
+                </form>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+        </motion.div>
+      </div>
     </div>
   );
 };
