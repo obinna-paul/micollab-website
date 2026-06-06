@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Lock, User, Loader2, AlertCircle, ChevronRight, ChevronLeft, Check, 
   Music, Film, Camera, PenTool, Mic2, Scissors, Palette, Smartphone, 
-  Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles, Target, Search
+  Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles, Target, Search,
+  Layers, Tag, Handshake, Rocket, ArrowRight
 } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 
@@ -82,7 +83,7 @@ const CATEGORIES = [
 ];
 
 const Register = () => {
-  // Steps: 1: Categories, 2: Specializations, 3: Details, 4: OTP Verification
+  // Steps: 1: Details, 2: Categories, 3: Specializations, 4: Summary
   const [step, setStep] = useState(1); 
   
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -112,8 +113,7 @@ const Register = () => {
     );
   };
 
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
+  const handleRegisterSubmit = async () => {
     setLoading(true);
     setError('');
     
@@ -132,14 +132,15 @@ const Register = () => {
     setLoading(false);
   };
 
-
-
-  // Derived state for step 2
+  // Derived state for step 3
   const availableSpecializations = CATEGORIES
     .filter(c => selectedCategories.includes(c.id))
     .flatMap(c => c.specializations)
     // Remove duplicates if any exist across categories
     .filter((value, index, self) => self.indexOf(value) === index);
+
+  // Helper for step 4 UI
+  const primaryCategory = selectedCategories.length > 0 ? CATEGORIES.find(c => c.id === selectedCategories[0]) : null;
 
   return (
     <div className="min-h-screen bg-[#0F131E] flex flex-col lg:flex-row relative overflow-hidden font-sans">
@@ -164,6 +165,27 @@ const Register = () => {
             {step === 1 && (
               <motion.div key="m-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                  Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>
+                </h2>
+                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                  Set up your account details to finalize your profile and enter the Micollab ecosystem.
+                </p>
+                
+                <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
+                  <div className="w-10 h-10 rounded-full bg-[#10B981]/10 flex items-center justify-center">
+                    <Lock size={20} className="text-[#10B981]" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-bold">Secure Profile</p>
+                    <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Your data is safe with us</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div key="m-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
                   Define Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Craft.</span>
                 </h2>
                 <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
@@ -182,8 +204,8 @@ const Register = () => {
               </motion.div>
             )}
 
-            {step === 2 && (
-              <motion.div key="m-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+            {step === 3 && (
+              <motion.div key="m-step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
                   Refine Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Focus.</span>
                 </h2>
@@ -206,22 +228,38 @@ const Register = () => {
               </motion.div>
             )}
 
-            {step >= 3 && (
-              <motion.div key="m-step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+            {step === 4 && (
+              <motion.div key="m-step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-                  Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>
+                  You're <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">All Set.</span>
                 </h2>
                 <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
-                  Set up your account details to finalize your profile and enter the Micollab ecosystem.
+                  Your creative profile is primed. Get ready to connect, collaborate, and bring your visionary projects to life.
                 </p>
                 
-                <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
-                  <div className="w-10 h-10 rounded-full bg-[#10B981]/10 flex items-center justify-center">
-                    <Lock size={20} className="text-[#10B981]" />
+                <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-6 shadow-xl w-fit min-w-[300px]">
+                  <div className="flex items-center gap-4 mb-4">
+                    <img 
+                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(accountDetails.username || 'User')}&background=7B5CFA&color=fff`} 
+                      className="w-14 h-14 rounded-full border-2 border-[#181D2A] object-cover" 
+                      alt="Avatar" 
+                    />
+                    <div>
+                      <h3 className="text-white font-bold text-lg">{accountDetails.username || 'Creator'}</h3>
+                      <p className="text-[#00B5D8] text-sm font-bold">{selectedSpecializations[0] || (primaryCategory ? primaryCategory.label : 'Creative')}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-white text-sm font-bold">Secure Profile</p>
-                    <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Your data is safe with us</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSpecializations.slice(0, 3).map(spec => (
+                      <div key={spec} className="px-2.5 py-1 bg-[#7B5CFA]/20 rounded text-[#A37BFF] text-[10px] font-bold">
+                        {spec}
+                      </div>
+                    ))}
+                    {selectedSpecializations.length > 3 && (
+                      <div className="px-2.5 py-1 bg-white/5 rounded text-[#8B95A5] text-[10px] font-bold">
+                        +{selectedSpecializations.length - 3}
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -243,9 +281,95 @@ const Register = () => {
           
           <AnimatePresence mode="wait">
             
-            {/* STEP 1: CATEGORIES */}
+            {/* STEP 1: ACCOUNT DETAILS */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                  <div className="flex gap-1.5 items-center">
+                    <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                  </div>
+                  <span>Step 1 of 4</span>
+                </div>
+
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-black text-white mb-2">Create your account</h2>
+                  <p className="text-[#8B95A5] font-medium text-sm">Let's get started.</p>
+                </div>
+
+                <form onSubmit={(e) => { e.preventDefault(); setStep(2); }} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-white ml-1">Username</label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <input 
+                        type="text" 
+                        required
+                        value={accountDetails.username}
+                        onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
+                        placeholder="creative_soul"
+                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-white ml-1">Email Address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <input 
+                        type="email" 
+                        required
+                        value={accountDetails.email}
+                        onChange={(e) => setAccountDetails({...accountDetails, email: e.target.value})}
+                        placeholder="you@example.com"
+                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-white ml-1">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <input 
+                        type={showPassword ? "text" : "password"} 
+                        required
+                        value={accountDetails.password}
+                        onChange={(e) => setAccountDetails({...accountDetails, password: e.target.value})}
+                        placeholder="••••••••"
+                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-12 text-white outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B95A5] hover:text-white transition"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)]"
+                  >
+                    Next Step <ChevronRight size={18} />
+                  </button>
+
+                  <p className="pt-4 text-center text-[#8B95A5] text-xs font-bold">
+                    Already have an account? {' '}
+                    <Link to="/login" className="text-[#00B5D8] hover:text-white transition">Log in</Link>
+                  </p>
+                </form>
+              </motion.div>
+            )}
+
+            {/* STEP 2: CATEGORIES */}
+            {step === 2 && (
+              <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                 <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -253,15 +377,19 @@ const Register = () => {
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
-                  <span>STEP 2 OF 4</span>
+                  <span>Step 2 of 4</span>
                 </div>
 
+                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
+                  <ArrowLeft size={14} /> Back
+                </button>
+
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl lg:text-3xl font-black text-white mb-2">What describes you best?</h2>
+                  <h2 className="text-3xl font-black text-white mb-2">What describes you best?</h2>
                   <p className="text-[#8B95A5] font-medium text-sm">Select one or more broad categories.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                   {CATEGORIES.map(category => {
                     const Icon = category.icon;
                     const isSelected = selectedCategories.includes(category.id);
@@ -301,22 +429,18 @@ const Register = () => {
                 </div>
 
                 <button 
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   disabled={selectedCategories.length === 0}
-                  className="w-full py-3.5 mt-6 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
                   Next Step <ChevronRight size={18} />
                 </button>
-                
-                <p className="text-center text-xs font-bold text-[#8B95A5] pt-6">
-                  Already on Micollab? <Link to="/login" className="text-[#00B5D8] hover:text-white transition">Sign in</Link>
-                </p>
               </motion.div>
             )}
 
-            {/* STEP 2: SPECIALIZATIONS */}
-            {step === 2 && (
-              <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+            {/* STEP 3: SPECIALIZATIONS */}
+            {step === 3 && (
+              <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                 <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -327,7 +451,7 @@ const Register = () => {
                   <span>STEP 3 OF 4</span>
                 </div>
 
-                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-4 flex items-center gap-1">
+                <button onClick={() => setStep(2)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-4 flex items-center gap-1">
                   <ArrowLeft size={14} /> Back
                 </button>
 
@@ -389,7 +513,7 @@ const Register = () => {
                 </div>
 
                 <button 
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(4)}
                   disabled={selectedSpecializations.length === 0}
                   className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
@@ -398,25 +522,29 @@ const Register = () => {
               </motion.div>
             )}
 
-            {/* STEP 3: ACCOUNT DETAILS */}
-            {step === 3 && (
-              <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+            {/* STEP 4: SUMMARY & SUBMIT */}
+            {step === 4 && (
+              <motion.div key="step4" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                 <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
-                    <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full" />
-                    <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                   </div>
-                  <span>Step 3 of 3</span>
+                  <span>STEP 4 OF 4</span>
                 </div>
 
-                <button onClick={() => setStep(2)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
-                  <ArrowLeft size={14} /> Back to specializations
+                <button onClick={() => setStep(3)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
+                  <ArrowLeft size={14} /> Back
                 </button>
-                
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-white mb-2">Create your account</h2>
-                  <p className="text-[#8B95A5] font-medium text-sm">You're almost there.</p>
+
+                <div className="text-center mb-8 flex flex-col items-center">
+                  <div className="w-16 h-16 bg-[#7B5CFA] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(123,92,250,0.4)]">
+                    <Rocket size={32} className="text-white" />
+                  </div>
+                  <h2 className="text-2xl lg:text-3xl font-black text-white mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
+                  <p className="text-[#8B95A5] font-medium text-sm">Your workspace is ready. Discover briefs, connect with peers, and start creating.</p>
                 </div>
 
                 {error && (
@@ -426,72 +554,38 @@ const Register = () => {
                   </div>
                 )}
 
-                <form onSubmit={handleRegisterSubmit} className="space-y-5">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-white ml-1">Username</label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
-                      <input 
-                        type="text" 
-                        required
-                        value={accountDetails.username}
-                        onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
-                        placeholder="creative_soul"
-                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
-                      />
-                    </div>
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                    <Layers size={16} className="text-[#00B5D8] mb-2" />
+                    <p className="text-white text-xs font-bold mb-0.5">Category</p>
+                    <p className="text-[#8B95A5] text-[10px] truncate">{primaryCategory ? primaryCategory.label : 'None'}</p>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-white ml-1">Email Address</label>
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
-                      <input 
-                        type="email" 
-                        required
-                        value={accountDetails.email}
-                        onChange={(e) => setAccountDetails({...accountDetails, email: e.target.value})}
-                        placeholder="you@example.com"
-                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
-                      />
-                    </div>
+                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                    <Tag size={16} className="text-[#A37BFF] mb-2" />
+                    <p className="text-white text-xs font-bold mb-0.5">Specialties</p>
+                    <p className="text-[#8B95A5] text-[10px] truncate">{selectedSpecializations.slice(0,3).join(', ')}</p>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-white ml-1">Password</label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
-                      <input 
-                        type={showPassword ? "text" : "password"} 
-                        required
-                        value={accountDetails.password}
-                        onChange={(e) => setAccountDetails({...accountDetails, password: e.target.value})}
-                        placeholder="••••••••"
-                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-12 text-white outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
-                      />
-                      <button 
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B95A5] hover:text-white transition"
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
+                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                    <User size={16} className="text-[#EC4899] mb-2" />
+                    <p className="text-white text-xs font-bold mb-0.5">Role</p>
+                    <p className="text-[#8B95A5] text-[10px] truncate">{selectedSpecializations[0] || 'Creator'}</p>
                   </div>
+                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                    <Handshake size={16} className="text-[#10B981] mb-2" />
+                    <p className="text-white text-xs font-bold mb-0.5">Open To</p>
+                    <p className="text-[#8B95A5] text-[10px] truncate">Remote Collabs</p>
+                  </div>
+                </div>
 
-                  <button 
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
-                  >
-                    {loading ? <Loader2 className="animate-spin" size={20} /> : 'Create Account'}
-                  </button>
-
-                  <p className="pt-4 text-center text-[#8B95A5] text-xs font-bold">
-                    Already have an account? {' '}
-                    <Link to="/login" className="text-[#00B5D8] hover:text-white transition">Log in</Link>
-                  </p>
-                </form>
+                <button 
+                  onClick={handleRegisterSubmit}
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="animate-spin" size={20} /> : (
+                    <>Enter Micollab <ArrowRight size={18} /></>
+                  )}
+                </button>
               </motion.div>
             )}
 
