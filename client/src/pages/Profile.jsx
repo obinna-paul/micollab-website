@@ -4,7 +4,7 @@ import {
   MapPin, Link as LinkIcon, Calendar, Users, 
   Briefcase, CheckCircle, Star, MessageSquare, 
   UserPlus, Share2, Grid, Info, Clock, ExternalLink,
-  Camera, X, Plus
+  Camera, X, Plus, ChevronLeft, ChevronRight, Layers, List
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -168,20 +168,19 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="flex-1 pt-4 pb-4 w-full flex flex-col">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+          <div className="flex-1 pt-4 pb-4 w-full flex flex-col justify-center">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="text-center md:text-left">
                 <div className="flex flex-col md:flex-row md:items-center gap-3 mb-1">
                   <h1 className="text-3xl font-black text-white tracking-tight">{profile.displayName || profile.username}</h1>
                   <div className="flex items-center justify-center md:justify-start gap-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-[#7B5CFA]/10 text-[#7B5CFA] px-3 py-1 rounded-full border border-[#7B5CFA]/20">{profile.profileType}</span>
-                    <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full border border-emerald-500/20">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                      <span className="text-[10px] font-black uppercase tracking-wider">{profile.availabilityStatus || 'Available'}</span>
-                    </div>
+                    {/* Verified icon is on avatar */}
                   </div>
                 </div>
-                <p className="text-[#8B95A5] font-bold text-sm">@{profile.username}</p>
+                <div className="flex items-center gap-2 text-[#8B95A5] font-bold text-sm mt-1 justify-center md:justify-start">
+                  <Briefcase size={14} className="text-[#7B5CFA]" />
+                  <span>{profile.profileType || 'Sound Designer & Producer'}</span>
+                </div>
               </div>
 
               <div className="flex items-center justify-center md:justify-start gap-3">
@@ -191,25 +190,14 @@ const Profile = () => {
                   </button>
                 ) : (
                   <>
-                    <button className="px-6 py-3 bg-[#7B5CFA] text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2"><UserPlus size={16} />Connect</button>
-                    <button className="p-3 bg-[#181D2A] border border-white/10 text-white rounded-2xl hover:bg-white/5 transition shadow-sm"><MessageSquare size={20} /></button>
+                    <button className="px-6 py-2.5 bg-[#181D2A] border border-white/10 text-white font-black text-xs rounded-xl hover:bg-white/5 transition shadow-sm flex items-center gap-2">
+                      <MessageSquare size={16} /> Message
+                    </button>
+                    <button className="px-6 py-2.5 bg-[#7B5CFA] text-white font-black text-xs rounded-xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2">
+                      <Plus size={16} /> Follow
+                    </button>
                   </>
                 )}
-              </div>
-            </div>
-
-            <div className="flex justify-around md:justify-start items-center gap-4 md:gap-6 mt-4 md:mt-6 pt-4 md:pt-6 border-t border-white/5 order-first md:order-none mb-6 md:mb-0">
-              <div className="text-center md:text-left">
-                <p className="text-lg font-black text-white">{profile.connectionsCount || 0}</p>
-                <p className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest">Connections</p>
-              </div>
-              <div className="border-l border-white/5 pl-4 md:pl-6 text-center md:text-left">
-                <p className="text-lg font-black text-white">{profile.reputationScore || 0}</p>
-                <p className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest">Reputation</p>
-              </div>
-              <div className="border-l border-white/5 pl-4 md:pl-6 text-center md:text-left">
-                <p className="text-lg font-black text-white">{profile.completionRate || 100}%</p>
-                <p className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest">Success Rate</p>
               </div>
             </div>
           </div>
@@ -217,132 +205,247 @@ const Profile = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-12 gap-8 px-6 md:px-12">
-        <aside className="col-span-12 lg:col-span-4 space-y-6">
-          <div className="bg-[#181D2A] border border-white/5 rounded-3xl p-6 shadow-sm">
-            <h3 className="text-xs font-black text-[#8B95A5] uppercase tracking-widest mb-4">About Creator</h3>
-            <p className="text-sm text-white leading-relaxed mb-6 font-medium">{profile.bio}</p>
-            <div className="space-y-4 pt-4 border-t border-white/5">
-              <div className="flex items-center gap-3 text-[#8B95A5]">
-                <MapPin size={18} className="text-[#7B5CFA]" /><span className="text-xs font-bold text-white">{profile.location || 'Global'}</span>
-              </div>
-              <div className="flex items-center gap-3 text-[#8B95A5]">
-                <Calendar size={18} className="text-[#7B5CFA]" /><span className="text-xs font-bold text-white">Joined {new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-              </div>
-              {profile.website && (
-                <div className="flex items-center gap-3 text-[#8B95A5]">
-                  <LinkIcon size={18} className="text-[#7B5CFA]" />
-                  <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-white hover:text-[#7B5CFA] transition">{profile.website.replace(/^https?:\/\//, '')}</a>
-                </div>
-              )}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 px-6 md:px-12">
+        {/* Left Column (3) */}
+        <aside className="col-span-1 md:col-span-3 space-y-6">
+          <div className="bg-[#181D2A] border border-white/5 rounded-3xl p-6 shadow-sm flex flex-col h-full">
+            <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4">Your Tags</h4>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {(profile.skills ? profile.skills.split(',') : ['MusicProduction', 'EDM', 'Ableton', 'SoundDesign']).map(skill => (
+                <span key={skill} className="px-3 py-1.5 bg-[#0F131E] border border-white/5 rounded-lg text-[10px] font-black text-[#8B95A5] hover:text-white transition cursor-pointer">
+                  #{skill.trim().replace(/\s+/g, '')}
+                </span>
+              ))}
             </div>
-            <div className="mt-8">
-              <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-3">Top Skills</h4>
-              <div className="flex flex-wrap gap-2">
-                {profile.skills?.split(',').map(skill => (
-                  <span key={skill} className="px-3 py-1 bg-[#0F131E] border border-white/5 rounded-full text-[10px] font-black uppercase text-[#8B95A5] hover:text-white transition cursor-pointer">{skill.trim()}</span>
-                ))}
+            
+            <p className="text-sm text-white leading-relaxed font-medium mb-8">
+              {profile.bio || "Crafting immersive auditory experiences for games, films, and interactive media. Obsessed with granular synthesis and analog warmth. Currently open for freelance collaborations."}
+            </p>
+            
+            <div className="flex justify-between items-center mt-auto pt-4 border-t border-white/5">
+              <div className="text-center">
+                <p className="text-lg font-black text-white">{profile.portfolioItems?.length || 42}</p>
+                <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Projects</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-black text-white">12.5k</p>
+                <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Followers</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-black text-white">18</p>
+                <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Collabs</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#181D2A] border border-white/5 rounded-3xl p-6 shadow-sm">
+            <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4">Specializations</h4>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1.5 bg-[#7B5CFA]/20 text-[#7B5CFA] rounded-lg text-[10px] font-black">Sound Design</span>
+              <span className="px-3 py-1.5 bg-[#00D4FF]/10 text-[#00D4FF] rounded-lg text-[10px] font-black">Foley</span>
+              <span className="px-3 py-1.5 bg-[#FF2E93]/20 text-[#FF2E93] rounded-lg text-[10px] font-black">Mixing & Mastering</span>
+              <span className="px-3 py-1.5 bg-[#FF8A00]/20 text-[#FF8A00] rounded-lg text-[10px] font-black">Game Audio</span>
+              <span className="px-3 py-1.5 bg-[#0F131E] text-[#8B95A5] border border-white/5 rounded-lg text-[10px] font-black">Ableton Live</span>
+              <span className="px-3 py-1.5 bg-[#0F131E] text-[#8B95A5] border border-white/5 rounded-lg text-[10px] font-black">Wwise</span>
+            </div>
+          </div>
+
+          <div className="bg-[#181D2A] border border-white/5 rounded-3xl p-6 shadow-sm">
+            <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4">Top Endorsements</h4>
+            <div className="space-y-6">
+              <div className="flex gap-3">
+                <img src="https://ui-avatars.com/api/?name=Elena+Rostova" className="w-10 h-10 rounded-full object-cover" />
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm font-black text-white">Elena Rostova</p>
+                    <span className="text-[8px] bg-[#00D4FF]/10 text-[#00D4FF] px-2 py-0.5 rounded uppercase font-black">Collab Partner</span>
+                  </div>
+                  <p className="text-xs text-[#8B95A5] leading-relaxed italic">"Alex brought our sci-fi short to life. The attention to detail in the ambient soundscapes was mind-blowing."</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <img src="https://ui-avatars.com/api/?name=Marcus+Chen" className="w-10 h-10 rounded-full object-cover" />
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm font-black text-white">Marcus Chen</p>
+                    <span className="text-[8px] bg-[#FF2E93]/10 text-[#FF2E93] px-2 py-0.5 rounded uppercase font-black">Director</span>
+                  </div>
+                  <p className="text-xs text-[#8B95A5] leading-relaxed italic">"Incredible turnaround time and perfectly nailed the cyberpunk aesthetic we needed."</p>
+                </div>
               </div>
             </div>
           </div>
         </aside>
 
-        <div className="col-span-12 lg:col-span-8 space-y-6">
-          <div className="flex border-b border-white/5 sticky top-0 bg-[#0F131E]/90 backdrop-blur-md z-20">
-            {TABS.map(tab => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-6 py-4 text-xs font-black uppercase tracking-widest transition-all relative ${activeTab === tab.id ? 'text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}>
-                <tab.icon size={16} />{tab.label}
-                {activeTab === tab.id && <motion.div layoutId="profile-tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7B5CFA]" />}
-              </button>
-            ))}
+        {/* Middle Column (6) */}
+        <div className="col-span-1 md:col-span-6 space-y-8">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-black text-white tracking-tight flex items-center gap-2"><Star size={16} className="text-[#FF8A00]" /> Pinned Deck</h3>
+              <button className="text-[10px] text-[#8B95A5] hover:text-white font-black uppercase tracking-widest">View All</button>
+            </div>
+            
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
+              {profile.portfolioItems?.filter(p => p.featured).slice(0, 2).map((project, idx) => (
+                <div 
+                  key={project.id}
+                  onClick={() => { setSelectedProject(project); setIsProjectDetailOpen(true); }}
+                  className="min-w-[280px] sm:min-w-[320px] group relative aspect-video bg-[#181D2A] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg snap-center cursor-pointer flex-shrink-0"
+                >
+                  <div className="absolute inset-0 bg-[#0F131E] overflow-hidden">
+                    <img src={project.media[0]?.url || (idx === 0 ? "https://images.unsplash.com/photo-1511379938547-c1f69419868d" : "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04")} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" alt={project.title} />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                    <div className="mb-2">
+                      <span className="px-3 py-1 bg-[#7B5CFA] text-white text-[8px] font-black uppercase tracking-tighter rounded-full shadow-lg shadow-[#7B5CFA]/30">Featured Project</span>
+                    </div>
+                    <h4 className="text-xl font-black text-white mb-1 tracking-tight">{project.title}</h4>
+                    <p className="text-[#8B95A5] text-xs font-medium line-clamp-1">{project.description}</p>
+                  </div>
+                </div>
+              ))}
+              {(!profile.portfolioItems || profile.portfolioItems.filter(p => p.featured).length === 0) && (
+                 <>
+                   <div className="min-w-[280px] sm:min-w-[320px] group relative aspect-video bg-[#181D2A] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg snap-center cursor-pointer flex-shrink-0">
+                     <div className="absolute inset-0 bg-[#0F131E] overflow-hidden">
+                       <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d" className="w-full h-full object-cover opacity-90" />
+                     </div>
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                       <span className="px-3 py-1 bg-[#7B5CFA] text-white text-[8px] font-black uppercase tracking-tighter rounded-full w-max mb-2">Featured Project</span>
+                       <h4 className="text-xl font-black text-white mb-1">Neon Shadows OST</h4>
+                       <p className="text-[#8B95A5] text-xs font-medium line-clamp-1">Full original score and sound design...</p>
+                     </div>
+                   </div>
+                   <div className="min-w-[280px] sm:min-w-[320px] group relative aspect-video bg-[#181D2A] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg snap-center cursor-pointer flex-shrink-0">
+                     <div className="absolute inset-0 bg-[#0F131E] overflow-hidden">
+                       <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04" className="w-full h-full object-cover opacity-90" />
+                     </div>
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                       <h4 className="text-xl font-black text-white mb-1">Analog Synth Pack Vol 1</h4>
+                       <p className="text-[#8B95A5] text-xs font-medium line-clamp-1">100+ royalty-free patches for Serum...</p>
+                     </div>
+                   </div>
+                 </>
+              )}
+            </div>
+            
+            <div className="flex justify-center mt-2">
+              <div className="bg-white text-black font-black text-sm px-6 py-2 rounded-full flex items-center gap-4 shadow-lg cursor-pointer">
+                <ChevronLeft size={16} />
+                <span>10 / 16</span>
+                <ChevronRight size={16} />
+              </div>
+            </div>
           </div>
 
-          <div className="py-4">
-            <AnimatePresence mode="wait">
-              {activeTab === 'PORTFOLIO' && (
-                <motion.div key="portfolio" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white tracking-tight">Showcase</h3>
-                    {isOwner && (
-                      <button onClick={() => setIsAddProjectOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-[#7B5CFA]/10 text-[#7B5CFA] text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#7B5CFA]/20 transition border border-[#7B5CFA]/20">
-                        <Plus size={14} /> Add Project
-                      </button>
-                    )}
-                  </div>
-                  
-                  {/* Featured Project Hero */}
-                  {profile.portfolioItems?.some(p => p.featured) && (
-                    <div className="space-y-4">
-                      <h4 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest">Featured Spotlight</h4>
-                      {profile.portfolioItems.filter(p => p.featured).slice(0, 1).map(project => (
-                        <div 
-                          key={project.id}
-                          onClick={() => { setSelectedProject(project); setIsProjectDetailOpen(true); }}
-                          className="group relative aspect-[21/9] bg-[#181D2A] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl hover:shadow-[0_0_30px_rgba(123,92,250,0.15)] transition-all duration-700 cursor-pointer"
-                        >
-                          <div className="absolute inset-0 bg-[#0F131E] overflow-hidden">
-                            <img src={project.media[0]?.url || "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-90 group-hover:opacity-100" alt={project.title} />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-8 flex flex-col justify-end">
-                            <div className="flex items-center gap-2 mb-3">
-                              <span className="px-3 py-1 bg-[#7B5CFA] text-white text-[9px] font-black uppercase tracking-tighter rounded-full shadow-lg shadow-[#7B5CFA]/30">Featured</span>
-                              <span className="px-3 py-1 bg-white/10 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-tighter rounded-full border border-white/20">{project.category}</span>
-                            </div>
-                            <h4 className="text-3xl font-black text-white mb-2 tracking-tight group-hover:text-[#7B5CFA] transition-colors">{project.title}</h4>
-                            <p className="text-white/70 text-sm max-w-xl font-medium mb-4 line-clamp-2">{project.description}</p>
-                            <div className="flex items-center gap-4">
-                              <div className="flex items-center gap-2 text-[#8B95A5] text-[10px] font-black uppercase tracking-widest">
-                                <Users size={12} /> {project.credits?.length || 0} Collaborators
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+          <div className="space-y-4 pt-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-black text-white tracking-tight flex items-center gap-2"><Layers size={16} className="text-[#7B5CFA]" /> Portfolio</h3>
+              <div className="flex items-center gap-2">
+                <button className="p-2 bg-[#181D2A] border border-white/5 rounded-lg text-white"><List size={14} /></button>
+                <button className="p-2 bg-transparent text-[#8B95A5] hover:text-white"><Grid size={14} /></button>
+              </div>
+            </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                    {profile.portfolioItems?.length > 0 ? (
-                      profile.portfolioItems.filter(p => !p.featured || profile.portfolioItems.filter(f => f.featured).indexOf(p) > 0).map((item) => (
-                        <div 
-                          key={item.id} 
-                          onClick={() => { setSelectedProject(item); setIsProjectDetailOpen(true); }}
-                          className="group relative aspect-video bg-[#181D2A] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-sm hover:shadow-[0_0_25px_rgba(123,92,250,0.1)] transition-all duration-500 cursor-pointer"
-                        >
-                          <div className="absolute inset-0 bg-[#0F131E] overflow-hidden">
-                            <img src={item.media[0]?.url || "https://images.unsplash.com/photo-1536440136628-849c177e76a1"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" alt={item.title} />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
-                            <div className="flex items-center gap-2 mb-2">
-                               <span className="px-2 py-0.5 bg-white/20 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-tighter rounded-full border border-white/20">{item.category}</span>
-                               <span className="px-2 py-0.5 bg-[#7B5CFA]/20 backdrop-blur-md text-[#7B5CFA] text-[8px] font-black uppercase tracking-tighter rounded-full border border-[#7B5CFA]/20">{item.projectType}</span>
-                            </div>
-                            <h4 className="text-lg font-black text-white group-hover:text-[#7B5CFA] transition-colors">{item.title}</h4>
-                            <div className="flex items-center gap-4 mt-3">
-                              <div className="flex items-center gap-1 text-[#8B95A5] text-[10px] font-bold"><Star size={12} className="text-[#7B5CFA]" fill="currentColor" /> {item.viewCount || 0}</div>
-                              <div className="flex items-center gap-1 text-[#8B95A5] text-[10px] font-bold"><Users size={12} /> {item.credits?.length || 0}</div>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="col-span-1 md:col-span-2 py-24 flex flex-col items-center justify-center border-4 border-dashed border-white/5 rounded-[3rem] bg-[#181D2A]/30">
-                        <Grid size={56} className="text-[#8B95A5] mb-6 opacity-30" />
-                        <h4 className="text-xl font-black text-white tracking-tight">Showcase your brilliance</h4>
-                        <p className="text-sm text-[#8B95A5] mt-1">Upload your best work to get noticed by recruiters.</p>
-                        {isOwner && (
-                          <button onClick={() => setIsAddProjectOpen(true)} className="mt-8 px-8 py-3 bg-[#7B5CFA] text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)]">
-                            Upload First Project
-                          </button>
-                        )}
-                      </div>
-                    )}
+            <div className="space-y-4">
+              {profile.portfolioItems?.filter(p => !p.featured).slice(0, 2).map((item, idx) => (
+                <div 
+                  key={item.id} 
+                  onClick={() => { setSelectedProject(item); setIsProjectDetailOpen(true); }}
+                  className="bg-[#181D2A] border border-white/5 rounded-[2rem] p-4 flex flex-col sm:flex-row gap-6 cursor-pointer hover:bg-white/5 transition"
+                >
+                  <div className="flex gap-2">
+                    <img src={item.media[0]?.url || "https://images.unsplash.com/photo-1550745165-9bc0b252726f"} className="w-24 h-24 object-cover rounded-2xl" />
+                    <img src={item.media[1]?.url || "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04"} className="w-24 h-24 object-cover rounded-2xl" />
+                    <div className="w-24 h-24 bg-[#0F131E] rounded-2xl flex items-center justify-center border border-white/5">
+                      <span className="text-white font-black text-sm">+4</span>
+                    </div>
                   </div>
-                </motion.div>
+                  <div className="flex-1 py-2">
+                    <h4 className="text-lg font-black text-white mb-2">{item.title}</h4>
+                    <p className="text-sm text-[#8B95A5] font-medium line-clamp-2 mb-4">{item.description}</p>
+                    <div className="flex items-center gap-4 text-[#8B95A5] text-xs font-bold">
+                      <span className="flex items-center gap-1">♡ {item.viewCount || 124}</span>
+                      <span className="flex items-center gap-1"><MessageSquare size={14} /> 12</span>
+                      <span>{item.category || 'Game Audio'}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {(!profile.portfolioItems || profile.portfolioItems.filter(p => !p.featured).length === 0) && (
+                <>
+                  <div className="bg-[#181D2A] border border-white/5 rounded-[2rem] p-4 flex flex-col sm:flex-row gap-6 cursor-pointer hover:bg-white/5 transition">
+                    <div className="flex gap-2">
+                      <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f" className="w-24 h-24 object-cover rounded-2xl" />
+                      <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04" className="w-24 h-24 object-cover rounded-2xl" />
+                      <div className="w-24 h-24 bg-[#0F131E] rounded-2xl flex items-center justify-center border border-white/5">
+                        <span className="text-white font-black text-sm">+4</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 py-2">
+                      <h4 className="text-lg font-black text-white mb-2">Cyberpunk Game Audio Assets</h4>
+                      <p className="text-sm text-[#8B95A5] font-medium line-clamp-2 mb-4">Complete UI and environmental sound package for an upcoming indie RPG.</p>
+                      <div className="flex items-center gap-4 text-[#8B95A5] text-xs font-bold">
+                        <span className="flex items-center gap-1">♡ 124</span>
+                        <span className="flex items-center gap-1"><MessageSquare size={14} /> 12</span>
+                        <span>Game Audio</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-[#181D2A] border border-white/5 rounded-[2rem] p-4 flex flex-col sm:flex-row gap-6 cursor-pointer hover:bg-white/5 transition">
+                    <div className="flex gap-2">
+                      <img src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41" className="w-48 h-24 object-cover rounded-2xl" />
+                    </div>
+                    <div className="flex-1 py-2">
+                      <h4 className="text-lg font-black text-white mb-2">"Ethereal" - Short Film Score</h4>
+                      <p className="text-sm text-[#8B95A5] font-medium line-clamp-2 mb-4">Orchestral arrangement mixed with heavy electronic elements.</p>
+                      <div className="flex items-center gap-4 text-[#8B95A5] text-xs font-bold">
+                        <span className="flex items-center gap-1">♡ 89</span>
+                        <span className="flex items-center gap-1"><MessageSquare size={14} /> 5</span>
+                        <span>Film Score</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
               )}
-            </AnimatePresence>
+            </div>
           </div>
         </div>
+
+        {/* Right Column (3) */}
+        <aside className="col-span-1 md:col-span-3 space-y-6">
+          <div className="bg-[#00D4FF]/5 border border-[#00D4FF]/20 rounded-3xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#00D4FF]/10 blur-2xl rounded-full" />
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-[#00D4FF] animate-pulse" />
+              <h4 className="text-xs font-black text-[#00D4FF] uppercase tracking-widest">Open for Collaboration</h4>
+            </div>
+            <p className="text-xs text-[#8B95A5] leading-relaxed">
+              Currently accepting new projects for Q3. Special rates for indie game devs.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-[10px] font-black text-white uppercase tracking-widest mb-4 flex items-center gap-2"><LinkIcon size={12} className="text-[#7B5CFA]" /> Mutual Connections</h4>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Sarah+Jenkins" className="w-10 h-10 rounded-full object-cover" />
+                <div>
+                  <p className="text-sm font-black text-white">Sarah Jenkins</p>
+                  <p className="text-[10px] text-[#8B95A5] font-bold">3D Animator</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=David+Kim" className="w-10 h-10 rounded-full object-cover" />
+                <div>
+                  <p className="text-sm font-black text-white">David Kim</p>
+                  <p className="text-[10px] text-[#8B95A5] font-bold">UI/UX Designer</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
 
       {/* Modals */}
