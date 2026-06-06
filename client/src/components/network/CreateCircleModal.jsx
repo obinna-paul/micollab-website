@@ -90,7 +90,7 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: '100%', opacity: 0 }}
         transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-        className="bg-white w-full md:max-w-2xl md:rounded-[3rem] rounded-t-3xl shadow-2xl relative z-10 max-h-[92svh] flex flex-col"
+        className="bg-[#0F131E] w-full md:max-w-2xl md:rounded-[3rem] rounded-t-3xl shadow-2xl relative z-10 max-h-[92svh] flex flex-col"
       >
         {/* Drag handle (mobile only) */}
         <div className="md:hidden flex justify-center pt-3 pb-1">
@@ -98,12 +98,12 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {/* Header */}
-        <div className="px-5 py-4 md:p-8 border-b border-divider flex justify-between items-center bg-gray-50/50 flex-shrink-0">
+        <div className="px-5 py-4 md:p-8 border-b border-[#0F131E]/5 flex justify-between items-center bg-[#181D2A]/50 flex-shrink-0">
           <div>
-            <h2 className="text-xl md:text-3xl font-black text-textMain tracking-tighter">Launch a Circle</h2>
-            <p className="text-xs text-textMuted font-medium">Step {step} of 2</p>
+            <h2 className="text-xl md:text-3xl font-black text-white tracking-tighter">Launch a Circle</h2>
+            <p className="text-xs text-[#8B95A5] font-medium">Step {step} of 2</p>
           </div>
-          <button onClick={onClose} className="p-2 md:p-3 hover:bg-white rounded-xl border border-divider transition-all">
+          <button onClick={onClose} className="p-2 md:p-3 hover:bg-[#0F131E] rounded-xl border border-[#0F131E]/5 transition-all">
             <X size={18} />
           </button>
         </div>
@@ -113,22 +113,22 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
           {step === 1 ? (
             <div className="space-y-5 md:space-y-8">
                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase text-textMuted tracking-widest ml-1">Circle Title</label>
+                  <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest ml-1">Circle Title</label>
                   <input 
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     placeholder="e.g. Creative Collective 2024"
-                    className="w-full bg-gray-50 border border-divider rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-primary outline-none transition-all"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-[#7B5CFA] outline-none transition-all"
                   />
                </div>
 
                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase text-textMuted tracking-widest ml-1">Category</label>
+                  <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest ml-1">Category</label>
                   <select 
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full bg-gray-50 border border-divider rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-primary outline-none transition-all"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-[#7B5CFA] outline-none transition-all"
                   >
                     {["Music & Audio", "Film, TV, Video", "Photography", "Design", "Acting"].map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -137,34 +137,34 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
                </div>
 
                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase text-textMuted tracking-widest ml-1">Project Vision</label>
+                  <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest ml-1">Project Vision</label>
                   <textarea 
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     placeholder="Describe the goal of this circle..."
                     rows={3}
-                    className="w-full bg-gray-50 border border-divider rounded-2xl py-3.5 px-4 text-sm font-medium focus:border-primary outline-none transition-all resize-none"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl py-3.5 px-4 text-sm font-medium focus:border-[#7B5CFA] outline-none transition-all resize-none"
                   />
                </div>
 
                <div className="grid grid-cols-2 gap-3 md:gap-6">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase text-textMuted tracking-widest ml-1">Duration</label>
+                    <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest ml-1">Duration</label>
                     <input 
                       type="text"
                       value={formData.duration}
                       onChange={(e) => setFormData({...formData, duration: e.target.value})}
                       placeholder="e.g. 3 Months"
-                      className="w-full bg-gray-50 border border-divider rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-primary outline-none transition-all"
+                      className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-[#7B5CFA] outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase text-textMuted tracking-widest ml-1">Start Date</label>
+                    <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest ml-1">Start Date</label>
                     <input 
                       type="date"
                       value={formData.startDate}
                       onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                      className="w-full bg-gray-50 border border-divider rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-primary outline-none transition-all"
+                      className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl py-3.5 px-4 text-sm font-bold focus:border-[#7B5CFA] outline-none transition-all"
                     />
                   </div>
                </div>
@@ -172,35 +172,35 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
           ) : (
             <div className="space-y-4">
                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
+                  <div className="p-2.5 bg-[#7B5CFA]/10 text-[#7B5CFA] rounded-xl">
                      <Users size={20} />
                   </div>
                   <div>
-                     <h3 className="text-base font-black text-textMain tracking-tight">Recruit from Network</h3>
-                     <p className="text-xs text-textMuted font-medium">Select teammates to invite.</p>
+                     <h3 className="text-base font-black text-white tracking-tight">Recruit from Network</h3>
+                     <p className="text-xs text-[#8B95A5] font-medium">Select teammates to invite.</p>
                   </div>
                </div>
 
                <div className="space-y-2.5">
                   {connections.length === 0 && (
                     <div className="text-center py-8">
-                       <p className="text-textMuted text-sm font-medium">No connections yet. Connect with people first.</p>
+                       <p className="text-[#8B95A5] text-sm font-medium">No connections yet. Connect with people first.</p>
                     </div>
                   )}
                   {connections.map(user => (
                     <div 
                       key={user.id}
                       onClick={() => toggleInvite(user.id)}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between ${formData.initialInvites.includes(user.id) ? 'border-primary bg-primary/5' : 'border-divider'}`}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between ${formData.initialInvites.includes(user.id) ? 'border-[#7B5CFA] bg-[#7B5CFA]/5' : 'border-[#0F131E]/5'}`}
                     >
                        <div className="flex items-center gap-3">
                           <img src={user.profileImage || `https://ui-avatars.com/api/?name=${user.username}`} className="w-9 h-9 rounded-xl object-cover" />
                           <div>
-                             <p className="font-black text-textMain text-sm">{user.username}</p>
-                             <p className="text-[9px] font-black text-primary uppercase tracking-widest">{user.profileType}</p>
+                             <p className="font-black text-white text-sm">{user.username}</p>
+                             <p className="text-[9px] font-black text-[#7B5CFA] uppercase tracking-widest">{user.profileType}</p>
                           </div>
                        </div>
-                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${formData.initialInvites.includes(user.id) ? 'bg-primary border-primary text-white' : 'border-divider'}`}>
+                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${formData.initialInvites.includes(user.id) ? 'bg-[#7B5CFA] border-[#7B5CFA] text-white' : 'border-[#0F131E]/5'}`}>
                           {formData.initialInvites.includes(user.id) && <Check size={12} />}
                        </div>
                     </div>
@@ -211,10 +211,10 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {/* Footer — always pinned at bottom */}
-        <div className="px-5 py-4 md:p-8 bg-white border-t border-divider flex justify-between items-center flex-shrink-0 safe-area-bottom shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+        <div className="px-5 py-4 md:p-8 bg-[#0F131E] border-t border-[#0F131E]/5 flex justify-between items-center flex-shrink-0 safe-area-bottom shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
           <button 
             onClick={() => step === 1 ? onClose() : setStep(1)}
-            className="text-[10px] font-black uppercase tracking-widest text-textMuted hover:text-textMain transition-all"
+            className="text-[10px] font-black uppercase tracking-widest text-[#8B95A5] hover:text-white transition-all"
           >
             {step === 1 ? 'Cancel' : '← Back'}
           </button>
@@ -222,7 +222,7 @@ const CreateCircleModal = ({ isOpen, onClose, onSuccess }) => {
           <button 
             onClick={step === 1 ? () => setStep(2) : handleSubmit}
             disabled={loading || (step === 1 && !formData.title)}
-            className="btn-primary py-3 px-8 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/25 disabled:opacity-50"
+            className="btn-primary py-3 px-8 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-[#7B5CFA]/25 disabled:opacity-50"
           >
             {loading ? 'Creating...' : step === 1 ? 'Next →' : 'Launch Circle'}
           </button>
