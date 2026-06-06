@@ -40,15 +40,15 @@ const CollabDetail = () => {
 
   if (loading) return (
     <div className="py-40 text-center flex flex-col items-center gap-4">
-       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-primary"></div>
-       <p className="text-[10px] font-black text-textMuted uppercase tracking-widest">Fetching collab details...</p>
+       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-[#7B5CFA]"></div>
+       <p className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest">Fetching collab details...</p>
     </div>
   );
 
   if (!collab) return (
     <div className="max-w-4xl mx-auto py-20 text-center">
-       <h1 className="text-2xl font-black text-textMain">Collab not found</h1>
-       <button onClick={() => navigate('/collabs')} className="text-primary font-black uppercase text-xs mt-4 hover:underline">Back to Hub</button>
+       <h1 className="text-2xl font-black text-white">Collab not found</h1>
+       <button onClick={() => navigate('/collabs')} className="text-[#7B5CFA] font-black uppercase text-xs mt-4 hover:underline">Back to Hub</button>
     </div>
   );
 
@@ -56,7 +56,7 @@ const CollabDetail = () => {
     <div className="max-w-6xl mx-auto pb-20 px-4">
       <button 
         onClick={() => navigate('/collabs')}
-        className="flex items-center gap-2 text-textMuted font-black text-[10px] uppercase tracking-widest mb-10 hover:text-primary transition"
+        className="flex items-center gap-2 text-[#8B95A5] font-black text-[10px] uppercase tracking-widest mb-10 hover:text-[#7B5CFA] transition"
       >
         <ChevronLeft size={16} /> Back to Hub
       </button>
@@ -64,9 +64,9 @@ const CollabDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Main Content */}
         <div className="lg:col-span-8 space-y-10">
-          <div className="bg-white border border-divider rounded-[40px] p-10 shadow-sm">
+          <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[40px] p-10 shadow-sm">
              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="bg-primary/5 text-primary text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter">{collab.category}</span>
+                <span className="bg-[#7B5CFA]/5 text-[#7B5CFA] text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter">{collab.category}</span>
                 {collab.isVerified && (
                    <span className="bg-blue-50 text-blue-600 text-[10px] font-black px-4 py-1.5 rounded-full uppercase flex items-center gap-2">
                       <ShieldCheck size={14} /> Verified Collab
@@ -74,45 +74,45 @@ const CollabDetail = () => {
                 )}
              </div>
              
-             <h1 className="text-4xl font-black text-textMain mb-6 leading-tight tracking-tighter">{collab.title}</h1>
+             <h1 className="text-4xl font-black text-white mb-6 leading-tight tracking-tighter">{collab.title}</h1>
              
-             <div className="flex flex-wrap gap-8 py-8 border-y border-divider/50">
+             <div className="flex flex-wrap gap-8 py-8 border-y border-[#0F131E]/5/50">
                 <div className="flex items-center gap-3">
-                   <div className="p-3 bg-gray-50 rounded-2xl text-primary"><MapPin size={20} /></div>
+                   <div className="p-3 bg-[#181D2A] rounded-2xl text-[#7B5CFA]"><MapPin size={20} /></div>
                    <div>
-                      <p className="text-[9px] text-textMuted font-black uppercase tracking-widest">Location</p>
-                      <p className="text-sm font-black text-textMain">{collab.location || 'Remote'}</p>
+                      <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Location</p>
+                      <p className="text-sm font-black text-white">{collab.location || 'Remote'}</p>
                    </div>
                 </div>
                 <div className="flex items-center gap-3">
-                   <div className="p-3 bg-gray-50 rounded-2xl text-primary"><Clock size={20} /></div>
+                   <div className="p-3 bg-[#181D2A] rounded-2xl text-[#7B5CFA]"><Clock size={20} /></div>
                    <div>
-                      <p className="text-[9px] text-textMuted font-black uppercase tracking-widest">Posted</p>
-                      <p className="text-sm font-black text-textMain">{new Date(collab.createdAt).toLocaleDateString()}</p>
+                      <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Posted</p>
+                      <p className="text-sm font-black text-white">{new Date(collab.createdAt).toLocaleDateString()}</p>
                    </div>
                 </div>
                 <div className="flex items-center gap-3">
-                   <div className="p-3 bg-gray-50 rounded-2xl text-primary"><Users size={20} /></div>
+                   <div className="p-3 bg-[#181D2A] rounded-2xl text-[#7B5CFA]"><Users size={20} /></div>
                    <div>
-                      <p className="text-[9px] text-textMuted font-black uppercase tracking-widest">Applications</p>
-                      <p className="text-sm font-black text-textMain">{collab.proposals?.length || 0} Proposals</p>
+                      <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest">Applications</p>
+                      <p className="text-sm font-black text-white">{collab.proposals?.length || 0} Proposals</p>
                    </div>
                 </div>
              </div>
 
              <div className="mt-10">
-                <h3 className="text-lg font-black text-textMain mb-6">Project Overview</h3>
-                <div className="text-textMuted leading-relaxed whitespace-pre-wrap font-medium text-base">
+                <h3 className="text-lg font-black text-white mb-6">Project Overview</h3>
+                <div className="text-[#8B95A5] leading-relaxed whitespace-pre-wrap font-medium text-base">
                   {collab.description}
                 </div>
              </div>
 
              {collab.requirements?.length > 0 && (
-               <div className="mt-10 pt-10 border-t border-divider/50">
-                 <h3 className="text-lg font-black text-textMain mb-6">Required Creative Skills</h3>
+               <div className="mt-10 pt-10 border-t border-[#0F131E]/5/50">
+                 <h3 className="text-lg font-black text-white mb-6">Required Creative Skills</h3>
                  <div className="flex flex-wrap gap-3">
                     {collab.requirements.map(req => (
-                      <span key={req.id} className="bg-gray-50 border border-divider px-5 py-2.5 rounded-2xl text-sm font-black text-textMain">
+                      <span key={req.id} className="bg-[#181D2A] border border-[#0F131E]/5 px-5 py-2.5 rounded-2xl text-sm font-black text-white">
                          {req.skill}
                       </span>
                     ))}
@@ -121,11 +121,11 @@ const CollabDetail = () => {
              )}
 
              {collab.attachments?.length > 0 && (
-               <div className="mt-10 pt-10 border-t border-divider/50">
-                 <h3 className="text-lg font-black text-textMain mb-6">Reference Media</h3>
+               <div className="mt-10 pt-10 border-t border-[#0F131E]/5/50">
+                 <h3 className="text-lg font-black text-white mb-6">Reference Media</h3>
                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {collab.attachments.map(att => (
-                      <div key={att.id} className="aspect-square bg-gray-100 rounded-3xl overflow-hidden border border-divider group cursor-pointer relative">
+                      <div key={att.id} className="aspect-square bg-white/5 rounded-3xl overflow-hidden border border-[#0F131E]/5 group cursor-pointer relative">
                          <img src={att.fileUrl} className="w-full h-full object-cover transition-transform group-hover:scale-105" alt="" />
                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <Paperclip size={24} className="text-white" />
@@ -139,11 +139,11 @@ const CollabDetail = () => {
 
           <div className="bg-emerald-50 rounded-[40px] p-10 border border-emerald-100">
              <div className="flex gap-6">
-                <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-emerald-600 shadow-sm shrink-0">
+                <div className="w-16 h-16 bg-[#0F131E] rounded-3xl flex items-center justify-center text-emerald-600 shadow-sm shrink-0">
                    <Sparkles size={32} />
                 </div>
                 <div>
-                   <h3 className="text-xl font-black text-textMain">Trust & Security</h3>
+                   <h3 className="text-xl font-black text-white">Trust & Security</h3>
                    <p className="text-sm text-emerald-800/80 mt-2 leading-relaxed font-medium">
                      Your creative output is valuable. Micollab's integrated escrow ensures that funds are secured before you begin work, with automated payouts for every milestone achieved.
                    </p>
@@ -154,10 +154,10 @@ const CollabDetail = () => {
 
         {/* Sidebar Actions */}
         <div className="lg:col-span-4 space-y-8">
-          <div className="bg-white border border-divider rounded-[40px] p-8 shadow-sm">
+          <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[40px] p-8 shadow-sm">
              <div className="mb-8 text-center md:text-left">
-                <p className="text-[10px] text-textMuted font-black uppercase tracking-widest mb-1">Budget Range</p>
-                <p className="text-4xl font-black text-textMain tracking-tighter">{collab.budget}</p>
+                <p className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest mb-1">Budget Range</p>
+                <p className="text-4xl font-black text-white tracking-tighter">{collab.budget}</p>
              </div>
 
              {applied ? (
@@ -171,17 +171,17 @@ const CollabDetail = () => {
              ) : (
                <button 
                  onClick={() => setIsModalOpen(true)}
-                 className="w-full btn-primary py-5 rounded-3xl font-black uppercase tracking-widest shadow-2xl shadow-primary/25"
+                 className="w-full btn-primary py-5 rounded-3xl font-black uppercase tracking-widest shadow-2xl shadow-[#7B5CFA]/25"
                >
                  Submit Proposal
                </button>
              )}
              
-             <p className="text-[10px] text-textMuted text-center mt-6 font-black uppercase tracking-widest">Applications close: {collab.deadline ? new Date(collab.deadline).toLocaleDateString() : 'Rolling'}</p>
+             <p className="text-[10px] text-[#8B95A5] text-center mt-6 font-black uppercase tracking-widest">Applications close: {collab.deadline ? new Date(collab.deadline).toLocaleDateString() : 'Rolling'}</p>
           </div>
 
-          <div className="bg-white border border-divider rounded-[40px] p-8 shadow-sm">
-             <h3 className="text-[10px] font-black text-textMuted uppercase tracking-widest mb-6">About the Scout</h3>
+          <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[40px] p-8 shadow-sm">
+             <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-6">About the Scout</h3>
              <div className="flex items-center gap-5 mb-6">
                 <img 
                   src={collab.poster?.profileImage || `https://ui-avatars.com/api/?name=${collab.poster?.username}`} 
@@ -189,25 +189,25 @@ const CollabDetail = () => {
                   alt="" 
                 />
                 <div>
-                   <p className="text-lg font-black text-textMain tracking-tight">@{collab.poster?.username}</p>
+                   <p className="text-lg font-black text-white tracking-tight">@{collab.poster?.username}</p>
                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-primary">{collab.poster?.profileType}</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-[#7B5CFA]">{collab.poster?.profileType}</span>
                       <ShieldCheck size={12} className="text-blue-500" />
                    </div>
                 </div>
              </div>
-             <p className="text-sm text-textMuted leading-relaxed font-medium">
+             <p className="text-sm text-[#8B95A5] leading-relaxed font-medium">
                {collab.poster?.bio || "A verified creative scout on Micollab."}
              </p>
              
-             <div className="mt-8 pt-8 border-t border-divider/50 grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-gray-50 rounded-2xl">
-                   <p className="text-[9px] text-textMuted font-black uppercase tracking-widest mb-1">Success</p>
-                   <p className="text-sm font-black text-textMain">12 Hires</p>
+             <div className="mt-8 pt-8 border-t border-[#0F131E]/5/50 grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-[#181D2A] rounded-2xl">
+                   <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest mb-1">Success</p>
+                   <p className="text-sm font-black text-white">12 Hires</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-2xl">
-                   <p className="text-[9px] text-textMuted font-black uppercase tracking-widest mb-1">Rating</p>
-                   <p className="text-sm font-black text-primary flex items-center justify-center gap-1">4.9 <Star size={12} className="fill-primary" /></p>
+                <div className="text-center p-3 bg-[#181D2A] rounded-2xl">
+                   <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest mb-1">Rating</p>
+                   <p className="text-sm font-black text-[#7B5CFA] flex items-center justify-center gap-1">4.9 <Star size={12} className="fill-primary" /></p>
                 </div>
              </div>
           </div>
