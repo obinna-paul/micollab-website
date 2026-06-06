@@ -145,7 +145,7 @@ const MainLayout = ({ children }) => {
         </aside>
 
         {/* Center - Main Content */}
-        <main className={`flex-1 min-w-0 pb-20 ${!isHome && !isCollabs ? 'max-w-3xl' : ''}`}>
+        <main className="flex-1 min-w-0 pb-20">
           {children}
         </main>
 
