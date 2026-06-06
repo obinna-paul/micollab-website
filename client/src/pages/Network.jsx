@@ -111,23 +111,23 @@ const Network = () => {
             transition={{ duration: 0.18 }}
             className="pb-3"
           >
-            <h1 className="text-2xl font-black text-textMain tracking-tighter">
+            <h1 className="text-2xl font-black text-white tracking-tighter">
               {TAB_META[activeTab].heading}
             </h1>
-            <p className="text-xs text-textMuted font-medium mt-0.5">
+            <p className="text-xs text-[#8B95A5] font-medium mt-0.5">
               {TAB_META[activeTab].sub}
             </p>
           </motion.div>
         </AnimatePresence>
 
         {/* Sticky tab bar */}
-        <div className="flex border-b border-divider sticky top-14 bg-white/95 backdrop-blur-xl z-40 -mx-4 px-0 mb-5">
+        <div className="flex border-b border-white/5 sticky top-14 bg-[#181D2A]/95 backdrop-blur-xl z-40 -mx-4 px-0 mb-5">
           {Object.entries(TAB_META).map(([key, meta]) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
               className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider transition-all relative ${
-                activeTab === key ? 'text-primary' : 'text-textMuted'
+                activeTab === key ? 'text-[#7B5CFA]' : 'text-[#8B95A5]'
               }`}
             >
               {meta.label}
@@ -135,7 +135,7 @@ const Network = () => {
                 <span className="ml-1 bg-red-500 text-white px-1 py-0.5 rounded-full text-[7px]">{requests.length}</span>
               )}
               {activeTab === key && (
-                <motion.div layoutId="network-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
+                <motion.div layoutId="network-tab-mobile" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#7B5CFA] rounded-full" />
               )}
             </button>
           ))}
@@ -155,26 +155,26 @@ const Network = () => {
             transition={{ duration: 0.22, ease: 'easeOut' }}
             className="space-y-3 max-w-xl"
           >
-            <div className="flex items-center gap-2.5 text-primary font-black uppercase text-[10px] tracking-[0.2em]">
+            <div className="flex items-center gap-2.5 text-[#7B5CFA] font-black uppercase text-[10px] tracking-[0.2em]">
               <Globe size={13} /> {TAB_META[activeTab].eyebrow}
             </div>
-            <h1 className="text-5xl font-black text-textMain tracking-tighter leading-none">
+            <h1 className="text-5xl font-black text-white tracking-tighter leading-none">
               {TAB_META[activeTab].desktopHeading[0]}
-              <span className="text-primary italic">{TAB_META[activeTab].desktopHeading[1]}</span>
+              <span className="text-[#7B5CFA] italic">{TAB_META[activeTab].desktopHeading[1]}</span>
             </h1>
-            <p className="text-textMuted font-medium leading-relaxed text-sm">
+            <p className="text-[#8B95A5] font-medium leading-relaxed text-sm">
               {TAB_META[activeTab].desktopSub}
             </p>
           </motion.div>
         </AnimatePresence>
 
         {/* Desktop Tab Pills */}
-        <div className="flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-divider flex-shrink-0">
+        <div className="flex bg-[#181D2A]/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/5 flex-shrink-0">
           {Object.entries(TAB_META).map(([key, meta]) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
-              className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === key ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'text-textMuted hover:text-textMain'}`}
+              className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === key ? 'bg-[#7B5CFA] text-white shadow-[0_0_15px_rgba(123,92,250,0.3)]' : 'text-[#8B95A5] hover:text-white'}`}
             >
               {meta.label}
               {key === 'REQUESTS' && requests.length > 0 && (
@@ -198,20 +198,20 @@ const Network = () => {
           {activeTab === 'DISCOVER' && (
             <div className="space-y-8">
               <div className="relative group max-w-2xl">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-textMuted group-focus-within:text-primary transition-colors" size={20} />
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8B95A5] group-focus-within:text-[#7B5CFA] transition-colors" size={20} />
                 <input 
                   type="text"
                   placeholder="Search by name, skill, or bio..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && fetchData()}
-                  className="w-full bg-white border-2 border-divider rounded-[2rem] py-5 pl-16 pr-8 text-sm font-bold focus:border-primary outline-none transition-all shadow-sm"
+                  className="w-full bg-[#181D2A] border-2 border-white/5 rounded-[2rem] py-5 pl-16 pr-8 text-sm font-bold focus:border-[#7B5CFA] text-white outline-none transition-all shadow-sm"
                 />
               </div>
 
               {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-                   {[1,2,3,4,5,6].map(i => <div key={i} className="h-64 bg-gray-100 rounded-3xl" />)}
+                   {[1,2,3,4,5,6].map(i => <div key={i} className="h-64 bg-[#181D2A] rounded-3xl" />)}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -219,39 +219,39 @@ const Network = () => {
                     <motion.div 
                       whileHover={{ y: -5 }}
                       key={user.id} 
-                      className="bg-white border border-divider rounded-[2rem] p-6 group transition-all hover:shadow-xl hover:shadow-gray-100"
+                      className="bg-[#0F131E] border border-white/5 rounded-[2rem] p-6 group transition-all hover:shadow-xl hover:shadow-[#7B5CFA]/10"
                     >
                       <div className="relative mb-6">
                         <img 
                           src={user.profileImage || `https://ui-avatars.com/api/?name=${user.username}&background=random`} 
                           alt={user.username}
-                          className="w-20 h-20 rounded-2xl object-cover ring-4 ring-gray-50"
+                          className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#181D2A]"
                         />
                         {user.isVerified && (
-                          <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-1.5 rounded-full border-4 border-white">
+                          <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-1.5 rounded-full border-4 border-[#0F131E]">
                             <Check size={12} strokeWidth={4} />
                           </div>
                         )}
                       </div>
                       
                       <div className="space-y-1 mb-4">
-                        <h3 className="text-xl font-black text-textMain tracking-tight">{user.username}</h3>
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">{user.profileType}</p>
+                        <h3 className="text-xl font-black text-white tracking-tight">{user.username}</h3>
+                        <p className="text-[10px] font-black text-[#7B5CFA] uppercase tracking-widest">{user.profileType}</p>
                       </div>
 
-                      <p className="text-xs text-textMuted line-clamp-2 mb-6 font-medium leading-relaxed h-8">
+                      <p className="text-xs text-[#8B95A5] line-clamp-2 mb-6 font-medium leading-relaxed h-8">
                         {user.bio || "No bio available yet."}
                       </p>
 
-                      <div className="flex items-center gap-2 pt-4 border-t border-divider">
+                      <div className="flex items-center gap-2 pt-4 border-t border-white/5">
                         <button 
                           onClick={() => handleConnect(user.id)}
                           disabled={user.requested}
-                          className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${user.requested ? 'bg-gray-100 text-textMuted' : 'bg-surface border border-divider text-textMain hover:border-primary hover:text-primary'}`}
+                          className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${user.requested ? 'bg-[#181D2A] text-[#8B95A5]' : 'bg-[#181D2A] border border-white/5 text-white hover:border-[#7B5CFA] hover:text-[#7B5CFA]'}`}
                         >
                           {user.requested ? 'Requested' : 'Connect'}
                         </button>
-                        <button className="p-3 rounded-xl bg-gray-50 text-textMuted hover:text-primary transition-all">
+                        <button className="p-3 rounded-xl bg-[#181D2A] text-[#8B95A5] hover:text-[#7B5CFA] transition-all">
                           <ArrowRight size={16} />
                         </button>
                       </div>
@@ -266,21 +266,21 @@ const Network = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {connections.length === 0 && !loading && (
                  <div className="col-span-full py-20 text-center">
-                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                       <Users size={40} className="text-textMuted opacity-20" />
+                    <div className="w-20 h-20 bg-[#181D2A] rounded-full flex items-center justify-center mx-auto mb-6">
+                       <Users size={40} className="text-[#8B95A5] opacity-20" />
                     </div>
-                    <h3 className="text-2xl font-black text-textMain tracking-tight">No connections yet</h3>
-                    <p className="text-textMuted mt-2">Start exploring the network to build your creative circle.</p>
+                    <h3 className="text-2xl font-black text-white tracking-tight">No connections yet</h3>
+                    <p className="text-[#8B95A5] mt-2">Start exploring the network to build your creative circle.</p>
                  </div>
                )}
                {connections.map(user => (
-                 <div key={user.id} className="bg-white border border-divider rounded-3xl p-6 flex items-center gap-6">
+                 <div key={user.id} className="bg-[#0F131E] border border-white/5 rounded-3xl p-6 flex items-center gap-6">
                     <img src={user.profileImage || `https://ui-avatars.com/api/?name=${user.username}&background=random`} className="w-16 h-16 rounded-2xl object-cover" />
                     <div className="flex-1">
-                       <h3 className="text-lg font-black text-textMain">{user.username}</h3>
-                       <p className="text-[10px] font-black text-primary uppercase tracking-widest">{user.profileType}</p>
+                       <h3 className="text-lg font-black text-white">{user.username}</h3>
+                       <p className="text-[10px] font-black text-[#7B5CFA] uppercase tracking-widest">{user.profileType}</p>
                     </div>
-                    <button className="bg-gray-50 p-3 rounded-xl text-textMuted hover:text-primary transition-all">
+                    <button className="bg-[#181D2A] p-3 rounded-xl text-[#8B95A5] hover:text-[#7B5CFA] transition-all">
                        <MessageSquare size={18} />
                     </button>
                  </div>
@@ -291,25 +291,25 @@ const Network = () => {
           {activeTab === 'REQUESTS' && (
             <div className="max-w-2xl space-y-4">
                {requests.length === 0 && !loading && (
-                 <div className="py-20 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-divider">
-                    <Bell size={40} className="text-textMuted mx-auto mb-4 opacity-20" />
-                    <p className="text-textMuted font-black uppercase text-[10px] tracking-widest">No pending requests</p>
+                 <div className="py-20 text-center bg-[#0F131E] rounded-3xl border-2 border-dashed border-white/5">
+                    <Bell size={40} className="text-[#8B95A5] mx-auto mb-4 opacity-20" />
+                    <p className="text-[#8B95A5] font-black uppercase text-[10px] tracking-widest">No pending requests</p>
                  </div>
                )}
                {requests.map(req => (
-                 <div key={req.id} className="bg-white border border-divider rounded-3xl p-6 flex items-center justify-between">
+                 <div key={req.id} className="bg-[#0F131E] border border-white/5 rounded-3xl p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                        <img src={req.requester.profileImage || `https://ui-avatars.com/api/?name=${req.requester.username}&background=random`} className="w-12 h-12 rounded-xl object-cover" />
                        <div>
-                          <p className="font-black text-textMain">{req.requester.username}</p>
-                          <p className="text-[9px] font-black text-primary uppercase tracking-widest">Wants to connect</p>
+                          <p className="font-black text-white">{req.requester.username}</p>
+                          <p className="text-[9px] font-black text-[#7B5CFA] uppercase tracking-widest">Wants to connect</p>
                        </div>
                     </div>
                     <div className="flex gap-2">
-                       <button onClick={() => handleRequest(req.id, 'ACCEPTED')} className="bg-primary text-white p-3 rounded-xl hover:shadow-lg shadow-primary/20 transition-all">
+                       <button onClick={() => handleRequest(req.id, 'ACCEPTED')} className="bg-[#7B5CFA] text-white p-3 rounded-xl hover:shadow-[0_0_15px_rgba(123,92,250,0.3)] transition-all">
                           <Check size={18} />
                        </button>
-                       <button onClick={() => handleRequest(req.id, 'DECLINED')} className="bg-gray-50 text-textMuted p-3 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all">
+                       <button onClick={() => handleRequest(req.id, 'DECLINED')} className="bg-[#181D2A] text-[#8B95A5] p-3 rounded-xl hover:bg-red-500/10 hover:text-red-500 transition-all">
                           <X size={18} />
                        </button>
                     </div>
