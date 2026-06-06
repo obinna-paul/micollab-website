@@ -45,4 +45,19 @@
   .btn-outline {
     @apply border border-primary text-primary font-bold px-6 py-2 rounded-full hover:bg-primary/5 transition-all;
   }
+
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #4D38A0;
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #7B5CFA;
+  }
 }
