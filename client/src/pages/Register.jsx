@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Lock, User, Loader2, AlertCircle, ChevronRight, ChevronLeft, Check, 
   Music, Film, Camera, PenTool, Mic2, Scissors, Palette, Smartphone, 
-  Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff
+  Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles
 } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 
 // Exhaustive Categories Data
 const CATEGORIES = [
-  { id: 'Music & Audio', icon: Music, label: 'Music & Audio', specializations: [
+  { id: 'Music & Audio', icon: Music, label: 'Music & Audio', subtitle: 'Producers, Engineers, Musicians', specializations: [
     'Musician', 'Artist', 'Singer', 'Vocalist', 'Rapper', 'Songwriter', 'Music Producer', 'Beat Producer', 
     'Sound Engineer', 'Mixing Engineer', 'Mastering Engineer', 'Audio Engineer', 'Recording Engineer', 
     'DJ', 'Instrumentalist', 'Guitarist', 'Pianist', 'Drummer', 'Saxophonist', 'Violinist', 'Bassist', 
@@ -18,7 +18,7 @@ const CATEGORIES = [
     'Radio Host', 'Audio Storyteller', 'Spoken Word Artist', 'Music Arranger', 'Live Performer', 
     'Backup Vocalist', 'Sound Designer', 'Foley Artist', 'Audio Editor'
   ]},
-  { id: 'Film, TV & Video', icon: Film, label: 'Film, TV & Video', specializations: [
+  { id: 'Film, TV & Video', icon: Film, label: 'Film, TV & Video', subtitle: 'Directors, Editors, Cinematographers', specializations: [
     'Filmmaker', 'Director', 'Assistant Director', 'Cinematographer', 'Videographer', 'Video Editor', 
     'Colorist', 'Screenwriter', 'Scriptwriter', 'Documentary Filmmaker', 'Creative Director', 'Producer', 
     'Executive Producer', 'Production Manager', 'Camera Operator', 'Drone Operator', 'Film Editor', 
@@ -26,55 +26,55 @@ const CATEGORIES = [
     'Storyboard Artist', 'Set Designer', 'Lighting Technician', 'Production Assistant', 'Boom Operator', 
     'TV Presenter', 'Broadcaster', 'Streamer', 'YouTuber', 'Content Producer', 'Reel Creator', 'Short Film Creator'
   ]},
-  { id: 'Photography & Visual Arts', icon: Camera, label: 'Photography & Visual Arts', specializations: [
+  { id: 'Photography & Visual Arts', icon: Camera, label: 'Photography & Visual Arts', subtitle: 'Photographers, Illustrators, Painters', specializations: [
     'Photographer', 'Portrait Photographer', 'Fashion Photographer', 'Event Photographer', 'Street Photographer', 
     'Documentary Photographer', 'Photojournalist', 'Retoucher', 'Photo Editor', 'Visual Artist', 'Digital Artist', 
     'Illustrator', 'Painter', 'Sketch Artist', 'Cartoonist', 'Comic Artist', 'Concept Artist', 'Mural Artist', 
     'Graffiti Artist', 'Collage Artist', 'Fine Artist', 'NFT Artist', 'Print Artist', 'Mixed Media Artist', 
     'Sculptor', 'Ceramic Artist', 'Installation Artist', 'Art Director', 'Gallery Curator'
   ]},
-  { id: 'Writing & Content', icon: PenTool, label: 'Writing & Content', specializations: [
+  { id: 'Writing & Content', icon: PenTool, label: 'Writing & Content', subtitle: 'Copywriters, Screenwriters, Authors', specializations: [
     'Writer', 'Author', 'Poet', 'Blogger', 'Journalist', 'Copywriter', 'Scriptwriter', 'Ghostwriter', 
     'Editor', 'Proofreader', 'Technical Writer', 'Creative Writer', 'Novelist', 'Essayist', 'Storyteller', 
     'Spoken Word Creator', 'Newsletter Writer', 'SEO Writer', 'Social Media Writer', 'Content Creator', 
     'UGC Creator', 'Influencer', 'Lifestyle Creator', 'Educational Creator', 'Tech Creator', 'Commentary Creator', 
     'Reviewer', 'Meme Creator'
   ]},
-  { id: 'Acting & Performance', icon: Mic2, label: 'Acting & Performance', specializations: [
+  { id: 'Acting & Performance', icon: Mic2, label: 'Acting & Performance', subtitle: 'Actors, Dancers, Voice Talent', specializations: [
     'Actor', 'Actress', 'Performer', 'Theatre Actor', 'Stage Performer', 'Voice Actor', 'Comedian', 
     'Skit Maker', 'MC', 'Event Host', 'Presenter', 'TV Personality', 'Live Entertainer', 'Dancer', 
     'Choreographer', 'Dance Instructor', 'Performance Artist', 'Circus Performer', 'Mime Artist', 
     'Puppeteer', 'Magician'
   ]},
-  { id: 'Fashion & Beauty', icon: Scissors, label: 'Fashion & Beauty', specializations: [
+  { id: 'Fashion & Beauty', icon: Scissors, label: 'Fashion & Beauty', subtitle: 'Designers, Stylists, MUAs', specializations: [
     'Fashion Designer', 'Stylist', 'Personal Stylist', 'Costume Designer', 'Wardrobe Stylist', 'Makeup Artist', 
     'Beauty Creator', 'Hair Stylist', 'Barber', 'Nail Artist', 'Fashion Illustrator', 'Model', 'Runway Model', 
     'Commercial Model', 'Fashion Content Creator', 'Jewelry Designer', 'Textile Designer', 'Fashion Photographer', 
     'Fashion Creative Director'
   ]},
-  { id: 'Design & Creative Tech', icon: Palette, label: 'Design & Creative Tech', specializations: [
+  { id: 'Design & Creative Tech', icon: Palette, label: 'Design & Creative Tech', subtitle: 'UI/UX, 3D Artists, Animators', specializations: [
     'Graphic Designer', 'UI Designer', 'UX Designer', 'Product Designer', 'Web Designer', 'Brand Designer', 
     'Motion Designer', '3D Designer', 'Industrial Designer', 'Packaging Designer', 'Visual Designer', 
     'Typography Designer', 'Presentation Designer', 'Creative Technologist', 'AR Creator', 'VR Creator', 
     'Game Designer', 'Game Artist', 'Level Designer', 'Indie Game Developer'
   ]},
-  { id: 'Digital & Social Creators', icon: Smartphone, label: 'Digital & Social Creators', specializations: [
+  { id: 'Digital & Social Creators', icon: Smartphone, label: 'Digital & Social Creators', subtitle: 'Streamers, Influencers, Vloggers', specializations: [
     'Social Media Creator', 'TikTok Creator', 'Instagram Creator', 'YouTube Creator', 'Twitch Streamer', 
     'Live Streamer', 'Gaming Creator', 'Reaction Creator', 'Vlogger', 'Lifestyle Influencer', 'Travel Creator', 
     'Food Creator', 'Fitness Creator', 'Educational Influencer', 'Motivational Speaker', 'Business Creator', 
     'Finance Creator', 'Comedy Creator'
   ]},
-  { id: 'Event & Entertainment Industry', icon: Calendar, label: 'Event & Entertainment Industry', specializations: [
+  { id: 'Event & Entertainment Industry', icon: Calendar, label: 'Event & Entertainment Industry', subtitle: 'Planners, Curators, Managers', specializations: [
     'Event Planner', 'Event Curator', 'Concert Organizer', 'Festival Organizer', 'Talent Manager', 'Artist Manager', 
     'Booking Agent', 'Talent Scout', 'Casting Director', 'Casting Scout', 'A&R Representative', 'Entertainment Executive', 
     'Creative Consultant', 'Brand Strategist', 'Community Manager', 'Publicist', 'PR Manager'
   ]},
-  { id: 'Brand & Agency', icon: Briefcase, label: 'Brand & Agency Profiles', specializations: [
+  { id: 'Brand & Agency', icon: Briefcase, label: 'Brand & Agency Profiles', subtitle: 'Agencies, Studios, Labels', specializations: [
     'Brand', 'Agency', 'Creative Agency', 'Production House', 'Record Label', 'Media Company', 'Fashion Brand', 
     'Marketing Agency', 'Talent Agency', 'Creative Studio', 'Entertainment Company', 'Publishing Company', 
     'Film Studio', 'Startup', 'Nonprofit Organization'
   ]},
-  { id: 'Education & Community', icon: BookOpen, label: 'Creative Education & Community', specializations: [
+  { id: 'Education & Community', icon: BookOpen, label: 'Creative Education & Community', subtitle: 'Coaches, Mentors, Educators', specializations: [
     'Creative Coach', 'Mentor', 'Workshop Host', 'Creative Educator', 'Art Teacher', 'Music Teacher', 
     'Dance Instructor', 'Acting Coach', 'Community Builder', 'Creative Curator', 'Creative Recruiter', 
     'Industry Speaker', 'Creative Consultant'
@@ -160,26 +160,22 @@ const Register = () => {
         
         <div className="max-w-xl">
           <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-            Enter the Creative <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Multiverse.</span>
+            Define Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Craft.</span>
           </h2>
           <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
-            Connect, collaborate, and create with the world's most vibrant community of avant-garde professionals.
+            Tell us what you do so we can tailor your multiverse experience and connect you with the right collaborators.
           </p>
           
-          <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-3 pr-6 rounded-2xl border border-white/5 shadow-xl">
-            <div className="flex -space-x-3">
-              <img src="https://ui-avatars.com/api/?name=Alice&background=7B5CFA&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
-              <img src="https://ui-avatars.com/api/?name=Bob&background=00B5D8&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
-              <img src="https://ui-avatars.com/api/?name=Charlie&background=10B981&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
+          <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
+            <div className="w-10 h-10 rounded-full bg-[#7B5CFA]/10 flex items-center justify-center">
+              <Sparkles size={20} className="text-[#A37BFF]" />
             </div>
             <div>
-              <p className="text-white text-sm font-bold">Join 50k+ creators</p>
-              <p className="text-[#00B5D8] text-xs font-bold">Building the future</p>
+              <p className="text-white text-sm font-bold">Personalized Feed</p>
+              <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Based on your selections</p>
             </div>
           </div>
         </div>
-
-
       </div>
 
       {/* Right Form Section */}
@@ -200,19 +196,20 @@ const Register = () => {
               <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                 <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
-                  <span>Step 1 of 3</span>
+                  <span>STEP 2 OF 4</span>
                 </div>
 
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-white mb-2">What describes you best?</h2>
+                  <h2 className="text-2xl lg:text-3xl font-black text-white mb-2">What describes you best?</h2>
                   <p className="text-[#8B95A5] font-medium text-sm">Select one or more broad categories.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                   {CATEGORIES.map(category => {
                     const Icon = category.icon;
                     const isSelected = selectedCategories.includes(category.id);
@@ -220,17 +217,32 @@ const Register = () => {
                       <button
                         key={category.id}
                         onClick={() => handleCategoryToggle(category.id)}
-                        className={`flex items-center justify-between p-4 rounded-xl border transition-all text-left ${
+                        className={`relative flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
                           isSelected 
-                            ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-white shadow-md shadow-[#7B5CFA]/10' 
-                            : 'border-white/5 bg-[#0F131E] hover:border-white/20 text-[#8B95A5] hover:text-white'
+                            ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 shadow-[0_0_15px_rgba(123,92,250,0.15)]' 
+                            : 'border-white/5 bg-[#181D2A] hover:border-white/10 hover:bg-white/5'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <Icon size={20} strokeWidth={isSelected ? 3 : 2} className={isSelected ? 'text-[#A37BFF]' : ''} />
-                          <span className="font-bold text-xs leading-tight">{category.label}</span>
+                        <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                          isSelected ? 'bg-[#7B5CFA]' : 'bg-white/5 group-hover:bg-white/10'
+                        }`}>
+                          <Icon size={18} className={isSelected ? 'text-white' : 'text-[#8B95A5] group-hover:text-white'} />
                         </div>
-                        {isSelected && <Check size={18} className="text-[#A37BFF]" />}
+                        <div className="flex-1 pr-6">
+                          <p className={`font-bold text-sm leading-tight mb-1 transition-colors ${
+                            isSelected ? 'text-white' : 'text-white/90 group-hover:text-white'
+                          }`}>
+                            {category.label}
+                          </p>
+                          <p className="text-[#8B95A5] text-[10px] leading-snug">
+                            {category.subtitle}
+                          </p>
+                        </div>
+                        {isSelected && (
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#7B5CFA] rounded-full p-0.5">
+                            <Check size={12} className="text-white" strokeWidth={4} />
+                          </div>
+                        )}
                       </button>
                     );
                   })}
