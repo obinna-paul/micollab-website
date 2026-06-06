@@ -99,7 +99,7 @@ const Register = () => {
   const [error, setError] = useState('');
   
   const navigate = useNavigate();
-  const { register } = useAuthStore();
+  const { register, checkAvailability } = useAuthStore();
 
   const handleCategoryToggle = (id) => {
     setSelectedCategories(prev => 
@@ -111,6 +111,20 @@ const Register = () => {
     setSelectedSpecializations(prev => 
       prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec]
     );
+  };
+
+  const handleStep1Submit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    const result = await checkAvailability(accountDetails.username, accountDetails.email);
+    if (result.success && result.available) {
+      setStep(2);
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
   };
 
   const handleRegisterSubmit = async () => {
@@ -299,7 +313,14 @@ const Register = () => {
                   <p className="text-[#8B95A5] font-medium text-sm">Let's get started.</p>
                 </div>
 
-                <form onSubmit={(e) => { e.preventDefault(); setStep(2); }} className="space-y-5">
+                {error && (
+                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-xs font-bold">
+                    <AlertCircle size={16} />
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleStep1Submit} className="space-y-5">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-white ml-1">Username</label>
                     <div className="relative">
@@ -354,9 +375,12 @@ const Register = () => {
 
                   <button 
                     type="submit"
-                    className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)]"
+                    disabled={loading}
+                    className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
                   >
-                    Next Step <ChevronRight size={18} />
+                    {loading ? <Loader2 className="animate-spin" size={20} /> : (
+                      <>Next Step <ChevronRight size={18} /></>
+                    )}
                   </button>
 
                   <p className="pt-4 text-center text-[#8B95A5] text-xs font-bold">

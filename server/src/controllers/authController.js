@@ -112,3 +112,33 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user data' });
   }
 };
+
+exports.checkAvailability = async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    if (!username || !email) {
+      return res.status(400).json({ error: 'Username and email are required' });
+    }
+    
+    const existingUser = await prisma.user.findFirst({
+      where: { OR: [{ email }, { username }] }
+    });
+
+    if (existingUser) {
+      if (existingUser.username === username && existingUser.email === email) {
+        return res.status(400).json({ error: 'Username and email are already taken' });
+      }
+      if (existingUser.username === username) {
+        return res.status(400).json({ error: 'Username already taken' });
+      }
+      if (existingUser.email === email) {
+        return res.status(400).json({ error: 'Email already taken' });
+      }
+    }
+
+    res.json({ available: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Availability check failed' });
+  }
+};

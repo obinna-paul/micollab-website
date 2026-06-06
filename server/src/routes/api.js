@@ -18,6 +18,7 @@ router.get('/health', (req, res) => {
 // Auth Routes
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
+router.post('/auth/check-availability', authController.checkAvailability);
 router.get('/auth/me', authMiddleware, authController.getMe);
 
 // Post Routes
@@ -81,11 +82,32 @@ router.post('/circles/:id/messages', authMiddleware, circleController.sendCircle
 router.post('/circles/:id/invite', authMiddleware, circleController.inviteMember);
 router.patch('/circles/invites/:inviteId', authMiddleware, circleController.respondToInvite);
 
-// Circle File Routes
+// Circle Folder & File Routes
 const fileController = require('../controllers/fileController');
+const folderController = require('../controllers/folderController');
+const publicShareController = require('../controllers/publicShareController');
+
+// Folders REST APIs
+router.get('/circles/:id/folders', authMiddleware, folderController.getCircleFolders);
+router.post('/circles/:id/folders', authMiddleware, folderController.createFolder);
+router.put('/folders/:folderId', authMiddleware, folderController.updateFolder);
+router.delete('/folders/:folderId', authMiddleware, folderController.deleteFolder);
+
+// Files REST APIs
 router.get('/circles/:id/files', authMiddleware, fileController.getCircleFiles);
-router.post('/circles/:id/files', authMiddleware, fileController.uploadMiddleware, fileController.uploadCircleFile);
-router.delete('/circles/files/:fileId', authMiddleware, fileController.deleteCircleFile);
+router.post('/circles/:id/files', authMiddleware, fileController.uploadMultipleMiddleware, fileController.uploadCircleFile);
+router.post('/files/version/:fileId', authMiddleware, fileController.uploadMiddleware, fileController.uploadNewVersion);
+router.post('/files/restore-version/:fileId', authMiddleware, fileController.restoreVersion);
+router.put('/files/details/:fileId', authMiddleware, fileController.updateFileDetails);
+router.post('/files/access/:fileId', authMiddleware, fileController.manageAccess);
+router.post('/files/public-links/:fileId', authMiddleware, fileController.managePublicLinks);
+router.post('/files/comments/:fileId', authMiddleware, fileController.handleFileComment);
+router.post('/files/trash/:fileId', authMiddleware, fileController.manageTrash);
+router.get('/circles/:id/storage', authMiddleware, fileController.getStorageOverview);
+
+// Unauthenticated Public Share API Route (no authMiddleware!)
+router.post('/public/share/:linkId', publicShareController.getPublicFileDetails);
+router.get('/public/share/:linkId', publicShareController.getPublicFileDetails);
 
 // Circle Task Routes
 const taskController = require('../controllers/taskController');

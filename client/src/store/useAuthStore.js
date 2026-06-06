@@ -43,6 +43,18 @@ const useAuthStore = create(
         }
       },
 
+      checkAvailability: async (username, email) => {
+        try {
+          const res = await axios.post('/api/auth/check-availability', { username, email });
+          return { success: true, available: res.data.available };
+        } catch (error) {
+          return {
+            success: false,
+            error: error.response?.data?.error || 'Failed to check availability'
+          };
+        }
+      },
+
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false });
         delete axios.defaults.headers.common['Authorization'];
