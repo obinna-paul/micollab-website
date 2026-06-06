@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
+import FilesHub from './FilesHub';
 
 const CircleWorkspace = () => {
   const { id } = useParams();
@@ -326,8 +327,8 @@ const CircleWorkspace = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh] gap-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary" />
-        <p className="text-textMuted text-sm font-medium">Powering up workspace...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#7B5CFA]" />
+        <p className="text-[#8B95A5] text-sm font-medium">Powering up workspace...</p>
       </div>
     );
   }
@@ -338,48 +339,48 @@ const CircleWorkspace = () => {
 
   const OverviewPanel = () => (
     <div className="space-y-6 pb-12">
-      <div className="bg-white border border-divider rounded-[2rem] p-8 shadow-sm">
-        <div className="flex items-center gap-3 text-primary font-black uppercase text-[10px] tracking-widest mb-4">
+      <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[2rem] p-8 shadow-sm">
+        <div className="flex items-center gap-3 text-[#7B5CFA] font-black uppercase text-[10px] tracking-widest mb-4">
           <Target size={14} /> Project Vision
         </div>
-        <h2 className="text-2xl font-black text-textMain tracking-tight mb-4">{circle.title}</h2>
-        <p className="text-sm text-textMuted font-medium leading-relaxed">
+        <h2 className="text-2xl font-black text-white tracking-tight mb-4">{circle.title}</h2>
+        <p className="text-sm text-[#8B95A5] font-medium leading-relaxed">
           {circle.description || "Establish a clear vision for this collaboration by adding a project description."}
         </p>
         
-        <div className="mt-8 pt-8 border-t border-divider grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-50 p-4 rounded-2xl">
-             <p className="text-[8px] font-black text-textMuted uppercase tracking-widest mb-1">Status</p>
+        <div className="mt-8 pt-8 border-t border-[#0F131E]/5 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-[#181D2A] p-4 rounded-2xl">
+             <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Status</p>
              <p className="text-xs font-black text-emerald-600 uppercase">{circle.status}</p>
           </div>
-          <div className="bg-gray-50 p-4 rounded-2xl">
-             <p className="text-[8px] font-black text-textMuted uppercase tracking-widest mb-1">Category</p>
-             <p className="text-xs font-black text-textMain">{circle.category}</p>
+          <div className="bg-[#181D2A] p-4 rounded-2xl">
+             <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Category</p>
+             <p className="text-xs font-black text-white">{circle.category}</p>
           </div>
-          <div className="bg-gray-50 p-4 rounded-2xl">
-             <p className="text-[8px] font-black text-textMuted uppercase tracking-widest mb-1">Members</p>
-             <p className="text-xs font-black text-textMain">{circle.members?.length || 0}</p>
+          <div className="bg-[#181D2A] p-4 rounded-2xl">
+             <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Members</p>
+             <p className="text-xs font-black text-white">{circle.members?.length || 0}</p>
           </div>
-          <div className="bg-gray-50 p-4 rounded-2xl">
-             <p className="text-[8px] font-black text-textMuted uppercase tracking-widest mb-1">Tasks</p>
-             <p className="text-xs font-black text-textMain">{tasks.length}</p>
+          <div className="bg-[#181D2A] p-4 rounded-2xl">
+             <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Tasks</p>
+             <p className="text-xs font-black text-white">{tasks.length}</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-divider rounded-[2rem] p-8">
+        <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[2rem] p-8">
            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-black text-textMain tracking-tight">Active Team</h3>
-              <button className="text-[10px] font-black text-primary uppercase tracking-widest">Recruit +</button>
+              <h3 className="font-black text-white tracking-tight">Active Team</h3>
+              <button className="text-[10px] font-black text-[#7B5CFA] uppercase tracking-widest">Recruit +</button>
            </div>
            <div className="space-y-4">
               {circle.members?.map((m, i) => (
                 <div key={i} className="flex items-center gap-3">
                    <img src={m.user?.profileImage || `https://ui-avatars.com/api/?name=${m.user?.username}`} className="w-10 h-10 rounded-xl object-cover" />
                    <div>
-                      <p className="font-black text-textMain text-xs">@{m.user?.username}</p>
-                      <p className="text-[9px] font-black text-textMuted uppercase tracking-widest">{m.role}</p>
+                      <p className="font-black text-white text-xs">@{m.user?.username}</p>
+                      <p className="text-[9px] font-black text-[#8B95A5] uppercase tracking-widest">{m.role}</p>
                    </div>
                 </div>
               ))}
@@ -390,7 +391,7 @@ const CircleWorkspace = () => {
            <Zap className="absolute -top-4 -right-4 w-24 h-24 text-white/5 opacity-20" />
            <h3 className="font-black tracking-tight mb-2">Upcoming Deadline</h3>
            <p className="text-sm text-white/60 mb-6">No immediate deadlines set. Add milestones to track progress.</p>
-           <button className="w-full py-3 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition">
+           <button className="w-full py-3 bg-[#0F131E]/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#0F131E]/20 transition">
               Set Milestone
            </button>
         </div>
@@ -401,25 +402,12 @@ const CircleWorkspace = () => {
 
 
   const TaskProgressBar = () => {
-    if (tasks.length === 0) {
-      return (
-        <div className="bg-white border border-divider rounded-[2rem] p-6 shadow-sm mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-[10px] font-black text-textMain uppercase tracking-widest flex items-center gap-1.5">
-              <Zap size={12} className="text-primary animate-pulse" /> Workspace Progress
-            </span>
-            <span className="text-[10px] font-black text-textMuted uppercase tracking-widest">No Active Tasks</span>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden border border-divider" />
-        </div>
-      );
-    }
+    if (tasks.length === 0) return null;
 
     const total = tasks.filter(t => !t.parentId).length;
     const approvedCount = tasks.filter(t => !t.parentId && (t.status === 'APPROVED' || t.status === 'COMPLETED')).length;
     const progressPercent = total > 0 ? (approvedCount / total) * 100 : 0;
 
-    // Segment counts for display
     const todoCount = tasks.filter(t => !t.parentId && t.status === 'TODO').length;
     const inProgressCount = tasks.filter(t => !t.parentId && t.status === 'IN_PROGRESS').length;
     const reviewCount = tasks.filter(t => !t.parentId && t.status === 'REVIEW').length;
@@ -430,87 +418,30 @@ const CircleWorkspace = () => {
     const approvedPercent = total > 0 ? (approvedCount / total) * 100 : 0;
 
     return (
-      <div className="bg-white border border-divider rounded-[2rem] p-6 shadow-sm mb-6 relative overflow-hidden">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-[10px] font-black text-textMain uppercase tracking-widest flex items-center gap-1.5">
-            <Zap size={12} className="text-primary animate-pulse" /> Progress Tracker
+      <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-2xl p-4 shadow-sm mb-6 space-y-3">
+        <div className="flex justify-between items-center text-xs">
+          <span className="font-extrabold text-white flex items-center gap-1.5 uppercase tracking-wider text-[10px]">
+            <Zap size={13} className="text-[#7B5CFA]" /> Workspace Progress
           </span>
-          <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
-            {progressPercent.toFixed(0)}% Shipped ({approvedCount}/{total} parent tasks)
-          </span>
-        </div>
-
-        {/* Stacked Multi-color Progress Bar with Milestone tick marks */}
-        <div className="relative w-full bg-gray-100 rounded-full h-4 overflow-hidden flex shadow-inner border border-divider">
-          {todoPercent > 0 && (
-            <div 
-              style={{ width: `${todoPercent}%` }} 
-              className="bg-rose-500 transition-all duration-500 cursor-pointer hover:opacity-90"
-              title={`To Do: ${todoCount} tasks (${todoPercent.toFixed(0)}%)`}
-            />
-          )}
-          {inProgressPercent > 0 && (
-            <div 
-              style={{ width: `${inProgressPercent}%` }} 
-              className="bg-amber-500 transition-all duration-500 cursor-pointer hover:opacity-90 animate-pulse"
-              title={`In Progress: ${inProgressCount} tasks (${inProgressPercent.toFixed(0)}%)`}
-            />
-          )}
-          {reviewPercent > 0 && (
-            <div 
-              style={{ width: `${reviewPercent}%` }} 
-              className="bg-yellow-400 transition-all duration-500 cursor-pointer hover:opacity-90"
-              title={`Under Review: ${reviewCount} tasks (${reviewPercent.toFixed(0)}%)`}
-            />
-          )}
-          {approvedPercent > 0 && (
-            <div 
-              style={{ width: `${approvedPercent}%` }} 
-              className="bg-emerald-500 transition-all duration-500 cursor-pointer hover:opacity-90"
-              title={`Approved: ${approvedCount} tasks (${approvedPercent.toFixed(0)}%)`}
-            />
-          )}
-
-          {/* Interactive ticks */}
-          <div className="absolute top-0 bottom-0 w-0.5 bg-white/40 left-1/2" title="50% Milestone" />
-          <div className="absolute top-0 bottom-0 w-0.5 bg-white/40 right-0" title="100% Launch" />
-        </div>
-
-        {/* Milestones / Health ticks indicators */}
-        <div className="flex justify-between items-center mt-2 text-[8px] font-black text-textMuted uppercase tracking-widest px-1">
-          <span>Start</span>
-          <span 
-            onClick={() => alert(progressPercent >= 50 ? "🎉 50% Milestone Cleared! Halfway there!" : "🚀 Keep pushing to reach the 50% midpoint milestone!")}
-            className={`cursor-pointer px-2 py-0.5 rounded transition ${progressPercent >= 50 ? 'bg-primary text-white border border-primary/20 animate-bounce' : 'bg-gray-100 border border-divider'}`}
-          >
-            50% Milestone {progressPercent >= 50 ? '✓' : ''}
-          </span>
-          <span 
-            onClick={() => alert(progressPercent === 100 ? "👑 100% Shipping Cleared! Excellent job team!" : "🏆 All tasks approved to fully launch!")}
-            className={`cursor-pointer px-2 py-0.5 rounded transition ${progressPercent === 100 ? 'bg-emerald-600 text-white border border-emerald-500/20 animate-pulse' : 'bg-gray-100 border border-divider'}`}
-          >
-            100% Shipped {progressPercent === 100 ? '🎉' : ''}
+          <span className="text-[10px] font-black text-[#7B5CFA] bg-[#7B5CFA]/5 px-2.5 py-1 rounded-lg border border-[#7B5CFA]/10">
+            {progressPercent.toFixed(0)}% Shipped ({approvedCount}/{total} Tasks)
           </span>
         </div>
-
-        {/* Legend */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-divider text-center">
-          <div className="flex items-center gap-2 justify-center bg-rose-50/50 py-1.5 px-3 rounded-xl border border-rose-100/50">
-            <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-            <span className="text-[9px] font-black text-rose-700 uppercase tracking-widest">To Do ({todoCount})</span>
-          </div>
-          <div className="flex items-center gap-2 justify-center bg-amber-50/50 py-1.5 px-3 rounded-xl border border-amber-100/50">
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-            <span className="text-[9px] font-black text-amber-700 uppercase tracking-widest">In Progress ({inProgressCount})</span>
-          </div>
-          <div className="flex items-center gap-2 justify-center bg-yellow-50/50 py-1.5 px-3 rounded-xl border border-yellow-100/50">
-            <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-            <span className="text-[9px] font-black text-yellow-700 uppercase tracking-widest">Review ({reviewCount})</span>
-          </div>
-          <div className="flex items-center gap-2 justify-center bg-emerald-50/50 py-1.5 px-3 rounded-xl border border-emerald-100/50">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Approved ({approvedCount})</span>
-          </div>
+        
+        {/* Sleek, thin stacked progress line */}
+        <div className="relative w-full bg-white/5 rounded-full h-2 overflow-hidden flex shadow-inner">
+          {todoPercent > 0 && <div style={{ width: `${todoPercent}%` }} className="bg-rose-500 h-full" title={`To Do: ${todoCount} (${todoPercent.toFixed(0)}%)`} />}
+          {inProgressPercent > 0 && <div style={{ width: `${inProgressPercent}%` }} className="bg-amber-500 h-full" title={`In Progress: ${inProgressCount} (${inProgressPercent.toFixed(0)}%)`} />}
+          {reviewPercent > 0 && <div style={{ width: `${reviewPercent}%` }} className="bg-yellow-400 h-full" title={`Under Review: ${reviewCount} (${reviewPercent.toFixed(0)}%)`} />}
+          {approvedPercent > 0 && <div style={{ width: `${approvedPercent}%` }} className="bg-emerald-500 h-full" title={`Approved: ${approvedCount} (${approvedPercent.toFixed(0)}%)`} />}
+        </div>
+        
+        {/* Compact, elegant legends in a single line */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[9px] font-bold text-[#8B95A5] uppercase tracking-wider">
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500" /> To Do ({todoCount})</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" /> In Progress ({inProgressCount})</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Review ({reviewCount})</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Approved ({approvedCount})</div>
         </div>
       </div>
     );
@@ -656,12 +587,12 @@ const CircleWorkspace = () => {
         {/* Workspace Title bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
            <div>
-              <h3 className="text-xl font-black text-textMain tracking-tight">Circle Board & Task Workspace</h3>
-              <p className="text-xs text-textMuted mt-0.5">Manage priorities, assignees, subtask details, and audit history logs.</p>
+              <h3 className="text-xl font-black text-white tracking-tight">Circle Board & Task Workspace</h3>
+              <p className="text-xs text-[#8B95A5] mt-0.5">Manage priorities, assignees, subtask details, and audit history logs.</p>
            </div>
            <button 
              onClick={() => setIsTaskModalOpen(true)}
-             className="bg-primary hover:bg-primaryHover text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 flex items-center gap-2 transition w-fit"
+             className="bg-[#7B5CFA] hover:bg-[#7B5CFA]Hover text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#7B5CFA]/20 flex items-center gap-2 transition w-fit"
            >
               <Plus size={14} /> Create Task
            </button>
@@ -671,12 +602,12 @@ const CircleWorkspace = () => {
         <TaskProgressBar />
 
         {/* JIRA FILTER & SEARCH TOOLBAR */}
-        <div className="bg-white border border-divider rounded-[2rem] p-4 flex flex-col gap-3 shadow-sm">
+        <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[2rem] p-4 flex flex-col gap-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-4">
             {/* Left elements: Text search + Toggle View */}
             <div className="flex items-center gap-3 w-full md:w-auto">
-              <div className="relative flex-1 md:w-64 bg-gray-50 border border-divider rounded-xl px-3 py-2 flex items-center gap-2 focus-within:border-primary transition-all">
-                <Search size={14} className="text-textMuted" />
+              <div className="relative flex-1 md:w-64 bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 flex items-center gap-2 focus-within:border-[#7B5CFA] transition-all">
+                <Search size={14} className="text-[#8B95A5]" />
                 <input 
                   type="text"
                   value={taskSearchQuery}
@@ -686,17 +617,17 @@ const CircleWorkspace = () => {
                 />
               </div>
               
-              <div className="flex bg-gray-100 p-1 rounded-xl border border-divider">
+              <div className="flex bg-white/5 p-1 rounded-xl border border-[#0F131E]/5">
                 <button 
                   onClick={() => setTasksLayout('board')}
-                  className={`p-1.5 rounded-lg transition-all ${tasksLayout === 'board' ? 'bg-white shadow-sm text-primary' : 'text-textMuted hover:text-textMain'}`}
+                  className={`p-1.5 rounded-lg transition-all ${tasksLayout === 'board' ? 'bg-[#0F131E] shadow-sm text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}
                   title="Kanban Board View"
                 >
                   <Grid size={14} />
                 </button>
                 <button 
                   onClick={() => setTasksLayout('list')}
-                  className={`p-1.5 rounded-lg transition-all ${tasksLayout === 'list' ? 'bg-white shadow-sm text-primary' : 'text-textMuted hover:text-textMain'}`}
+                  className={`p-1.5 rounded-lg transition-all ${tasksLayout === 'list' ? 'bg-[#0F131E] shadow-sm text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}
                   title="Spreadsheet List View"
                 >
                   <List size={14} />
@@ -710,7 +641,7 @@ const CircleWorkspace = () => {
               <select 
                 value={taskAssigneeFilter}
                 onChange={e => setTaskAssigneeFilter(e.target.value)}
-                className="bg-gray-50 border border-divider rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
+                className="bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
               >
                 <option value="ALL">Assignee: All</option>
                 {circle.members?.map(m => (
@@ -722,7 +653,7 @@ const CircleWorkspace = () => {
               <select 
                 value={taskPriorityFilter}
                 onChange={e => setTaskPriorityFilter(e.target.value)}
-                className="bg-gray-50 border border-divider rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
+                className="bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
               >
                 <option value="ALL">Priority: All</option>
                 <option value="LOW">Low</option>
@@ -735,7 +666,7 @@ const CircleWorkspace = () => {
               <select 
                 value={taskLabelFilter}
                 onChange={e => setTaskLabelFilter(e.target.value)}
-                className="bg-gray-50 border border-divider rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
+                className="bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
               >
                 <option value="ALL">Tag: All</option>
                 {distinctTags.map(tag => (
@@ -747,7 +678,7 @@ const CircleWorkspace = () => {
               <select 
                 value={taskDueDateFilter}
                 onChange={e => setTaskDueDateFilter(e.target.value)}
-                className="bg-gray-50 border border-divider rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
+                className="bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-wider outline-none transition"
               >
                 <option value="ALL">Due Date: All</option>
                 <option value="OVERDUE">Overdue Tasks</option>
@@ -757,7 +688,7 @@ const CircleWorkspace = () => {
               {/* Quick toggle: My Tasks */}
               <button 
                 onClick={() => setTaskMyTasksOnly(!taskMyTasksOnly)}
-                className={`px-3 py-2 border rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${taskMyTasksOnly ? 'bg-primary border-primary text-white shadow-sm shadow-primary/20' : 'bg-gray-50 border-divider text-textMuted hover:text-textMain'}`}
+                className={`px-3 py-2 border rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${taskMyTasksOnly ? 'bg-[#7B5CFA] border-[#7B5CFA] text-white shadow-sm shadow-[#7B5CFA]/20' : 'bg-[#181D2A] border-[#0F131E]/5 text-[#8B95A5] hover:text-white'}`}
               >
                 My Tasks Only
               </button>
@@ -782,23 +713,23 @@ const CircleWorkspace = () => {
                   key={col.id} 
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, col.id)}
-                  className={`flex flex-col bg-gray-50/50 border border-divider rounded-[2rem] p-4 border-t-4 ${col.color} min-h-[500px] max-h-[680px]`}
+                  className={`flex flex-col bg-slate-50/40 border border-[#0F131E]/5 rounded-2xl p-3 border-t-4 ${col.color} min-h-[500px] max-h-[680px]`}
                 >
-                  <div className="flex items-center justify-between mb-4 px-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                  <div className="flex items-center justify-between mb-3 px-1.5">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 text-white">
                       <div className={`w-2 h-2 rounded-full ${col.iconBg}`} /> {col.title}
                     </span>
-                    <span className="text-[10px] font-black bg-white px-2 py-0.5 rounded-md border border-divider shadow-sm">
+                    <span className="text-[9px] font-extrabold bg-[#0F131E] px-1.5 py-0.5 rounded border border-[#0F131E]/5 shadow-sm text-[#8B95A5]">
                       {colTasks.length}
                     </span>
                   </div>
 
                   {/* Independent Vertically Scrollable Columns */}
-                  <div className="space-y-3 flex-1 overflow-y-auto no-scrollbar pr-0.5 pb-4">
+                  <div className="space-y-2.5 flex-1 overflow-y-auto no-scrollbar pr-0.5 pb-2">
                     {colTasks.length === 0 && (
-                      <div className="h-32 rounded-2xl border-2 border-dashed border-divider bg-white flex flex-col items-center justify-center text-center p-4">
-                        <ListTodo size={20} className="text-textMuted opacity-20 mb-2" />
-                        <p className="text-[8px] font-black text-textMuted uppercase tracking-widest">No tasks</p>
+                      <div className="h-24 rounded-xl border border-dashed border-[#0F131E]/5 bg-[#0F131E]/60 flex flex-col items-center justify-center text-center p-3">
+                        <ListTodo size={16} className="text-[#8B95A5] opacity-25 mb-1" />
+                        <p className="text-[9px] font-extrabold text-[#8B95A5] uppercase tracking-wider">No tasks</p>
                       </div>
                     )}
 
@@ -824,34 +755,39 @@ const CircleWorkspace = () => {
                             setDetailDesc(task.description || '');
                             setIsDetailPanelOpen(true);
                           }}
-                          className={`bg-white border rounded-2xl p-4 hover:border-primary transition group shadow-sm flex flex-col justify-between min-h-[180px] cursor-pointer relative ${isOverdue ? 'border-red-400 bg-red-50/10' : 'border-divider'}`}
+                          className={`bg-[#0F131E] border rounded-xl p-3 hover:border-[#7B5CFA] hover:shadow-md transition duration-200 group flex flex-col justify-between cursor-pointer relative ${isOverdue ? 'border-red-200 bg-red-50/5' : 'border-[#0F131E]/5'}`}
                         >
-                          <div>
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <span className="text-[8px] font-black text-primary bg-primary/5 border border-primary/15 px-2 py-0.5 rounded">
+                          <div className="space-y-2">
+                            {/* Top Header Row with Code & Priority */}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[9px] font-extrabold text-[#7B5CFA] bg-[#7B5CFA]/5 px-2 py-0.5 rounded border border-[#7B5CFA]/10">
                                 {task.taskCode || 'TASK'}
                               </span>
-
-                              <div className="flex gap-1">
-                                <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border ${getPriorityBadge(task.priority)}`}>
+                              <div className="flex gap-1 items-center">
+                                <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${getPriorityBadge(task.priority)}`}>
                                   {task.priority}
                                 </span>
                                 {task.estimatedEffort && (
-                                  <span className="bg-purple-50 border border-purple-100 text-purple-600 px-1.5 py-0.5 rounded-md text-[8px] font-black" title="Story Points Effort">
+                                  <span className="bg-purple-50 border border-purple-100 text-purple-600 px-1.5 py-0.5 rounded text-[8px] font-extrabold" title="Story Points Effort">
                                     {task.estimatedEffort} SP
                                   </span>
                                 )}
                               </div>
                             </div>
 
-                            <h4 className="font-black text-textMain text-sm leading-snug group-hover:text-primary transition-colors">{task.title}</h4>
-                            <p className="text-xs text-textMuted mt-1 line-clamp-2 leading-relaxed">{task.description || "No description provided."}</p>
+                            {/* Title & Description */}
+                            <div>
+                              <h4 className="font-extrabold text-white text-xs leading-snug group-hover:text-[#7B5CFA] transition-colors">{task.title}</h4>
+                              {task.description && (
+                                <p className="text-[10px] text-[#8B95A5] mt-1 line-clamp-2 leading-relaxed">{task.description}</p>
+                              )}
+                            </div>
 
-                            {/* Render labels/tags inside card */}
+                            {/* Tags */}
                             {tagsList.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-2">
+                              <div className="flex flex-wrap gap-1">
                                 {tagsList.map(tag => (
-                                  <span key={tag} className="text-[8px] font-bold text-textMain bg-gray-100 px-1.5 py-0.5 rounded">
+                                  <span key={tag} className="text-[8px] font-extrabold text-indigo-600 bg-indigo-50/60 px-1.5 py-0.5 rounded border border-indigo-100/30">
                                     #{tag}
                                   </span>
                                 ))}
@@ -860,47 +796,34 @@ const CircleWorkspace = () => {
 
                             {/* Returned rejection badge warning inside card */}
                             {task.rejectionComment && (
-                              <div className="mt-2.5 px-2 py-1 bg-red-50 border border-red-100 rounded-lg flex items-center gap-1 text-[8px] font-black text-red-600 uppercase tracking-wider">
-                                <AlertTriangle size={10} className="text-red-500" /> Returned Changes
+                              <div className="px-2 py-1 bg-red-50 border border-red-100 rounded-lg flex items-center gap-1 text-[8px] font-extrabold text-red-600 uppercase tracking-wider">
+                                <AlertTriangle size={10} className="text-red-500 flex-shrink-0" /> Changes Requested
                               </div>
                             )}
                           </div>
 
-                          <div className="pt-3 border-t border-divider mt-3 flex items-center justify-between gap-2">
-                            <div className="flex flex-col gap-1 min-w-0">
-                              {/* Assignee display */}
-                              <div className="flex items-center gap-1.5 min-w-0">
-                                {task.assignee ? (
-                                  <>
-                                    <img src={task.assignee.profileImage || `https://ui-avatars.com/api/?name=${task.assignee.username}`} className="w-5 h-5 rounded-md object-cover flex-shrink-0" />
-                                    <span className="text-[8px] font-black text-textMuted uppercase tracking-widest truncate">@{task.assignee.username}</span>
-                                  </>
-                                ) : (
-                                  <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Unassigned</span>
-                                )}
-                              </div>
-
-                              {/* Subtasks checklist indicators */}
-                              {hasSubtasks && (
-                                <span className="text-[8px] font-bold text-textMuted">
-                                  📋 Subtasks: {completedSubtasks}/{task.subtasks.length}
-                                </span>
+                          {/* Meta info footer (very compact, borderless/subtle) */}
+                          <div className="pt-2.5 border-t border-gray-100 mt-2.5 flex items-center justify-between text-[9px] font-bold text-[#8B95A5]">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              {task.assignee ? (
+                                <>
+                                  <img src={task.assignee.profileImage || `https://ui-avatars.com/api/?name=${task.assignee.username}`} className="w-4 h-4 rounded-full object-cover flex-shrink-0" />
+                                  <span className="truncate">@{task.assignee.username}</span>
+                                </>
+                              ) : (
+                                <span className="text-slate-400">Unassigned</span>
                               )}
                             </div>
 
-                            <div className="flex flex-col items-end gap-1.5">
-                              {/* Due Date Indicator */}
+                            <div className="flex items-center gap-2 flex-shrink-0">
                               {task.deadline && (
-                                <span className={`text-[8px] font-black uppercase flex items-center gap-1 ${isOverdue ? 'text-red-600 animate-pulse' : 'text-textMuted'}`}>
-                                  {isOverdue && <AlertTriangle size={10} />}
-                                  <Calendar size={10} /> {new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                <span className={`flex items-center gap-0.5 ${isOverdue ? 'text-red-600 font-extrabold animate-pulse' : ''}`}>
+                                  <Calendar size={9} /> {new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                 </span>
                               )}
-
-                              {/* Comments tracker badge */}
-                              {(task._count?.comments > 0 || (task.comments && task.comments.length > 0)) && (
-                                <span className="text-[8px] font-black text-textMuted flex items-center gap-1">
-                                  <MessageSquare size={10} /> {task._count?.comments || task.comments.length}
+                              {hasSubtasks && (
+                                <span className="bg-[#181D2A] border border-[#0F131E]/5 px-1.5 py-0.5 rounded text-[8px]">
+                                  {completedSubtasks}/{task.subtasks.length}
                                 </span>
                               )}
                             </div>
@@ -915,17 +838,17 @@ const CircleWorkspace = () => {
           </div>
         ) : (
           /* Spreadsheet Tabular View sortable */
-          <div className="bg-white border border-divider rounded-[2rem] overflow-hidden shadow-sm">
+          <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[2rem] overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-divider">
+                  <tr className="bg-[#181D2A] border-b border-[#0F131E]/5">
                     <th 
                       onClick={() => {
                         setTaskSortField('taskCode');
                         setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                       }}
-                      className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest cursor-pointer hover:bg-gray-100 transition"
+                      className="px-6 py-4 text-[9px] font-black text-[#8B95A5] uppercase tracking-widest cursor-pointer hover:bg-white/5 transition"
                     >
                       Task ID {taskSortField === 'taskCode' ? (taskSortOrder === 'asc' ? '▲' : '▼') : ''}
                     </th>
@@ -934,7 +857,7 @@ const CircleWorkspace = () => {
                         setTaskSortField('title');
                         setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                       }}
-                      className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest cursor-pointer hover:bg-gray-100 transition"
+                      className="px-6 py-4 text-[9px] font-black text-[#8B95A5] uppercase tracking-widest cursor-pointer hover:bg-white/5 transition"
                     >
                       Title {taskSortField === 'title' ? (taskSortOrder === 'asc' ? '▲' : '▼') : ''}
                     </th>
@@ -943,7 +866,7 @@ const CircleWorkspace = () => {
                         setTaskSortField('status');
                         setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                       }}
-                      className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest cursor-pointer hover:bg-gray-100 transition"
+                      className="px-6 py-4 text-[9px] font-black text-[#8B95A5] uppercase tracking-widest cursor-pointer hover:bg-white/5 transition"
                     >
                       Status {taskSortField === 'status' ? (taskSortOrder === 'asc' ? '▲' : '▼') : ''}
                     </th>
@@ -952,17 +875,17 @@ const CircleWorkspace = () => {
                         setTaskSortField('priority');
                         setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                       }}
-                      className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest cursor-pointer hover:bg-gray-100 transition"
+                      className="px-6 py-4 text-[9px] font-black text-[#8B95A5] uppercase tracking-widest cursor-pointer hover:bg-white/5 transition"
                     >
                       Priority {taskSortField === 'priority' ? (taskSortOrder === 'asc' ? '▲' : '▼') : ''}
                     </th>
-                    <th className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest">Assignee</th>
+                    <th className="px-6 py-4 text-[9px] font-black text-[#8B95A5] uppercase tracking-widest">Assignee</th>
                     <th 
                       onClick={() => {
                         setTaskSortField('deadline');
                         setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                       }}
-                      className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest cursor-pointer hover:bg-gray-100 transition"
+                      className="px-6 py-4 text-[9px] font-black text-[#8B95A5] uppercase tracking-widest cursor-pointer hover:bg-white/5 transition"
                     >
                       Due Date {taskSortField === 'deadline' ? (taskSortOrder === 'asc' ? '▲' : '▼') : ''}
                     </th>
@@ -971,7 +894,7 @@ const CircleWorkspace = () => {
                 <tbody className="divide-y divide-divider">
                   {getSortedTasks().length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-6 py-12 text-center text-textMuted text-xs font-bold uppercase tracking-wider">
+                      <td colSpan={6} className="px-6 py-12 text-center text-[#8B95A5] text-xs font-bold uppercase tracking-wider">
                         No tasks match the selected filters
                       </td>
                     </tr>
@@ -987,12 +910,12 @@ const CircleWorkspace = () => {
                           setDetailDesc(task.description || '');
                           setIsDetailPanelOpen(true);
                         }}
-                        className={`hover:bg-gray-50/50 transition-all cursor-pointer group ${isOverdue ? 'bg-red-50/10' : ''}`}
+                        className={`hover:bg-[#181D2A]/50 transition-all cursor-pointer group ${isOverdue ? 'bg-red-50/10' : ''}`}
                       >
-                        <td className="px-6 py-4 font-bold text-xs text-primary">{task.taskCode || 'TASK'}</td>
+                        <td className="px-6 py-4 font-bold text-xs text-[#7B5CFA]">{task.taskCode || 'TASK'}</td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
-                            <span className="font-bold text-textMain text-xs group-hover:text-primary transition">{task.title}</span>
+                            <span className="font-bold text-white text-xs group-hover:text-[#7B5CFA] transition">{task.title}</span>
                             {task.rejectionComment && (
                               <span className="text-[8px] font-black text-red-600 uppercase tracking-widest mt-0.5 flex items-center gap-0.5">
                                 <AlertTriangle size={8} /> Returned Needs Changes
@@ -1020,7 +943,7 @@ const CircleWorkspace = () => {
                             {task.assignee ? (
                               <>
                                 <img src={task.assignee.profileImage || `https://ui-avatars.com/api/?name=${task.assignee.username}`} className="w-5 h-5 rounded-md object-cover" />
-                                <span className="text-[10px] font-black text-textMuted uppercase tracking-widest">@{task.assignee.username}</span>
+                                <span className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest">@{task.assignee.username}</span>
                               </>
                             ) : (
                               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Unassigned</span>
@@ -1029,7 +952,7 @@ const CircleWorkspace = () => {
                         </td>
                         <td className="px-6 py-4">
                           {task.deadline ? (
-                            <span className={`text-xs font-bold ${isOverdue ? 'text-red-600 animate-pulse' : 'text-textMuted'}`}>
+                            <span className={`text-xs font-bold ${isOverdue ? 'text-red-600 animate-pulse' : 'text-[#8B95A5]'}`}>
                               {new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                             </span>
                           ) : (
@@ -1050,11 +973,11 @@ const CircleWorkspace = () => {
 
 
   const ChatPanel = () => (
-    <div className="flex flex-col h-full bg-white md:border md:border-divider md:rounded-[2rem] overflow-hidden shadow-sm">
-       <div className="p-4 border-b border-divider bg-gray-50/50 flex items-center justify-between">
+    <div className="flex flex-col h-full bg-[#0F131E] md:border md:border-[#0F131E]/5 md:rounded-[2rem] overflow-hidden shadow-sm">
+       <div className="p-4 border-b border-[#0F131E]/5 bg-[#181D2A]/50 flex items-center justify-between">
           <div className="flex items-center gap-2">
-             <MessageSquare size={16} className="text-primary" />
-             <span className="text-[10px] font-black text-textMain uppercase tracking-widest">Internal Sync</span>
+             <MessageSquare size={16} className="text-[#7B5CFA]" />
+             <span className="text-[10px] font-black text-white uppercase tracking-widest">Internal Sync</span>
           </div>
           <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-1">
              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live
@@ -1068,10 +991,10 @@ const CircleWorkspace = () => {
               <div key={msg.id || i} className={`flex gap-3 ${isMine ? 'flex-row-reverse' : ''}`}>
                  <img src={msg.sender?.profileImage} className="w-8 h-8 rounded-lg object-cover flex-shrink-0 mt-1" />
                  <div className={`max-w-[80%] ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
-                    <div className={`px-4 py-2.5 rounded-2xl text-sm ${isMine ? 'bg-primary text-white rounded-tr-none' : 'bg-gray-100 text-textMain rounded-tl-none'}`}>
+                    <div className={`px-4 py-2.5 rounded-2xl text-sm ${isMine ? 'bg-[#7B5CFA] text-white rounded-tr-none' : 'bg-white/5 text-white rounded-tl-none'}`}>
                        {msg.content}
                     </div>
-                    <p className="text-[8px] font-black text-textMuted uppercase mt-1 px-1 tracking-widest">
+                    <p className="text-[8px] font-black text-[#8B95A5] uppercase mt-1 px-1 tracking-widest">
                        {msg.sender?.username} • {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                  </div>
@@ -1080,15 +1003,15 @@ const CircleWorkspace = () => {
           })}
        </div>
 
-       <form onSubmit={handleSendMessage} className="p-4 border-t border-divider">
-          <div className="flex gap-2 bg-gray-50 border border-divider rounded-2xl p-2 focus-within:border-primary transition-all">
+       <form onSubmit={handleSendMessage} className="p-4 border-t border-[#0F131E]/5">
+          <div className="flex gap-2 bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl p-2 focus-within:border-[#7B5CFA] transition-all">
              <input 
                value={msgInput}
                onChange={e => setMsgInput(e.target.value)}
                placeholder="Write an update..."
                className="flex-1 bg-transparent border-none outline-none text-sm px-2"
              />
-             <button type="submit" className="bg-primary text-white p-2.5 rounded-xl shadow-lg shadow-primary/20">
+             <button type="submit" className="bg-[#7B5CFA] text-white p-2.5 rounded-xl shadow-lg shadow-[#7B5CFA]/20">
                 <Send size={16} />
              </button>
           </div>
@@ -1096,362 +1019,7 @@ const CircleWorkspace = () => {
     </div>
   );
 
-  const FilesPanel = () => {
-    const totalFiles = files.length;
-    
-    const getExt = (fileUrl) => {
-      const filename = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-      return filename.substring(filename.lastIndexOf('.')).toLowerCase();
-    };
-
-    const isImage = (f) => f.type.startsWith('image/') || ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'].includes(getExt(f.fileUrl));
-    const isVideo = (f) => f.type.startsWith('video/') || ['.mp4', '.mkv', '.avi', '.mov', '.webm'].includes(getExt(f.fileUrl));
-    const isAudio = (f) => f.type.startsWith('audio/') || ['.mp3', '.wav', '.ogg', '.m4a'].includes(getExt(f.fileUrl));
-    const isPdf = (f) => getExt(f.fileUrl) === '.pdf' || f.type === 'application/pdf';
-    const isArchive = (f) => ['.zip', '.rar', '.tar', '.gz', '.7z'].includes(getExt(f.fileUrl));
-    const isDoc = (f) => !isImage(f) && !isVideo(f) && !isAudio(f) && !isArchive(f);
-
-    const imageCount = files.filter(isImage).length;
-    const videoCount = files.filter(isVideo).length;
-    const audioCount = files.filter(isAudio).length;
-    const docCount = files.filter(f => isPdf(f) || isDoc(f)).length;
-    const archiveCount = files.filter(isArchive).length;
-
-    const filteredFiles = files.filter(file => {
-      const originalName = getOriginalName(file.fileUrl).toLowerCase();
-      const matchesSearch = originalName.includes(fileSearchQuery.toLowerCase());
-      
-      if (!matchesSearch) return false;
-
-      switch (fileCategoryFilter) {
-        case 'IMAGES':
-          return isImage(file);
-        case 'AUDIOS':
-          return isAudio(file);
-        case 'VIDEOS':
-          return isVideo(file);
-        case 'DOCUMENTS':
-          return isPdf(file) || isDoc(file);
-        case 'ARCHIVES':
-          return isArchive(file);
-        default:
-          return true;
-      }
-    });
-
-    const categoryTabs = [
-      { id: 'ALL',       label: 'All Assets', count: totalFiles },
-      { id: 'IMAGES',    label: 'Images',     count: imageCount },
-      { id: 'AUDIOS',    label: 'Audio',      count: audioCount },
-      { id: 'VIDEOS',    label: 'Video',      count: videoCount },
-      { id: 'DOCUMENTS', label: 'Docs',       count: docCount },
-      { id: 'ARCHIVES',  label: 'Archives',   count: archiveCount }
-    ];
-
-    return (
-      <div className="space-y-6 pb-12">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-black text-textMain tracking-tight">Circle File Vault</h3>
-            <p className="text-xs text-textMuted mt-0.5">Secure shared assets and version control briefs.</p>
-          </div>
-          <div>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              onChange={handleFileUpload} 
-              className="hidden" 
-            />
-            <button 
-              onClick={() => fileInputRef.current?.click()} 
-              disabled={uploading}
-              className="bg-primary hover:bg-primaryHover text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 flex items-center gap-2 transition disabled:opacity-50"
-            >
-              {uploading ? (
-                <>
-                  <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-white" /> Uploading...
-                </>
-              ) : (
-                <>
-                  <Plus size={14} /> Upload File
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Dynamic File Statistics Panel */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          <div className="bg-indigo-50/50 border border-indigo-100/50 p-3 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest">Images</p>
-              <p className="text-lg font-black text-indigo-900 mt-0.5">{imageCount}</p>
-            </div>
-            <Image size={24} className="text-indigo-400 opacity-80" />
-          </div>
-          <div className="bg-emerald-50/50 border border-emerald-100/50 p-3 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Audio</p>
-              <p className="text-lg font-black text-emerald-900 mt-0.5">{audioCount}</p>
-            </div>
-            <Music size={24} className="text-emerald-400 opacity-80" />
-          </div>
-          <div className="bg-pink-50/50 border border-pink-100/50 p-3 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[8px] font-black text-pink-600 uppercase tracking-widest">Video</p>
-              <p className="text-lg font-black text-pink-900 mt-0.5">{videoCount}</p>
-            </div>
-            <Video size={24} className="text-pink-400 opacity-80" />
-          </div>
-          <div className="bg-rose-50/50 border border-rose-100/50 p-3 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="text-[8px] font-black text-rose-600 uppercase tracking-widest">Documents</p>
-              <p className="text-lg font-black text-rose-900 mt-0.5">{docCount}</p>
-            </div>
-            <FileText size={24} className="text-rose-400 opacity-80" />
-          </div>
-          <div className="bg-amber-50/50 border border-amber-100/50 p-3 rounded-2xl flex items-center justify-between col-span-2 sm:col-span-1">
-            <div>
-              <p className="text-[8px] font-black text-amber-600 uppercase tracking-widest">Archives</p>
-              <p className="text-lg font-black text-amber-900 mt-0.5">{archiveCount}</p>
-            </div>
-            <Layers size={24} className="text-amber-400 opacity-80" />
-          </div>
-        </div>
-
-        {/* Control Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
-          <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
-            {categoryTabs.map(tab => (
-              <button 
-                key={tab.id}
-                onClick={() => setFileCategoryFilter(tab.id)}
-                className={`flex-shrink-0 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition ${
-                  fileCategoryFilter === tab.id 
-                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20' 
-                    : 'bg-white border-divider text-textMuted hover:text-textMain'
-                }`}
-              >
-                {tab.label} ({tab.count})
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="relative flex-1 md:w-64">
-              <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" />
-              <input 
-                type="text" 
-                value={fileSearchQuery}
-                onChange={e => setFileSearchQuery(e.target.value)}
-                placeholder="Search assets..."
-                className="w-full bg-white border border-divider rounded-xl pl-10 pr-4 py-2 text-xs font-bold focus:border-primary outline-none transition shadow-sm"
-              />
-              {fileSearchQuery && (
-                <button 
-                  onClick={() => setFileSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-textMuted hover:text-textMain transition"
-                >
-                  <X size={12} />
-                </button>
-              )}
-            </div>
-
-            <div className="flex bg-white p-1 rounded-xl border border-divider shadow-sm">
-              <button 
-                onClick={() => setFileLayout('grid')}
-                className={`p-1.5 rounded-lg transition ${fileLayout === 'grid' ? 'bg-gray-100 text-primary' : 'text-textMuted hover:text-textMain'}`}
-                title="Grid View"
-              >
-                <Grid size={14} />
-              </button>
-              <button 
-                onClick={() => setFileLayout('list')}
-                className={`p-1.5 rounded-lg transition ${fileLayout === 'list' ? 'bg-gray-100 text-primary' : 'text-textMuted hover:text-textMain'}`}
-                title="List View"
-              >
-                <List size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Files Listings */}
-        {filteredFiles.length === 0 ? (
-          <div className="py-20 text-center bg-gray-50 rounded-[2rem] border-2 border-dashed border-divider">
-            <FileText size={40} className="text-textMuted mx-auto mb-4 opacity-20" />
-            <p className="text-textMuted font-black uppercase text-[10px] tracking-widest mb-1">
-              {fileSearchQuery || fileCategoryFilter !== 'ALL' ? 'No matching files' : 'Vault is empty'}
-            </p>
-            <p className="text-xs text-textMuted max-w-xs mx-auto">
-              {fileSearchQuery || fileCategoryFilter !== 'ALL' 
-                ? 'Try adjusting your search filters.' 
-                : 'Upload assets, design brief PDF sheets, audio drafts, or media packages to sync.'}
-            </p>
-          </div>
-        ) : fileLayout === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {uploading && (
-              <div className="border border-primary border-dashed bg-primary/5 rounded-2xl p-5 flex items-center justify-between animate-pulse">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-primary/10 rounded-xl text-primary">
-                    <FileText size={24} className="animate-bounce" />
-                  </div>
-                  <div>
-                    <p className="font-black text-textMain text-sm">Uploading file...</p>
-                    <p className="text-xs text-textMuted mt-0.5">Encrypting Vault Slot</p>
-                  </div>
-                </div>
-                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-primary" />
-              </div>
-            )}
-
-            {filteredFiles.map(file => {
-              const { icon: Icon, color } = getFileIcon(file.type, file.fileUrl);
-              const originalName = getOriginalName(file.fileUrl);
-              const isMyFile = file.uploadedBy === user?.id;
-              const isCircleOwner = circle.ownerId === user?.id;
-
-              return (
-                <div key={file.id} className="bg-white border border-divider rounded-2xl p-5 hover:border-primary transition-all group flex flex-col justify-between shadow-sm hover:shadow-md">
-                  <div className="flex items-start gap-4">
-                    <div className={`p-3.5 rounded-xl border ${color} flex-shrink-0`}>
-                      <Icon size={24} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="font-black text-textMain text-sm truncate group-hover:text-primary transition-colors" title={originalName}>
-                        {originalName}
-                      </h4>
-                      <p className="text-[10px] font-black text-textMuted uppercase tracking-widest mt-1">
-                        Uploaded by @{file.uploader?.username || 'member'}
-                      </p>
-                      <p className="text-[9px] text-textMuted mt-0.5">
-                        {new Date(file.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-divider mt-4">
-                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest px-2 py-0.5 bg-slate-100 rounded-md">
-                      v{file.version}
-                    </span>
-                    <div className="flex gap-2">
-                      <a 
-                        href={file.fileUrl} 
-                        download={originalName} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 hover:bg-gray-50 rounded-lg text-textMuted hover:text-primary transition flex items-center justify-center border border-divider"
-                        title="Download File"
-                      >
-                        <Download size={14} />
-                      </a>
-                      {(isMyFile || isCircleOwner) && (
-                        <button 
-                          onClick={() => handleFileDelete(file.id)}
-                          className="p-2 hover:bg-rose-50 rounded-lg text-textMuted hover:text-rose-600 transition flex items-center justify-center border border-divider"
-                          title="Delete File"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="bg-white border border-divider rounded-[2rem] overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-divider">
-                    <th className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest">Name</th>
-                    <th className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest">Shared By</th>
-                    <th className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest">Uploaded Date</th>
-                    <th className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest">Version</th>
-                    <th className="px-6 py-4 text-[9px] font-black text-textMuted uppercase tracking-widest text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-divider">
-                  {uploading && (
-                    <tr className="animate-pulse bg-primary/5">
-                      <td className="px-6 py-4 flex items-center gap-3 font-bold text-xs text-textMain">
-                        <FileText size={18} className="text-primary animate-bounce" /> Uploading in progress...
-                      </td>
-                      <td className="px-6 py-4 text-xs font-semibold text-textMuted">-</td>
-                      <td className="px-6 py-4 text-xs font-semibold text-textMuted">-</td>
-                      <td className="px-6 py-4 text-xs font-semibold text-textMuted">v1</td>
-                      <td className="px-6 py-4 text-right">-</td>
-                    </tr>
-                  )}
-                  {filteredFiles.map(file => {
-                    const { icon: Icon, color } = getFileIcon(file.type, file.fileUrl);
-                    const originalName = getOriginalName(file.fileUrl);
-                    const isMyFile = file.uploadedBy === user?.id;
-                    const isCircleOwner = circle.ownerId === user?.id;
-
-                    return (
-                      <tr key={file.id} className="hover:bg-gray-50/50 transition-all group">
-                        <td className="px-6 py-4 min-w-0">
-                          <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg border ${color} flex-shrink-0`}>
-                              <Icon size={16} />
-                            </div>
-                            <span className="font-bold text-textMain text-xs truncate max-w-xs block group-hover:text-primary transition" title={originalName}>
-                              {originalName}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <img src={file.uploader?.profileImage || `https://ui-avatars.com/api/?name=${file.uploader?.username}`} className="w-5 h-5 rounded-md object-cover" />
-                            <span className="text-[10px] font-black text-textMuted uppercase tracking-widest">@{file.uploader?.username}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-xs font-medium text-textMuted">
-                          {new Date(file.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest px-2 py-0.5 bg-slate-100 rounded-md">
-                            v{file.version}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex gap-2 justify-end">
-                            <a 
-                              href={file.fileUrl} 
-                              download={originalName} 
-                              target="_blank" 
-                              rel="noreferrer"
-                              className="p-1.5 hover:bg-gray-100 rounded-lg text-textMuted hover:text-primary transition flex items-center justify-center border border-divider"
-                              title="Download File"
-                            >
-                              <Download size={12} />
-                            </a>
-                            {(isMyFile || isCircleOwner) && (
-                              <button 
-                                onClick={() => handleFileDelete(file.id)}
-                                className="p-1.5 hover:bg-rose-50 rounded-lg text-textMuted hover:text-rose-600 transition flex items-center justify-center border border-divider"
-                                title="Delete File"
-                              >
-                                <Trash2 size={12} />
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+  // FilesPanel replaced by global FilesHub component
 
   const TABS = [
     { id: 'OVERVIEW', label: 'Overview', icon: Info },
@@ -1465,39 +1033,39 @@ const CircleWorkspace = () => {
       {/* Workspace Header */}
       <div className="flex items-center justify-between mb-6 md:mb-10 pt-4 md:pt-0">
         <div className="flex items-center gap-4">
-           <button onClick={() => navigate('/network')} className="p-2.5 bg-white border border-divider rounded-xl hover:text-primary transition shadow-sm">
+           <button onClick={() => navigate('/network')} className="p-2.5 bg-[#0F131E] border border-[#0F131E]/5 rounded-xl hover:text-[#7B5CFA] transition shadow-sm">
               <ChevronLeft size={20} />
            </button>
            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-primary font-black uppercase text-[9px] tracking-widest mb-0.5">
+              <div className="flex items-center gap-2 text-[#7B5CFA] font-black uppercase text-[9px] tracking-widest mb-0.5">
                  <Shield size={10} /> Secure Circle
               </div>
-              <h1 className="text-xl md:text-3xl font-black text-textMain tracking-tighter leading-tight truncate">{circle.title}</h1>
+              <h1 className="text-xl md:text-3xl font-black text-white tracking-tighter leading-tight truncate">{circle.title}</h1>
            </div>
         </div>
         <div className="hidden md:flex items-center gap-3">
            <div className="flex -space-x-3">
               {circle.members?.map((m, i) => (
-                <img key={i} src={m.user?.profileImage} className="w-10 h-10 rounded-full border-4 border-white shadow-sm" />
+                <img key={i} src={m.user?.profileImage} className="w-10 h-10 rounded-full border-4 border-[#0F131E] shadow-sm" />
               ))}
            </div>
-           <button className="p-3 bg-white border border-divider rounded-xl text-textMuted hover:text-primary transition shadow-sm">
+           <button className="p-3 bg-[#0F131E] border border-[#0F131E]/5 rounded-xl text-[#8B95A5] hover:text-[#7B5CFA] transition shadow-sm">
               <MoreHorizontal size={20} />
            </button>
         </div>
       </div>
 
       {/* Navigation Tabs (Mobile) */}
-      <div className="md:hidden flex border-b border-divider -mx-4 mb-6 sticky top-14 bg-white/95 backdrop-blur-md z-40">
+      <div className="md:hidden flex border-b border-[#0F131E]/5 -mx-4 mb-6 sticky top-14 bg-[#0F131E]/95 backdrop-blur-md z-40">
         {TABS.map(tab => (
           <button 
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-4 flex flex-col items-center gap-1.5 transition-all relative ${activeTab === tab.id ? 'text-primary' : 'text-textMuted'}`}
+            className={`flex-1 py-4 flex flex-col items-center gap-1.5 transition-all relative ${activeTab === tab.id ? 'text-[#7B5CFA]' : 'text-[#8B95A5]'}`}
           >
             <tab.icon size={16} />
             <span className="text-[9px] font-black uppercase tracking-widest">{tab.label}</span>
-            {activeTab === tab.id && <motion.div layoutId="tab-active" className="absolute bottom-0 w-8 h-0.5 bg-primary rounded-full" />}
+            {activeTab === tab.id && <motion.div layoutId="tab-active" className="absolute bottom-0 w-8 h-0.5 bg-[#7B5CFA] rounded-full" />}
           </button>
         ))}
       </div>
@@ -1516,7 +1084,7 @@ const CircleWorkspace = () => {
                className="h-full"
              >
                {activeTab === 'OVERVIEW' && <OverviewPanel />}
-               {activeTab === 'FILES' && <FilesPanel />}
+               {activeTab === 'FILES' && <FilesHub circleIdScope={id} />}
                {activeTab === 'TASKS' && <TasksPanel />}
                {activeTab === 'UPDATES' && <div className="h-[calc(100svh-18rem)]"><ChatPanel /></div>}
              </motion.div>
@@ -1526,12 +1094,12 @@ const CircleWorkspace = () => {
         {/* Desktop View */}
         <div className="hidden md:flex flex-col h-[calc(100vh-280px)]">
            {/* Tab Selector Desktop */}
-           <div className="flex gap-2 mb-8 bg-gray-50/50 p-1.5 rounded-2xl border border-divider w-fit flex-shrink-0">
+           <div className="flex gap-2 mb-8 bg-[#181D2A]/50 p-1.5 rounded-2xl border border-[#0F131E]/5 w-fit flex-shrink-0">
               {TABS.map(tab => (
                 <button 
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-white text-primary shadow-sm' : 'text-textMuted hover:text-textMain'}`}
+                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-[#0F131E] text-[#7B5CFA] shadow-sm' : 'text-[#8B95A5] hover:text-white'}`}
                 >
                    {tab.label}
                 </button>
@@ -1540,7 +1108,7 @@ const CircleWorkspace = () => {
            
            <div className={`flex-1 min-h-0 pr-2 ${activeTab === 'UPDATES' ? '' : 'overflow-y-auto no-scrollbar'}`}>
               {activeTab === 'OVERVIEW' && <OverviewPanel />}
-              {activeTab === 'FILES' && <FilesPanel />}
+              {activeTab === 'FILES' && <FilesHub circleIdScope={id} />}
               {activeTab === 'TASKS' && <TasksPanel />}
               {activeTab === 'UPDATES' && <div className="h-full max-w-4xl mx-auto"><ChatPanel /></div>}
            </div>
@@ -1555,16 +1123,16 @@ const CircleWorkspace = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white border border-divider rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden"
+              className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden"
             >
-              <div className="p-6 md:p-8 border-b border-divider bg-gray-50/80 backdrop-blur-sm flex items-center justify-between">
+              <div className="p-6 md:p-8 border-b border-[#0F131E]/5 bg-[#181D2A]/80 backdrop-blur-sm flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-black text-textMain tracking-tight">Create Workspace Task</h3>
-                  <p className="text-xs text-textMuted mt-0.5">Assign deliverables to creatives in this circle.</p>
+                  <h3 className="text-xl font-black text-white tracking-tight">Create Workspace Task</h3>
+                  <p className="text-xs text-[#8B95A5] mt-0.5">Assign deliverables to creatives in this circle.</p>
                 </div>
                 <button 
                   onClick={() => setIsTaskModalOpen(false)}
-                  className="p-2 hover:bg-gray-200/50 rounded-xl text-textMuted transition"
+                  className="p-2 hover:bg-gray-200/50 rounded-xl text-[#8B95A5] transition"
                 >
                   <X size={18} />
                 </button>
@@ -1572,35 +1140,35 @@ const CircleWorkspace = () => {
 
               <form onSubmit={handleCreateTask} className="p-6 md:p-8 space-y-5 max-h-[70vh] overflow-y-auto pr-2 no-scrollbar">
                 <div>
-                  <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Task Title</label>
+                  <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Task Title</label>
                   <input 
                     type="text" 
                     required
                     value={taskTitle}
                     onChange={e => setTaskTitle(e.target.value)}
                     placeholder="e.g. Design Home Hero Section"
-                    className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-bold"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-bold"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Description</label>
+                  <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Description</label>
                   <textarea 
                     value={taskDesc}
                     onChange={e => setTaskDesc(e.target.value)}
                     rows={3}
                     placeholder="Specify requirements, deliverables, or inspiration..."
-                    className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-medium"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-medium"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Priority</label>
+                    <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Priority</label>
                     <select 
                       value={taskPriority}
                       onChange={e => setTaskPriority(e.target.value)}
-                      className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-bold"
+                      className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-bold"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -1610,47 +1178,47 @@ const CircleWorkspace = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Deadline</label>
+                    <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Deadline</label>
                     <input 
                       type="date" 
                       value={taskDeadline}
                       onChange={e => setTaskDeadline(e.target.value)}
-                      className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-bold"
+                      className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-bold"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Effort (Story Points)</label>
+                    <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Effort (Story Points)</label>
                     <input 
                       type="number" 
                       min="1"
                       value={taskEffort}
                       onChange={e => setTaskEffort(e.target.value)}
                       placeholder="e.g. 5 Story Points"
-                      className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-bold"
+                      className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-bold"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Labels / Tags</label>
+                    <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Labels / Tags</label>
                     <input 
                       type="text" 
                       value={taskLabels}
                       onChange={e => setTaskLabels(e.target.value)}
                       placeholder="e.g. UI, Frontend, draft"
-                      className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-bold"
+                      className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-bold"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Assign Creative</label>
+                  <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Assign Creative</label>
                   <select 
                     value={taskAssignee}
                     onChange={e => setTaskAssignee(e.target.value)}
-                    className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-bold"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-bold"
                   >
                     <option value="">Unassigned</option>
                     {circle.members?.map(m => (
@@ -1665,14 +1233,14 @@ const CircleWorkspace = () => {
                   <button 
                     type="button"
                     onClick={() => setIsTaskModalOpen(false)}
-                    className="flex-1 py-3.5 bg-gray-50 border border-divider rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition"
+                    className="flex-1 py-3.5 bg-[#181D2A] border border-[#0F131E]/5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit"
                     disabled={taskSaving}
-                    className="flex-1 py-3.5 bg-primary hover:bg-primaryHover text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/25 disabled:opacity-50 transition"
+                    className="flex-1 py-3.5 bg-[#7B5CFA] hover:bg-[#7B5CFA]Hover text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#7B5CFA]/25 disabled:opacity-50 transition"
                   >
                     {taskSaving ? 'Saving...' : 'Create Task'}
                   </button>
@@ -1695,12 +1263,12 @@ const CircleWorkspace = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-xl bg-white h-full shadow-2xl flex flex-col border-l border-divider z-10"
+              className="relative w-full max-w-xl bg-[#0F131E] h-full shadow-2xl flex flex-col border-l border-[#0F131E]/5 z-10"
             >
               {/* Drawer Header */}
-              <div className="p-6 border-b border-divider flex items-center justify-between bg-gray-50/80">
+              <div className="p-6 border-b border-[#0F131E]/5 flex items-center justify-between bg-[#181D2A]/80">
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-black text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-md">
+                  <span className="text-[10px] font-black text-[#7B5CFA] bg-[#7B5CFA]/10 border border-[#7B5CFA]/20 px-2.5 py-1 rounded-md">
                     {selectedTask.taskCode || 'TASK'}
                   </span>
                   
@@ -1711,7 +1279,7 @@ const CircleWorkspace = () => {
                       navigator.clipboard.writeText(shareUrl);
                       alert("🔗 Link copied to clipboard! Share it with team members.");
                     }}
-                    className="p-2 hover:bg-gray-200 rounded-xl text-textMuted hover:text-primary transition flex items-center gap-1.5 border border-divider bg-white"
+                    className="p-2 hover:bg-gray-200 rounded-xl text-[#8B95A5] hover:text-[#7B5CFA] transition flex items-center gap-1.5 border border-[#0F131E]/5 bg-[#0F131E]"
                     title="Copy direct shareable link"
                   >
                     <Share2 size={12} />
@@ -1721,7 +1289,7 @@ const CircleWorkspace = () => {
 
                 <button 
                   onClick={() => setIsDetailPanelOpen(false)}
-                  className="p-2 hover:bg-gray-200 rounded-xl text-textMuted transition"
+                  className="p-2 hover:bg-gray-200 rounded-xl text-[#8B95A5] transition"
                 >
                   <X size={18} />
                 </button>
@@ -1731,7 +1299,7 @@ const CircleWorkspace = () => {
               <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
                 {/* 1. Inline click-to-edit Title */}
                 <div>
-                  <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1">Task Title</label>
+                  <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Task Title</label>
                   {isEditingTitle ? (
                     <input 
                       type="text"
@@ -1752,14 +1320,14 @@ const CircleWorkspace = () => {
                         }
                       }}
                       autoFocus
-                      className="w-full bg-gray-50 border border-primary rounded-xl px-3 py-2 text-base font-bold outline-none"
+                      className="w-full bg-[#181D2A] border border-[#7B5CFA] rounded-xl px-3 py-2 text-base font-bold outline-none"
                     />
                   ) : (
                     <h3 
                       onClick={() => setIsEditingTitle(true)}
-                      className="text-lg font-black text-textMain cursor-pointer hover:bg-gray-50 p-2 rounded-xl border border-transparent hover:border-divider transition flex items-center gap-2"
+                      className="text-lg font-black text-white cursor-pointer hover:bg-[#181D2A] p-2 rounded-xl border border-transparent hover:border-[#0F131E]/5 transition flex items-center gap-2"
                     >
-                      {selectedTask.title} <Edit2 size={14} className="text-textMuted opacity-0 hover:opacity-100 transition" />
+                      {selectedTask.title} <Edit2 size={14} className="text-[#8B95A5] opacity-0 hover:opacity-100 transition" />
                     </h3>
                   )}
                 </div>
@@ -1770,17 +1338,17 @@ const CircleWorkspace = () => {
                     <div className="flex items-center gap-2 text-xs font-black text-red-600 uppercase tracking-wider">
                       <AlertTriangle size={14} className="text-red-500" /> Changes Requested by Reviewer
                     </div>
-                    <p className="text-xs text-red-950 font-medium mt-1.5 leading-relaxed bg-white border border-red-100 p-3 rounded-xl italic">
+                    <p className="text-xs text-red-950 font-medium mt-1.5 leading-relaxed bg-[#0F131E] border border-red-100 p-3 rounded-xl italic">
                       "{selectedTask.rejectionComment}"
                     </p>
                   </div>
                 )}
 
                 {/* 3. Fields control block grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 bg-gray-50/50 border border-divider p-4 rounded-2xl">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 bg-[#181D2A]/50 border border-[#0F131E]/5 p-4 rounded-2xl">
                   {/* Status selection */}
                   <div>
-                    <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1.5">Status</label>
+                    <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1.5">Status</label>
                     <select 
                       value={selectedTask.status}
                       onChange={e => {
@@ -1798,7 +1366,7 @@ const CircleWorkspace = () => {
                           updateTaskStatus(selectedTask.id, targetStatus);
                         }
                       }}
-                      className="w-full bg-white border border-divider rounded-xl px-2.5 py-2 text-xs font-bold outline-none cursor-pointer"
+                      className="w-full bg-[#0F131E] border border-[#0F131E]/5 rounded-xl px-2.5 py-2 text-xs font-bold outline-none cursor-pointer"
                     >
                       <option value="TODO">To Do</option>
                       <option value="IN_PROGRESS">In Progress</option>
@@ -1809,11 +1377,11 @@ const CircleWorkspace = () => {
 
                   {/* Priority selection */}
                   <div>
-                    <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1.5">Priority</label>
+                    <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1.5">Priority</label>
                     <select 
                       value={selectedTask.priority}
                       onChange={e => updateTaskDetails(selectedTask.id, { priority: e.target.value })}
-                      className="w-full bg-white border border-divider rounded-xl px-2.5 py-2 text-xs font-bold outline-none cursor-pointer"
+                      className="w-full bg-[#0F131E] border border-[#0F131E]/5 rounded-xl px-2.5 py-2 text-xs font-bold outline-none cursor-pointer"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -1824,47 +1392,47 @@ const CircleWorkspace = () => {
 
                   {/* Effort */}
                   <div>
-                    <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1.5">Story Effort</label>
+                    <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1.5">Story Effort</label>
                     <input 
                       type="number"
                       min="1"
                       value={selectedTask.estimatedEffort || ''}
                       onChange={e => updateTaskDetails(selectedTask.id, { estimatedEffort: e.target.value ? parseInt(e.target.value) : null })}
                       placeholder="e.g. 5"
-                      className="w-full bg-white border border-divider rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none"
+                      className="w-full bg-[#0F131E] border border-[#0F131E]/5 rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none"
                     />
                   </div>
 
                   {/* Labels input */}
                   <div>
-                    <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1.5">Labels / Tags</label>
+                    <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1.5">Labels / Tags</label>
                     <input 
                       type="text"
                       value={selectedTask.labels || ''}
                       onChange={e => updateTaskDetails(selectedTask.id, { labels: e.target.value })}
                       placeholder="e.g. design, UI"
-                      className="w-full bg-white border border-divider rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none"
+                      className="w-full bg-[#0F131E] border border-[#0F131E]/5 rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none"
                     />
                   </div>
 
                   {/* Deadline selection */}
                   <div>
-                    <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1.5">Deadline</label>
+                    <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1.5">Deadline</label>
                     <input 
                       type="date"
                       value={selectedTask.deadline ? selectedTask.deadline.split('T')[0] : ''}
                       onChange={e => updateTaskDetails(selectedTask.id, { deadline: e.target.value || null })}
-                      className="w-full bg-white border border-divider rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none cursor-pointer"
+                      className="w-full bg-[#0F131E] border border-[#0F131E]/5 rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none cursor-pointer"
                     />
                   </div>
 
                   {/* Assignee selection */}
                   <div>
-                    <label className="block text-[8px] font-black text-textMuted uppercase tracking-widest mb-1.5">Assignee</label>
+                    <label className="block text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1.5">Assignee</label>
                     <select 
                       value={selectedTask.assignedTo || ''}
                       onChange={e => updateTaskDetails(selectedTask.id, { assignedTo: e.target.value || null })}
-                      className="w-full bg-white border border-divider rounded-xl px-2.5 py-2 text-xs font-bold outline-none cursor-pointer"
+                      className="w-full bg-[#0F131E] border border-[#0F131E]/5 rounded-xl px-2.5 py-2 text-xs font-bold outline-none cursor-pointer"
                     >
                       <option value="">Unassigned</option>
                       {circle.members?.map(m => (
@@ -1876,18 +1444,18 @@ const CircleWorkspace = () => {
 
                 {/* 4. Description editor */}
                 <div>
-                  <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest mb-2">Description</label>
+                  <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest mb-2">Description</label>
                   <textarea 
                     value={detailDesc}
                     onChange={e => setDetailDesc(e.target.value)}
                     rows={4}
                     placeholder="Provide a description..."
-                    className="w-full bg-gray-50 border border-divider rounded-2xl px-4 py-3 text-sm focus:border-primary focus:bg-white outline-none transition font-medium"
+                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-2xl px-4 py-3 text-sm focus:border-[#7B5CFA] focus:bg-[#0F131E] outline-none transition font-medium"
                   />
                   {detailDesc !== (selectedTask.description || '') && (
                     <button 
                       onClick={() => updateTaskDetails(selectedTask.id, { description: detailDesc })}
-                      className="mt-2 bg-primary text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider hover:bg-primaryHover transition"
+                      className="mt-2 bg-[#7B5CFA] text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider hover:bg-[#7B5CFA]Hover transition"
                     >
                       Save Description
                     </button>
@@ -1897,8 +1465,8 @@ const CircleWorkspace = () => {
                 {/* 5. Subtasks Checklist System */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest">📋 Hierarchical Checklist Subtasks</label>
-                    <span className="text-[8px] font-black text-textMuted bg-gray-100 px-2 py-0.5 rounded">
+                    <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest">📋 Hierarchical Checklist Subtasks</label>
+                    <span className="text-[8px] font-black text-[#8B95A5] bg-white/5 px-2 py-0.5 rounded">
                       {selectedTask.subtasks?.filter(s => s.status === 'APPROVED' || s.status === 'COMPLETED').length || 0} / {selectedTask.subtasks?.length || 0} done
                     </span>
                   </div>
@@ -1906,7 +1474,7 @@ const CircleWorkspace = () => {
                   {/* Subtask list */}
                   <div className="space-y-2 mb-3">
                     {selectedTask.subtasks?.map(sub => (
-                      <div key={sub.id} className="flex items-center gap-3 bg-gray-50 border border-divider px-3 py-2 rounded-xl">
+                      <div key={sub.id} className="flex items-center gap-3 bg-[#181D2A] border border-[#0F131E]/5 px-3 py-2 rounded-xl">
                         <input 
                           type="checkbox"
                           checked={sub.status === 'APPROVED' || sub.status === 'COMPLETED'}
@@ -1927,16 +1495,16 @@ const CircleWorkspace = () => {
                               alert("Failed to toggle subtask checkmark status.");
                             }
                           }}
-                          className="w-4 h-4 rounded text-primary focus:ring-primary border-divider cursor-pointer"
+                          className="w-4 h-4 rounded text-[#7B5CFA] focus:ring-primary border-[#0F131E]/5 cursor-pointer"
                         />
-                        <span className={`text-xs font-bold ${sub.status === 'APPROVED' || sub.status === 'COMPLETED' ? 'line-through text-textMuted' : 'text-textMain'}`}>
+                        <span className={`text-xs font-bold ${sub.status === 'APPROVED' || sub.status === 'COMPLETED' ? 'line-through text-[#8B95A5]' : 'text-white'}`}>
                           {sub.title}
                         </span>
                       </div>
                     ))}
                     
                     {(!selectedTask.subtasks || selectedTask.subtasks.length === 0) && (
-                      <p className="text-[10px] text-textMuted italic bg-gray-50 p-3 rounded-xl border border-divider border-dashed text-center">
+                      <p className="text-[10px] text-[#8B95A5] italic bg-[#181D2A] p-3 rounded-xl border border-[#0F131E]/5 border-dashed text-center">
                         No checklist subtasks added yet. Define minor tasks to unlock goals!
                       </p>
                     )}
@@ -1949,7 +1517,7 @@ const CircleWorkspace = () => {
                       value={newSubtaskTitle}
                       onChange={e => setNewSubtaskTitle(e.target.value)}
                       placeholder="+ Add checklist subtask..."
-                      className="flex-1 bg-gray-50 border border-divider rounded-xl px-3 py-2 text-xs focus:border-primary outline-none transition font-bold"
+                      className="flex-1 bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-xs focus:border-[#7B5CFA] outline-none transition font-bold"
                     />
                     <button 
                       type="submit"
@@ -1961,10 +1529,10 @@ const CircleWorkspace = () => {
                 </div>
 
                 {/* 6. Chronological Comments System */}
-                <div className="border-t border-divider pt-6 space-y-4">
+                <div className="border-t border-[#0F131E]/5 pt-6 space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest">💬 Task Comments feed</label>
-                    <span className="text-[8px] font-black bg-gray-100 text-textMuted px-2 py-0.5 rounded">
+                    <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest">💬 Task Comments feed</label>
+                    <span className="text-[8px] font-black bg-white/5 text-[#8B95A5] px-2 py-0.5 rounded">
                       {selectedTask.comments?.length || 0} Comments
                     </span>
                   </div>
@@ -1976,11 +1544,11 @@ const CircleWorkspace = () => {
                       value={commentInput}
                       onChange={e => setCommentInput(e.target.value)}
                       placeholder="Discuss changes, ask clarification, or comment..."
-                      className="flex-1 bg-gray-50 border border-divider rounded-xl px-3 py-2 text-xs focus:border-primary outline-none transition font-medium"
+                      className="flex-1 bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-xs focus:border-[#7B5CFA] outline-none transition font-medium"
                     />
                     <button 
                       type="submit"
-                      className="bg-primary hover:bg-primaryHover text-white px-3.5 py-2 rounded-xl text-[9px] font-black uppercase tracking-wider transition"
+                      className="bg-[#7B5CFA] hover:bg-[#7B5CFA]Hover text-white px-3.5 py-2 rounded-xl text-[9px] font-black uppercase tracking-wider transition"
                     >
                       Comment
                     </button>
@@ -1991,12 +1559,12 @@ const CircleWorkspace = () => {
                     {selectedTask.comments?.slice().sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)).map(c => {
                       const isSystem = c.user?.username === 'SYSTEM' || !c.user;
                       return (
-                        <div key={c.id} className={`p-3 rounded-2xl border ${isSystem ? 'bg-amber-50/50 border-amber-100/50 text-amber-900' : 'bg-gray-50 border-divider'}`}>
+                        <div key={c.id} className={`p-3 rounded-2xl border ${isSystem ? 'bg-amber-50/50 border-amber-100/50 text-amber-900' : 'bg-[#181D2A] border-[#0F131E]/5'}`}>
                           <div className="flex items-center justify-between">
                             <span className="text-[9px] font-black uppercase tracking-wider">
                               {isSystem ? '⚠️ SYSTEM UPDATE' : `@${c.user?.username}`}
                             </span>
-                            <span className="text-[8px] text-textMuted">
+                            <span className="text-[8px] text-[#8B95A5]">
                               {new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
@@ -2006,7 +1574,7 @@ const CircleWorkspace = () => {
                     })}
 
                     {(!selectedTask.comments || selectedTask.comments.length === 0) && (
-                      <p className="text-[10px] text-textMuted italic text-center py-2">
+                      <p className="text-[10px] text-[#8B95A5] italic text-center py-2">
                         No team discussion yet. Start the conversation!
                       </p>
                     )}
@@ -2014,8 +1582,8 @@ const CircleWorkspace = () => {
                 </div>
 
                 {/* 7. Chronological Audit Trail Activity Log */}
-                <div className="border-t border-divider pt-6 space-y-3">
-                  <label className="block text-[9px] font-black text-textMuted uppercase tracking-widest">⏳ Audit Trail Activity Log</label>
+                <div className="border-t border-[#0F131E]/5 pt-6 space-y-3">
+                  <label className="block text-[9px] font-black text-[#8B95A5] uppercase tracking-widest">⏳ Audit Trail Activity Log</label>
                   <div className="space-y-2 max-h-40 overflow-y-auto pr-1 no-scrollbar">
                     {(() => {
                       let logs = [];
@@ -2030,17 +1598,17 @@ const CircleWorkspace = () => {
                       }
                       
                       if (logs.length === 0) {
-                        return <p className="text-[10px] text-textMuted italic text-center py-2">No activity events logged yet.</p>;
+                        return <p className="text-[10px] text-[#8B95A5] italic text-center py-2">No activity events logged yet.</p>;
                       }
 
                       return logs.slice().reverse().map((log, idx) => (
-                        <div key={idx} className="flex items-start gap-2 bg-gray-50/60 p-2 rounded-lg border border-divider text-[10px] text-textMuted font-bold">
-                          <Clock size={12} className="mt-0.5 text-textMuted flex-shrink-0" />
+                        <div key={idx} className="flex items-start gap-2 bg-[#181D2A]/60 p-2 rounded-lg border border-[#0F131E]/5 text-[10px] text-[#8B95A5] font-bold">
+                          <Clock size={12} className="mt-0.5 text-[#8B95A5] flex-shrink-0" />
                           <div className="flex-1">
-                            <p className="text-textMain font-black">
+                            <p className="text-white font-black">
                               {log.user ? `${log.user}` : 'Someone'} {log.action}
                             </p>
-                            <p className="text-[8px] text-textMuted mt-0.5">
+                            <p className="text-[8px] text-[#8B95A5] mt-0.5">
                               {new Date(log.timestamp).toLocaleString()}
                             </p>
                           </div>
@@ -2063,15 +1631,15 @@ const CircleWorkspace = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white border border-divider rounded-[2rem] w-full max-w-md shadow-2xl p-6 relative overflow-hidden"
+              className="bg-[#0F131E] border border-[#0F131E]/5 rounded-[2rem] w-full max-w-md shadow-2xl p-6 relative overflow-hidden"
             >
               <div className="flex items-center gap-2.5 text-rose-600 mb-3">
                 <AlertTriangle size={24} className="text-rose-500 animate-bounce" />
                 <h3 className="text-lg font-black tracking-tight uppercase">Mandatory Rejection Comment</h3>
               </div>
 
-              <p className="text-xs text-textMuted font-medium leading-relaxed mb-4">
-                You are regressing task <span className="font-bold text-textMain">({pendingRejectionTask.taskCode})</span> back from Under Review/Approved. 
+              <p className="text-xs text-[#8B95A5] font-medium leading-relaxed mb-4">
+                You are regressing task <span className="font-bold text-white">({pendingRejectionTask.taskCode})</span> back from Under Review/Approved. 
                 Please enter a mandatory rejection explanation so the assigned creative knows what changes are requested.
               </p>
 
@@ -2081,7 +1649,7 @@ const CircleWorkspace = () => {
                 required
                 rows={4}
                 placeholder="e.g. Hero design needs more rounded corners. Font is also too small..."
-                className="w-full bg-gray-50 border border-divider rounded-xl px-4 py-3 text-xs outline-none focus:border-rose-500 focus:bg-white transition font-medium"
+                className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-rose-500 focus:bg-[#0F131E] transition font-medium"
               />
 
               <div className="flex gap-3 mt-5">
@@ -2092,7 +1660,7 @@ const CircleWorkspace = () => {
                     setPendingRejectionTask(null);
                     setPendingRejectionStatus(null);
                   }}
-                  className="flex-1 py-3 bg-gray-50 border border-divider rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition"
+                  className="flex-1 py-3 bg-[#181D2A] border border-[#0F131E]/5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition"
                 >
                   Cancel
                 </button>
