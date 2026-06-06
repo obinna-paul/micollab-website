@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Image, Video, FileText, Send, Loader2, Link as LinkIcon, Calendar, Briefcase, ChevronRight, Clock, MapPin, Users } from 'lucide-react';
+import { Image, Video, FileText, Send, Loader2, Link as LinkIcon, Calendar, Briefcase, ChevronRight, Clock, MapPin, Users, Flame } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 

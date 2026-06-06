@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ThumbsUp, MessageSquare, Repeat2, Share2,
   MoreHorizontal, Globe, UserPlus, Star, Edit2,
-  Archive, Trash2, X, Users, Copy, Check, Send, Loader2
+  Archive, Trash2, X, Users, Copy, Check, Send, Loader2, Briefcase
 } from 'lucide-react';
 import axios from 'axios';
 import useAuthStore from '../store/useAuthStore';
