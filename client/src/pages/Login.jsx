@@ -117,17 +117,17 @@ const Login = () => {
       />
 
       {/* Left Marketing Section */}
-      <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-20 relative z-10 min-h-[50vh] lg:min-h-screen">
-        <Link to="/" className="flex items-center gap-3 mb-16 lg:mb-24 w-fit group">
+      <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-12 relative z-10 min-h-[50vh] lg:min-h-screen">
+        <Link to="/" className="flex items-center gap-3 mb-6 lg:mb-6 w-fit group">
           <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20 group-hover:bg-[#684CE0] transition-colors">M</div>
           <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">Micollab</h1>
         </Link>
         
         <div className="max-w-xl">
-          <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
+          <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
             Enter the Creative <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Multiverse.</span>
           </h2>
-          <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+          <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-6 max-w-md font-medium">
             Connect, collaborate, and create with the world's most vibrant community of avant-garde professionals.
           </p>
           
@@ -152,7 +152,7 @@ const Login = () => {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md bg-[var(--bg-surface-alt)] p-8 md:p-10 rounded-[2rem] border border-[var(--border-primary)] relative overflow-hidden"
+          className="w-full max-w-md bg-[var(--bg-surface-alt)] p-6 md:p-8 rounded-[2rem] border border-[var(--border-primary)] relative overflow-hidden"
           style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
         >
           {/* Top colored indicator line */}
@@ -161,7 +161,7 @@ const Login = () => {
           {!requiresVerification ? (
             <>
               {/* Form Header */}
-              <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
+              <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                 <div className="flex gap-1.5 items-center">
                   <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                   <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -170,8 +170,8 @@ const Login = () => {
                 <span>Step 1 of 4</span>
               </div>
 
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-black text-[var(--text-primary)] mb-2">Welcome Back</h3>
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Welcome Back</h3>
                 <p className="text-[var(--text-secondary)] font-medium text-sm">Sign in to Micollab to continue.</p>
               </div>
 
@@ -182,7 +182,7 @@ const Login = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Email Address</label>
                   <div className="relative">
@@ -193,7 +193,7 @@ const Login = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                     />
                   </div>
                 </div>
@@ -208,7 +208,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-12 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-12 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
                     />
                     <button 
                       type="button"
@@ -226,13 +226,13 @@ const Login = () => {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
+                  className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : 'Sign In'}
                 </button>
               </form>
 
-              <div className="flex items-center gap-4 my-8">
+              <div className="flex items-center gap-4 my-6">
                 <div className="h-px bg-white/5 flex-1" />
                 <span className="text-xs font-bold text-[var(--text-secondary)]">Or continue with</span>
                 <div className="h-px bg-white/5 flex-1" />
@@ -256,7 +256,7 @@ const Login = () => {
             </>
           ) : (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-               <div className="text-center mb-8 mt-4">
+               <div className="text-center mb-6 mt-4">
                  <div className="w-16 h-16 bg-[#7B5CFA]/10 text-[#7B5CFA] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#7B5CFA]/20">
                    <Mail size={32} />
                  </div>
@@ -283,14 +283,14 @@ const Login = () => {
                      value={otpCode}
                      onChange={(e) => setOtpCode(e.target.value)}
                      placeholder="000000"
-                     className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-4 text-center text-3xl tracking-[1em] text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-black placeholder-[#8B95A5]/30"
+                     className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 text-center text-3xl tracking-[1em] text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-black placeholder-[#8B95A5]/30"
                    />
                  </div>
 
                  <button 
                    type="submit"
                    disabled={loading || otpCode.length !== 6}
-                   className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                   className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                  >
                    {loading ? <Loader2 className="animate-spin" size={20} /> : 'Verify Email'}
                  </button>
@@ -333,12 +333,12 @@ const Login = () => {
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                 placeholder="creative_genius"
-                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
+                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
               />
               <button 
                 type="submit"
                 disabled={loading || !newUsername}
-                className="w-full py-3 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
+                className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
               >
                 {loading ? <Loader2 className="animate-spin" size={20} /> : 'Complete Sign Up'}
               </button>

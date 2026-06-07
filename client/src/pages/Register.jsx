@@ -205,8 +205,8 @@ const Register = () => {
       />
 
       {/* Left Marketing Section */}
-      <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-20 relative z-10 min-h-[50vh] lg:min-h-screen">
-        <Link to="/" className="flex items-center gap-3 mb-16 lg:mb-24 w-fit group">
+      <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-12 relative z-10 min-h-[50vh] lg:min-h-screen">
+        <Link to="/" className="flex items-center gap-3 mb-6 lg:mb-6 w-fit group">
           <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20 group-hover:bg-[#684CE0] transition-colors">M</div>
           <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">Micollab</h1>
         </Link>
@@ -215,10 +215,10 @@ const Register = () => {
           <AnimatePresence mode="wait">
             {step === 1 && (
               <motion.div key="m-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>
                 </h2>
-                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-6 max-w-md font-medium">
                   Set up your account details to finalize your profile and enter the Micollab ecosystem.
                 </p>
                 
@@ -236,10 +236,10 @@ const Register = () => {
 
             {step === 2 && (
               <motion.div key="m-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Define Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Craft.</span>
                 </h2>
-                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-6 max-w-md font-medium">
                   Tell us what you do so we can tailor your multiverse experience and connect you with the right collaborators.
                 </p>
                 
@@ -257,10 +257,10 @@ const Register = () => {
 
             {step === 3 && (
               <motion.div key="m-step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Refine Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Focus.</span>
                 </h2>
-                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-6 max-w-md font-medium">
                   Dive deeper into your expertise. This helps us suggest the perfect projects, briefs, and creative circles for you.
                 </p>
                 
@@ -281,10 +281,10 @@ const Register = () => {
 
             {step === 4 && (
               <motion.div key="m-step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   You're <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">All Set.</span>
                 </h2>
-                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-6 max-w-md font-medium">
                   Your creative profile is primed. Get ready to connect, collaborate, and bring your visionary projects to life.
                 </p>
                 
@@ -324,7 +324,7 @@ const Register = () => {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-xl bg-[var(--bg-surface-alt)] p-8 md:p-10 rounded-[2rem] border border-[var(--border-primary)] relative overflow-hidden"
+          className="w-full max-w-xl bg-[var(--bg-surface-alt)] p-6 md:p-8 rounded-[2rem] border border-[var(--border-primary)] relative overflow-hidden"
           style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
         >
           {/* Top colored indicator line */}
@@ -335,7 +335,7 @@ const Register = () => {
             {/* STEP 1: ACCOUNT DETAILS */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -345,8 +345,8 @@ const Register = () => {
                   <span>Step 1 of 4</span>
                 </div>
 
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-[var(--text-primary)] mb-2">Create your account</h2>
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-black text-[var(--text-primary)] mb-2">Create your account</h2>
                   <p className="text-[var(--text-secondary)] font-medium text-sm">Let's get started.</p>
                 </div>
 
@@ -357,7 +357,7 @@ const Register = () => {
                   </div>
                 )}
 
-                <form onSubmit={handleStep1Submit} className="space-y-5">
+                <form onSubmit={handleStep1Submit} className="space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Username</label>
                     <div className="relative">
@@ -368,7 +368,7 @@ const Register = () => {
                         value={accountDetails.username}
                         onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
                         placeholder="creative_soul"
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                       />
                     </div>
                   </div>
@@ -383,7 +383,7 @@ const Register = () => {
                         value={accountDetails.email}
                         onChange={(e) => setAccountDetails({...accountDetails, email: e.target.value})}
                         placeholder="you@example.com"
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                       />
                     </div>
                   </div>
@@ -398,7 +398,7 @@ const Register = () => {
                         value={accountDetails.password}
                         onChange={(e) => setAccountDetails({...accountDetails, password: e.target.value})}
                         placeholder="••••••••"
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-12 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-12 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
                       />
                       <button 
                         type="button"
@@ -413,14 +413,14 @@ const Register = () => {
                   <button 
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
+                    className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:opacity-50"
                   >
                     {loading ? <Loader2 className="animate-spin" size={20} /> : (
                       <>Next Step <ChevronRight size={18} /></>
                     )}
                   </button>
 
-                  <div className="flex items-center gap-4 my-8">
+                  <div className="flex items-center gap-4 my-6">
                     <div className="h-px bg-white/5 flex-1" />
                     <span className="text-xs font-bold text-[var(--text-secondary)]">Or continue with</span>
                     <div className="h-px bg-white/5 flex-1" />
@@ -448,7 +448,7 @@ const Register = () => {
             {/* STEP 2: CATEGORIES */}
             {step === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
@@ -462,8 +462,8 @@ const Register = () => {
                   <ArrowLeft size={14} /> Back
                 </button>
 
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-[var(--text-primary)] mb-2">What describes you best?</h2>
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-black text-[var(--text-primary)] mb-2">What describes you best?</h2>
                   <p className="text-[var(--text-secondary)] font-medium text-sm">Select one or more broad categories.</p>
                 </div>
 
@@ -509,7 +509,7 @@ const Register = () => {
                 <button 
                   onClick={() => setStep(3)}
                   disabled={selectedCategories.length === 0}
-                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  className="w-full py-2.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
                   Next Step <ChevronRight size={18} />
                 </button>
@@ -519,7 +519,7 @@ const Register = () => {
             {/* STEP 3: SPECIALIZATIONS */}
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -550,7 +550,7 @@ const Register = () => {
                 )}
 
                 <div className="mb-6">
-                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2">What's your specialty?</h2>
+                  <h2 className="text-2xl lg:text-2xl font-black text-[var(--text-primary)] mb-2">What's your specialty?</h2>
                   <p className="text-[var(--text-secondary)] font-medium text-sm">Select tags that define your specific skills within your chosen categories.</p>
                 </div>
 
@@ -561,7 +561,7 @@ const Register = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search skills (e.g., Mixing, Beatmaking)..."
-                    className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl py-3 pl-10 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/50 transition font-medium placeholder-[#8B95A5] text-sm"
+                    className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-10 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/50 transition font-medium placeholder-[#8B95A5] text-sm"
                   />
                 </div>
 
@@ -593,7 +593,7 @@ const Register = () => {
                 <button 
                   onClick={() => setStep(4)}
                   disabled={selectedSpecializations.length === 0}
-                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  className="w-full py-2.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
                   Next Step <ChevronRight size={18} />
                 </button>
@@ -603,7 +603,7 @@ const Register = () => {
             {/* STEP 4: SUMMARY & SUBMIT */}
             {step === 4 && (
               <motion.div key="step4" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -617,11 +617,11 @@ const Register = () => {
                   <ArrowLeft size={14} /> Back
                 </button>
 
-                <div className="text-center mb-8 flex flex-col items-center">
+                <div className="text-center mb-6 flex flex-col items-center">
                   <div className="w-16 h-16 bg-[#7B5CFA] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(123,92,250,0.4)]">
                     <Rocket size={32} className="text-[var(--text-primary)]" />
                   </div>
-                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
+                  <h2 className="text-2xl lg:text-2xl font-black text-[var(--text-primary)] mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
                   <p className="text-[var(--text-secondary)] font-medium text-sm">Your workspace is ready. Discover briefs, connect with peers, and start creating.</p>
                 </div>
 
@@ -632,7 +632,7 @@ const Register = () => {
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-3 mb-8">
+                <div className="grid grid-cols-2 gap-3 mb-6">
                   <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-4 hover:border-[var(--border-secondary)] transition-colors">
                     <Layers size={16} className="text-[#00B5D8] mb-2" />
                     <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Category</p>
@@ -659,7 +659,7 @@ const Register = () => {
                 <button 
                   onClick={handleRegisterSubmit}
                   disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
+                  className="w-full py-2.5 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : (
                     <>Enter Micollab <ArrowRight size={18} /></>
@@ -699,12 +699,12 @@ const Register = () => {
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                 placeholder="creative_genius"
-                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
+                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
               />
               <button 
                 type="submit"
                 disabled={loading || !newUsername}
-                className="w-full py-3 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
+                className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
               >
                 {loading ? <Loader2 className="animate-spin" size={20} /> : 'Complete Sign Up'}
               </button>
