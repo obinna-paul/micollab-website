@@ -21,6 +21,11 @@ app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (mobile apps, curl, etc)
     if (!origin) return callback(null, true);
+    // Allow frontend Vercel deployment URL
+    const clientUrl = process.env.CLIENT_URL;
+    if (clientUrl && origin.startsWith(clientUrl)) {
+      return callback(null, true);
+    }
     // Allow localhost and any local network IP
     if (
       origin.includes('localhost') ||
