@@ -56,10 +56,29 @@ const PORT = process.env.PORT || 5000;
     // Temporary DB cleanup for user micollab
     const user = await prisma.user.findFirst({ where: { username: 'micollab' } });
     if (user) {
-      await prisma.portfolioItem.deleteMany({ where: { userId: user.id } });
+      // 1. Portfolio items and relations
+      const portfolios = await prisma.portfolioItem.findMany({ where: { userId: user.id } });
+      const pIds = portfolios.map(p => p.id);
+      if (pIds.length > 0) {
+        await prisma.portfolioMedia.deleteMany({ where: { portfolioItemId: { in: pIds } } });
+        await prisma.portfolioTag.deleteMany({ where: { portfolioItemId: { in: pIds } } });
+        await prisma.portfolioCredit.deleteMany({ where: { portfolioItemId: { in: pIds } } });
+        await prisma.portfolioItem.deleteMany({ where: { userId: user.id } });
+      }
+
+      // 2. Posts and relations
+      const posts = await prisma.post.findMany({ where: { creatorId: user.id } });
+      const postIds = posts.map(p => p.id);
+      if (postIds.length > 0) {
+        await prisma.postLike.deleteMany({ where: { postId: { in: postIds } } });
+        await prisma.comment.deleteMany({ where: { postId: { in: postIds } } });
+        await prisma.post.deleteMany({ where: { creatorId: user.id } });
+      }
+
+      // 3. Testimonials
       await prisma.testimonial.deleteMany({ where: { OR: [{ toUserId: user.id }, { fromUserId: user.id }] } });
-      await prisma.post.deleteMany({ where: { creatorId: user.id } });
-      console.log("Deleted mock portfolio items, testimonials, and posts for micollab");
+      
+      console.log("Successfully wiped all mock data for micollab");
     }
 
     httpServer.listen(PORT, '0.0.0.0', () => {
