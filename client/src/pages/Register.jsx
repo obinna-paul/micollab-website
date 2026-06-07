@@ -98,6 +98,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [usernameSuggestions, setUsernameSuggestions] = useState([]);
   
   // OTP State
   const [requiresVerification, setRequiresVerification] = useState(false);
@@ -122,12 +123,16 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setUsernameSuggestions([]);
     
     const result = await checkAvailability(accountDetails.username, accountDetails.email);
     if (result.success && result.available) {
       setStep(2);
     } else {
       setError(result.error);
+      if (result.suggestions && result.suggestions.length > 0) {
+        setUsernameSuggestions(result.suggestions);
+      }
     }
     setLoading(false);
   };
@@ -456,6 +461,27 @@ const Register = () => {
                         className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                       />
                     </div>
+                    {usernameSuggestions.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-[10px] font-bold text-[var(--text-secondary)] mb-1.5 ml-1">Try one of these instead:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {usernameSuggestions.map(suggestion => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => {
+                                setAccountDetails({...accountDetails, username: suggestion});
+                                setUsernameSuggestions([]);
+                                setError('');
+                              }}
+                              className="px-3 py-1 bg-[#7B5CFA]/10 border border-[#7B5CFA]/20 rounded-lg text-[#A37BFF] text-xs font-bold hover:bg-[#7B5CFA]/20 hover:border-[#7B5CFA]/40 transition-all cursor-pointer"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-1.5">

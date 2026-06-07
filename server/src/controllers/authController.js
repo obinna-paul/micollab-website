@@ -60,12 +60,13 @@ exports.googleLogin = async (req, res) => {
     }
 
     // USER DOES NOT EXIST - NEW REGISTRATION
-    // If frontend didn't provide a username yet, tell frontend to prompt for one
     if (!username) {
+      const baseName = name ? name.replace(/\s+/g, '').toLowerCase() : 'user';
+      const randomSuffix = Math.floor(Math.random() * 10000);
       return res.status(202).json({ 
         requireUsername: true, 
         message: 'Please choose a username to complete registration',
-        suggestedName: name 
+        suggestedName: `${baseName}${randomSuffix}`
       });
     }
 
@@ -321,20 +322,30 @@ exports.checkAvailability = async (req, res) => {
       return res.status(400).json({ error: 'Username and email are required' });
     }
     
-    const existingUser = await prisma.user.findFirst({
-      where: { OR: [{ email }, { username }] }
-    });
+    const existingByUsername = await prisma.user.findUnique({ where: { username } });
+    const existingByEmail = await prisma.user.findUnique({ where: { email } });
 
-    if (existingUser) {
-      if (existingUser.username === username && existingUser.email === email) {
-        return res.status(400).json({ error: 'Username and email are already taken' });
-      }
-      if (existingUser.username === username) {
-        return res.status(400).json({ error: 'Username already taken' });
-      }
-      if (existingUser.email === email) {
-        return res.status(400).json({ error: 'Email already taken' });
-      }
+    if (existingByUsername && existingByEmail) {
+      const suggestions = await generateUsernameSuggestions(username);
+      return res.status(400).json({ 
+        error: 'Username and email are already taken',
+        field: 'both',
+        suggestions 
+      });
+    }
+    if (existingByUsername) {
+      const suggestions = await generateUsernameSuggestions(username);
+      return res.status(400).json({ 
+        error: 'Username is already taken',
+        field: 'username',
+        suggestions 
+      });
+    }
+    if (existingByEmail) {
+      return res.status(400).json({ 
+        error: 'Email is already registered',
+        field: 'email'
+      });
     }
 
     res.json({ available: true });
@@ -343,3 +354,33 @@ exports.checkAvailability = async (req, res) => {
     res.status(500).json({ error: 'Availability check failed' });
   }
 };
+
+// Generate smart username suggestions
+async function generateUsernameSuggestions(username) {
+  const base = username.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+  const candidates = [];
+  
+  // Generate a pool of candidates
+  for (let i = 1; i <= 99; i++) {
+    candidates.push(`${base}${i}`);
+  }
+  candidates.push(`${base}_x`);
+  candidates.push(`${base}_go`);
+  candidates.push(`the_${base}`);
+  candidates.push(`${base}_official`);
+  candidates.push(`real_${base}`);
+  candidates.push(`${base}${Math.floor(Math.random() * 9000) + 1000}`);
+  candidates.push(`${base}_${Math.floor(Math.random() * 900) + 100}`);
+
+  // Check which ones are actually available
+  const taken = await prisma.user.findMany({
+    where: { username: { in: candidates } },
+    select: { username: true }
+  });
+  const takenSet = new Set(taken.map(u => u.username));
+  
+  const available = candidates.filter(c => !takenSet.has(c));
+  
+  // Return up to 5 suggestions
+  return available.slice(0, 5);
+}

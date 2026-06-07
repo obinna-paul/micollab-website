@@ -102,7 +102,9 @@ const useAuthStore = create(
         } catch (error) {
           return {
             success: false,
-            error: error.response?.data?.error || 'Failed to check availability'
+            error: error.response?.data?.error || 'Failed to check availability',
+            field: error.response?.data?.field || null,
+            suggestions: error.response?.data?.suggestions || []
           };
         }
       },
