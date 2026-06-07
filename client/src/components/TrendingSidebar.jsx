@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Flame, UserPlus, ScanFace, Plus, Sparkles } from 'lucide-react';
+import { Flame, UserPlus, ScanFace, Plus, Check, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
 
 const TrendingSidebar = () => {
   const [creators, setCreators] = useState([]);
   const [newCollabs, setNewCollabs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [requestedIds, setRequestedIds] = useState(new Set());
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +30,17 @@ const TrendingSidebar = () => {
     };
     fetchData();
   }, []);
+
+  const handleConnect = async (creatorId) => {
+    if (requestedIds.has(creatorId)) return;
+    try {
+      await axios.post('/api/network/connect', { receiverId: creatorId });
+      setRequestedIds(prev => new Set(prev).add(creatorId));
+    } catch (error) {
+      console.error('Failed to send connection request:', error);
+      alert(error.response?.data?.error || 'Failed to send request');
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8 pb-10">
@@ -86,24 +100,35 @@ const TrendingSidebar = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-4 px-2">
-            {creators.slice(0, 3).map(creator => (
-              <div key={creator.id} className="flex items-center justify-between group">
-                <Link to={`/profile/${creator.username}`} className="flex items-center gap-3">
-                  <img 
-                    src={creator.profileImage || `https://ui-avatars.com/api/?name=${creator.username}&background=random`} 
-                    alt={creator.username} 
-                    className="w-9 h-9 rounded-full object-cover border border-[var(--border-secondary)]"
-                  />
-                  <div>
-                    <p className="font-bold text-[var(--text-primary)] text-sm hover:underline">{creator.name || creator.username}</p>
-                    <p className="text-[11px] text-[var(--text-secondary)] font-medium">{creator.profileType || 'Creator'}</p>
-                  </div>
-                </Link>
-                <button className="w-7 h-7 rounded-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-primary)] hover:bg-white/10 hover:border-white/20 transition-all shadow-sm">
-                  <Plus size={14} />
-                </button>
-              </div>
-            ))}
+            {creators.filter(c => c.id !== user?.id).slice(0, 3).map(creator => {
+              const isRequested = requestedIds.has(creator.id);
+              return (
+                <div key={creator.id} className="flex items-center justify-between group">
+                  <Link to={`/profile/${creator.username}`} className="flex items-center gap-3">
+                    <img 
+                      src={creator.profileImage || `https://ui-avatars.com/api/?name=${creator.username}&background=random`} 
+                      alt={creator.username} 
+                      className="w-9 h-9 rounded-full object-cover border border-[var(--border-secondary)]"
+                    />
+                    <div>
+                      <p className="font-bold text-[var(--text-primary)] text-sm hover:underline">{creator.name || creator.username}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)] font-medium">{creator.profileType || 'Creator'}</p>
+                    </div>
+                  </Link>
+                  <button 
+                    onClick={() => handleConnect(creator.id)}
+                    disabled={isRequested}
+                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-sm ${
+                      isRequested 
+                        ? 'bg-[#34D399]/20 border border-[#34D399]/30 text-[#34D399]'
+                        : 'bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    {isRequested ? <Check size={14} /> : <Plus size={14} />}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
