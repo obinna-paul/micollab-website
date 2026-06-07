@@ -50,23 +50,36 @@ exports.sendConnectionRequest = async (req, res) => {
       return res.status(400).json({ error: 'You cannot connect with yourself' });
     }
 
-    const existing = await prisma.connection.findFirst({
+    const existingRequest = await prisma.connectionRequest.findFirst({
       where: {
         OR: [
-          { requesterId, receiverId },
-          { requesterId: receiverId, receiverId: requesterId }
+          { fromUserId: requesterId, toUserId: receiverId },
+          { fromUserId: receiverId, toUserId: requesterId }
         ]
       }
     });
 
-    if (existing) {
-      return res.status(400).json({ error: 'Connection or request already exists' });
+    if (existingRequest) {
+      return res.status(400).json({ error: 'Connection request already exists' });
+    }
+    
+    const existingConnection = await prisma.connection.findFirst({
+      where: {
+        OR: [
+          { userId: requesterId, connectedId: receiverId },
+          { userId: receiverId, connectedId: requesterId }
+        ]
+      }
+    });
+
+    if (existingConnection) {
+      return res.status(400).json({ error: 'Already connected' });
     }
 
-    const connection = await prisma.connection.create({
+    const request = await prisma.connectionRequest.create({
       data: {
-        requesterId,
-        receiverId,
+        fromUserId: requesterId,
+        toUserId: receiverId,
         status: 'PENDING'
       }
     });
@@ -77,11 +90,10 @@ exports.sendConnectionRequest = async (req, res) => {
       requesterId,
       'CONNECTION',
       'New Connection Request',
-      `wants to connect with you.`,
-      '/network'
+      request.id
     );
 
-    res.json(connection);
+    res.json(request);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to send request' });
@@ -93,13 +105,13 @@ exports.getRequests = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const requests = await prisma.connection.findMany({
+    const requests = await prisma.connectionRequest.findMany({
       where: {
-        receiverId: userId,
+        toUserId: userId,
         status: 'PENDING'
       },
       include: {
-        requester: {
+        fromUser: {
           select: {
             id: true,
             username: true,
@@ -121,36 +133,43 @@ exports.getRequests = async (req, res) => {
 exports.handleConnectionRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
-    const { action } = req.body; // ACCEPTED or DECLINED (deleted)
+    const { action } = req.body; // ACCEPTED or DECLINED
     const userId = req.user.id;
 
-    const request = await prisma.connection.findUnique({
+    const request = await prisma.connectionRequest.findUnique({
       where: { id: requestId }
     });
 
-    if (!request || request.receiverId !== userId) {
+    if (!request || request.toUserId !== userId) {
       return res.status(404).json({ error: 'Request not found' });
     }
 
     if (action === 'ACCEPTED') {
-      const updated = await prisma.connection.update({
+      const updated = await prisma.connectionRequest.update({
         where: { id: requestId },
         data: { status: 'ACCEPTED' }
+      });
+      
+      await prisma.connection.create({
+        data: {
+          userId: request.fromUserId,
+          connectedId: request.toUserId,
+          status: 'ACCEPTED'
+        }
       });
 
       // Notify requester
       await notificationController.createNotification(
-        request.requesterId,
+        request.fromUserId,
         userId,
         'CONNECTION',
         'Connection Accepted',
-        `accepted your connection request!`,
-        `/profile/${req.user.username}`
+        request.id
       );
 
       return res.json(updated);
     } else {
-      await prisma.connection.delete({
+      await prisma.connectionRequest.delete({
         where: { id: requestId }
       });
       return res.json({ message: 'Request declined' });
