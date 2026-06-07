@@ -20,6 +20,9 @@ model User {
   bio               String?   @default("Creative explorer on Micollab.")
   longAbout         String?   
   isVerified        String?   @default("NO") // NO, PENDING, YES
+  isEmailVerified   Boolean   @default(false)
+  verificationOTP   String?
+  otpExpiresAt      DateTime?
   location          String?   @default("Lagos, Nigeria")
   skills            String?   // comma-separated
   availabilityStatus String?  @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB

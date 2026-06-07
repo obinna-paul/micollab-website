@@ -99,8 +99,12 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
+  // OTP State
+  const [requiresVerification, setRequiresVerification] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  
   const navigate = useNavigate();
-  const { register, checkAvailability } = useAuthStore();
+  const { register, checkAvailability, verifyOTP, resendOTP } = useAuthStore();
 
   const handleCategoryToggle = (id) => {
     setSelectedCategories(prev => 
@@ -139,10 +143,37 @@ const Register = () => {
     };
 
     const result = await register(payload);
+    if (result.success && result.requiresOTP) {
+      setRequiresVerification(true);
+    } else if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
+
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    const result = await verifyOTP(accountDetails.email, otpCode);
     if (result.success) {
       navigate('/');
     } else {
       setError(result.error);
+    }
+    setLoading(false);
+  };
+
+  const handleResendOTP = async () => {
+    setLoading(true);
+    const result = await resendOTP(accountDetails.email);
+    if (!result.success) {
+      setError(result.error);
+    } else {
+      setError('Verification code resent successfully.');
     }
     setLoading(false);
   };
@@ -213,7 +244,61 @@ const Register = () => {
         
         <div className="max-w-xl">
           <AnimatePresence mode="wait">
-            {step === 1 && (
+            {requiresVerification ? (
+              <motion.div key="otp-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <div className="text-center mb-6 mt-4">
+                  <div className="w-16 h-16 bg-[#7B5CFA]/10 text-[#7B5CFA] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#7B5CFA]/20">
+                    <Mail size={32} />
+                  </div>
+                  <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Verify your email</h3>
+                  <p className="text-[var(--text-secondary)] text-sm font-medium">
+                    Please check your email and enter the verification code.
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-xs font-bold">
+                    <AlertCircle size={16} />
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleVerifyOTP} className="space-y-6">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[var(--text-primary)] ml-1 text-center block">Enter 6-digit Code</label>
+                    <input 
+                      type="text" 
+                      required
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      placeholder="000000"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 text-center text-3xl tracking-[1em] text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-black placeholder-[#8B95A5]/30"
+                    />
+                  </div>
+
+                  <button 
+                    type="submit"
+                    disabled={loading || otpCode.length !== 6}
+                    className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  >
+                    {loading ? <Loader2 className="animate-spin" size={20} /> : 'Verify Email'}
+                  </button>
+                </form>
+
+                <p className="text-center text-xs font-bold text-[var(--text-secondary)] pt-8">
+                  Didn't receive the code?{' '}
+                  <button 
+                    type="button"
+                    onClick={handleResendOTP}
+                    disabled={loading}
+                    className="text-[#A37BFF] hover:text-[var(--text-primary)] transition disabled:opacity-50 ml-1"
+                  >
+                    Resend
+                  </button>
+                </p>
+              </motion.div>
+            ) : step === 1 && (
               <motion.div key="m-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>

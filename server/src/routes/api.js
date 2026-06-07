@@ -20,6 +20,8 @@ router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
 router.post('/auth/google', authController.googleLogin);
 router.post('/auth/check-availability', authController.checkAvailability);
+router.post('/auth/verify-otp', authController.verifyOTP);
+router.post('/auth/resend-otp', authController.resendOTP);
 router.get('/auth/me', authMiddleware, authController.getMe);
 
 // Post Routes

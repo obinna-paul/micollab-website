@@ -50,6 +50,25 @@ const useAuthStore = create(
       register: async (userData) => {
         try {
           const res = await axios.post('/api/auth/register', userData);
+          if (res.status === 202) {
+            return { requiresOTP: true, success: true };
+          }
+          // Fallback if backend still returns 201 somehow
+          const { user, token } = res.data;
+          set({ user, token, isAuthenticated: true });
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          return { success: true };
+        } catch (error) {
+          return { 
+            success: false, 
+            error: error.response?.data?.error || 'Registration failed' 
+          };
+        }
+      },
+
+      verifyOTP: async (email, otp) => {
+        try {
+          const res = await axios.post('/api/auth/verify-otp', { email, otp });
           const { user, token } = res.data;
           
           set({ user, token, isAuthenticated: true });
@@ -57,9 +76,21 @@ const useAuthStore = create(
           
           return { success: true };
         } catch (error) {
-          return { 
-            success: false, 
-            error: error.response?.data?.error || 'Registration failed' 
+          return {
+            success: false,
+            error: error.response?.data?.error || 'Verification failed'
+          };
+        }
+      },
+
+      resendOTP: async (email) => {
+        try {
+          const res = await axios.post('/api/auth/resend-otp', { email });
+          return { success: true, message: res.data.message };
+        } catch (error) {
+          return {
+            success: false,
+            error: error.response?.data?.error || 'Failed to resend code'
           };
         }
       },
