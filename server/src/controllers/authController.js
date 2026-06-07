@@ -145,8 +145,8 @@ exports.register = async (req, res) => {
           data: { verificationOTP: otp, otpExpiresAt }
         });
 
-        // Send OTP asynchronously
-        sendOTP(email, otp);
+        // Send OTP synchronously to ensure it completes before serverless function exits
+        await sendOTP(email, otp);
         return res.status(202).json({ message: 'Verification code resent to email' });
       }
     }
@@ -166,8 +166,8 @@ exports.register = async (req, res) => {
         otpExpiresAt
       }
     });
-    // Send OTP asynchronously
-    sendOTP(email, otp);
+    // Send OTP synchronously to ensure it completes before serverless function exits
+    await sendOTP(email, otp);
 
     res.status(202).json({
       message: 'Verification code sent to email'
