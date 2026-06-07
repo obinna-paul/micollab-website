@@ -123,10 +123,10 @@ const MainLayout = ({ children }) => {
           <div className="flex items-center gap-4 w-auto md:w-[240px] justify-end">
              {isAuthenticated ? (
                <div className="flex items-center gap-3">
-                 <button className="w-9 h-9 rounded-full border border-[var(--border-secondary)] bg-[var(--bg-surface-alt)] flex items-center justify-center hover:bg-white/5 transition relative group">
+                 <Link to="/notifications" className="w-9 h-9 rounded-full border border-[var(--border-secondary)] bg-[var(--bg-surface-alt)] flex items-center justify-center hover:bg-white/5 transition relative group">
                    <Bell size={16} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
                    {unreadCount > 0 && <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#EC4899] rounded-full border-2 border-[#0F131E]" />}
-                 </button>
+                 </Link>
                  <Link to="/messages" className="w-9 h-9 rounded-full border border-[var(--border-secondary)] bg-[var(--bg-surface-alt)] flex items-center justify-center hover:bg-white/5 transition relative group">
                    <MessageSquare size={16} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
                  </Link>

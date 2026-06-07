@@ -398,9 +398,9 @@ const Network = () => {
               {requests.map(req => (
                 <div key={req.id} className="bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <img src={req.requester.profileImage || `https://ui-avatars.com/api/?name=${req.requester.username}&background=random`} className="w-10 h-10 rounded-lg object-cover border border-[var(--border-primary)]" alt={req.requester.username} />
+                    <img src={req.fromUser?.profileImage || `https://ui-avatars.com/api/?name=${req.fromUser?.username}&background=random`} className="w-10 h-10 rounded-lg object-cover border border-[var(--border-primary)]" alt={req.fromUser?.username} />
                     <div className="flex-1">
-                      <p className="font-bold text-[var(--text-primary)] text-[13px]">{req.requester.username}</p>
+                      <p className="font-bold text-[var(--text-primary)] text-[13px]">{req.fromUser?.username}</p>
                       <p className="text-[9px] font-medium text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Wants to connect</p>
                     </div>
                   </div>
