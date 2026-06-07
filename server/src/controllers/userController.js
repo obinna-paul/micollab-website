@@ -59,7 +59,7 @@ exports.updateProfile = async (req, res) => {
     const { 
       displayName, bio, longAbout, location, 
       skills, availabilityStatus, profileImage, 
-      coverImage, socialLinks, website 
+      coverImage, socialLinks, website, profileType 
     } = req.body;
 
     const updated = await prisma.user.update({
@@ -74,6 +74,7 @@ exports.updateProfile = async (req, res) => {
         ...(profileImage !== undefined && { profileImage }),
         ...(coverImage !== undefined && { coverImage }),
         ...(website !== undefined && { website }),
+        ...(profileType !== undefined && { profileType }),
         ...(socialLinks !== undefined && { socialLinks: JSON.stringify(socialLinks) })
       }
     });

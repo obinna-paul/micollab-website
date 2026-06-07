@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Lock, User, Loader2, AlertCircle, ChevronRight, ChevronLeft, Check, 
@@ -105,7 +105,24 @@ const Register = () => {
   const [otpCode, setOtpCode] = useState('');
   
   const navigate = useNavigate();
-  const { register, checkAvailability, verifyOTP, resendOTP } = useAuthStore();
+  const location = useLocation();
+  const { register, checkAvailability, verifyOTP, resendOTP, loginWithGoogle, updateProfile } = useAuthStore();
+
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [googleCredential, setGoogleCredential] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [isGoogleOnboarding, setIsGoogleOnboarding] = useState(false);
+
+  React.useEffect(() => {
+    if (location.state?.requireUsername && location.state?.googleCredential) {
+      setGoogleCredential(location.state.googleCredential);
+      setNewUsername(location.state.suggestedName || '');
+      setShowUsernameModal(true);
+      
+      // Clean up state so refresh doesn't trigger it again
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleCategoryToggle = (id) => {
     setSelectedCategories(prev => 
@@ -141,6 +158,21 @@ const Register = () => {
     setLoading(true);
     setError('');
     
+    // Google users are already logged in — just update their profile
+    if (isGoogleOnboarding) {
+      const result = await updateProfile({
+        profileType: selectedCategories.join(', '),
+        skills: selectedSpecializations.join(', ')
+      });
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error || 'Failed to save profile');
+      }
+      setLoading(false);
+      return;
+    }
+
     const payload = {
       ...accountDetails,
       profileType: selectedCategories.join(', '),
@@ -183,10 +215,7 @@ const Register = () => {
     setLoading(false);
   };
 
-  const { loginWithGoogle } = useAuthStore();
-  const [showUsernameModal, setShowUsernameModal] = useState(false);
-  const [googleCredential, setGoogleCredential] = useState('');
-  const [newUsername, setNewUsername] = useState('');
+  // Removed duplicate state declarations
 
   const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true);
@@ -211,8 +240,11 @@ const Register = () => {
     
     const result = await loginWithGoogle(googleCredential, newUsername);
     if (result.success) {
+      // Don't navigate — enter onboarding flow instead
       setShowUsernameModal(false);
-      navigate('/');
+      setIsGoogleOnboarding(true);
+      setAccountDetails({ ...accountDetails, username: newUsername });
+      setStep(2);
     } else {
       setError(result.error);
     }

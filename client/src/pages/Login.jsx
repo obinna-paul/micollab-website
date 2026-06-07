@@ -38,23 +38,14 @@ const Login = () => {
     if (result.success) {
       navigate('/');
     } else if (result.requireUsername) {
-      setGoogleCredential(credentialResponse.credential);
-      setShowUsernameModal(true);
-    } else {
-      setError(result.error);
-    }
-    setLoading(false);
-  };
-
-  const handleGoogleUsernameSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    
-    const result = await loginWithGoogle(googleCredential, newUsername);
-    if (result.success) {
-      setShowUsernameModal(false);
-      navigate('/');
+      // New user logging in from the login page. Redirect to register to complete onboarding.
+      navigate('/register', { 
+        state: { 
+          googleCredential: credentialResponse.credential,
+          requireUsername: true,
+          suggestedName: result.suggestedName
+        } 
+      });
     } else {
       setError(result.error);
     }
