@@ -161,7 +161,15 @@ exports.getOrCreateConversation = async (req, res) => {
           { participants: { some: { userId: targetUserId } } }
         ]
       },
-      include: { id: true }
+      include: {
+        participants: {
+          include: {
+            user: {
+              select: { id: true, username: true, profileImage: true, profileType: true }
+            }
+          }
+        }
+      }
     });
 
     if (existing) return res.json(existing);
@@ -174,6 +182,15 @@ exports.getOrCreateConversation = async (req, res) => {
             { userId },
             { userId: targetUserId }
           ]
+        }
+      },
+      include: {
+        participants: {
+          include: {
+            user: {
+              select: { id: true, username: true, profileImage: true, profileType: true }
+            }
+          }
         }
       }
     });
