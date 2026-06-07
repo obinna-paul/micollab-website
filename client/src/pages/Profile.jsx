@@ -192,11 +192,11 @@ const Profile = () => {
           )}
 
           {/* Mutual Connections */}
-          {profile.mutualConnections && profile.mutualConnections.length > 0 && (
-            <div>
-              <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
-                <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
-              </h4>
+          <div>
+            <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
+              <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
+            </h4>
+            {profile.mutualConnections && profile.mutualConnections.length > 0 ? (
               <div className="space-y-4">
                 {profile.mutualConnections.map((conn, i) => (
                   <div key={i} className="flex items-center gap-3">
@@ -208,8 +208,12 @@ const Profile = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="bg-[var(--bg-surface-alt)]/50 border border-dashed border-[var(--border-primary)] rounded-xl p-4 text-center">
+                <p className="text-[11px] text-[var(--text-secondary)]">No mutual connections yet. Expand your network!</p>
+              </div>
+            )}
+          </div>
         </aside>
       </div>
 
@@ -331,9 +335,9 @@ const Profile = () => {
           </div>
 
           {/* TOP ENDORSEMENTS */}
-          {profile.receivedTestimonials && profile.receivedTestimonials.length > 0 && (
-            <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
-              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-widest mb-5">TOP ENDORSEMENTS</h4>
+          <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
+            <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-widest mb-5">TOP ENDORSEMENTS</h4>
+            {profile.receivedTestimonials && profile.receivedTestimonials.length > 0 ? (
               <div className="space-y-6">
                 {profile.receivedTestimonials.slice(0, 2).map((test) => (
                   <div key={test.id} className="flex gap-3">
@@ -348,8 +352,15 @@ const Profile = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="py-6 flex flex-col items-center justify-center border border-dashed border-[var(--border-primary)] rounded-xl bg-[var(--bg-surface-alt)]/50">
+                <Star size={24} className="text-[var(--text-muted)] mb-3 opacity-50" />
+                <p className="text-[11px] text-[var(--text-secondary)] text-center px-4 leading-relaxed">
+                  No endorsements yet. Build your network and earn some!
+                </p>
+              </div>
+            )}
+          </div>
         </aside>
 
         {/* MIDDLE CONTENT COLUMN — flexible width */}

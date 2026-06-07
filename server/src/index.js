@@ -57,7 +57,9 @@ const PORT = process.env.PORT || 5000;
     const user = await prisma.user.findFirst({ where: { username: 'micollab' } });
     if (user) {
       await prisma.portfolioItem.deleteMany({ where: { userId: user.id } });
-      console.log("Deleted mock portfolio items for micollab");
+      await prisma.testimonial.deleteMany({ where: { OR: [{ toUserId: user.id }, { fromUserId: user.id }] } });
+      await prisma.post.deleteMany({ where: { creatorId: user.id } });
+      console.log("Deleted mock portfolio items, testimonials, and posts for micollab");
     }
 
     httpServer.listen(PORT, '0.0.0.0', () => {
