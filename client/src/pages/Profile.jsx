@@ -200,9 +200,11 @@ const Profile = () => {
               <div className="space-y-4">
                 {profile.mutualConnections.map((conn, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover" />
+                    <Link to={`/profile/${conn.username}`}>
+                      <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition" />
+                    </Link>
                     <div>
-                      <p className="text-[13px] font-bold text-[var(--text-primary)]">{conn.username}</p>
+                      <Link to={`/profile/${conn.username}`} className="text-[13px] font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline block">{conn.username}</Link>
                       <p className="text-[11px] text-[var(--text-secondary)]">{conn.profileType}</p>
                     </div>
                   </div>
@@ -341,10 +343,12 @@ const Profile = () => {
               <div className="space-y-6">
                 {profile.receivedTestimonials.slice(0, 2).map((test) => (
                   <div key={test.id} className="flex gap-3">
-                    <img src={test.fromUser?.profileImage || `https://ui-avatars.com/api/?name=${test.fromUser?.username}`} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    <Link to={`/profile/${test.fromUser?.username}`}>
+                      <img src={test.fromUser?.profileImage || `https://ui-avatars.com/api/?name=${test.fromUser?.username}`} className="w-10 h-10 rounded-full object-cover flex-shrink-0 hover:opacity-80 transition" />
+                    </Link>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <p className="text-[13px] font-bold text-[var(--text-primary)]">{test.fromUser?.username}</p>
+                        <Link to={`/profile/${test.fromUser?.username}`} className="text-[13px] font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline block">{test.fromUser?.username}</Link>
                         <span className="text-[8px] bg-[#00D4FF]/10 text-[#00D4FF] px-1.5 py-0.5 rounded font-bold">{test.rating} Stars</span>
                       </div>
                       <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">"{test.content}"</p>

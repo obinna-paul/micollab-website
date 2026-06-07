@@ -331,7 +331,7 @@ const PostCard = ({ post }) => {
                       <div className="flex-1 bg-[var(--bg-base)] rounded-2xl p-3 border border-[var(--border-primary)]">
                         <div className="flex justify-between items-start mb-1">
                           <div>
-                            <span className="text-xs font-bold text-[var(--text-primary)]">@{comment.user.username}</span>
+                            <Link to={`/profile/${comment.user.username}`} className="text-xs font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline transition">@{comment.user.username}</Link>
                             <span className="text-[9px] text-[var(--text-secondary)] ml-2">{new Date(comment.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -372,7 +372,7 @@ const PostCard = ({ post }) => {
                     <img src={comment.user.profileImage || fallbackAvatar} className="w-9 h-9 rounded-full object-cover border border-[var(--border-primary)]" alt={comment.user.username} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-black text-[var(--text-primary)]">@{comment.user.username}</span>
+                        <Link to={`/profile/${comment.user.username}`} className="text-xs font-black text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline transition">@{comment.user.username}</Link>
                         <span className="text-[9px] text-[var(--text-secondary)]">{new Date(comment.createdAt).toLocaleDateString()}</span>
                       </div>
                       <p className="text-xs text-[var(--text-primary)] leading-relaxed">{comment.content}</p>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
   Users, Search, UserPlus, MessageSquare, 
@@ -279,9 +279,13 @@ const Network = () => {
               )}
               {connections.map(user => (
                 <div key={user.id} className="bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-xl p-3.5 flex items-center gap-3 hover:border-[#7B5CFA]/20 transition-all">
-                  <img src={user.profileImage || `https://ui-avatars.com/api/?name=${user.username}&background=random`} className="w-10 h-10 rounded-lg object-cover border border-[var(--border-primary)]" alt={user.username} />
+                  <Link to={`/profile/${user.username}`}>
+                    <img src={user.profileImage || `https://ui-avatars.com/api/?name=${user.username}&background=random`} className="w-10 h-10 rounded-lg object-cover border border-[var(--border-primary)] hover:opacity-80 transition" alt={user.username} />
+                  </Link>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-[13px] font-bold text-[var(--text-primary)] truncate">{user.username}</h3>
+                    <Link to={`/profile/${user.username}`}>
+                      <h3 className="text-[13px] font-bold text-[var(--text-primary)] truncate hover:text-[#7B5CFA] hover:underline transition">{user.username}</h3>
+                    </Link>
                     <p className="text-[9px] font-bold text-cyan-400 uppercase tracking-wider mt-0.5 truncate">{user.profileType}</p>
                   </div>
                   <button onClick={() => handleStartChat(user.id)} className="bg-[var(--bg-sunken)] p-2 rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[#7B5CFA] hover:border-[#7B5CFA]/30 transition-all flex-shrink-0">
@@ -305,9 +309,13 @@ const Network = () => {
               {requests.map(req => (
                 <div key={req.id} className="bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <img src={req.fromUser?.profileImage || `https://ui-avatars.com/api/?name=${req.fromUser?.username}&background=random`} className="w-10 h-10 rounded-lg object-cover border border-[var(--border-primary)]" alt={req.fromUser?.username} />
+                    <Link to={`/profile/${req.fromUser?.username}`}>
+                      <img src={req.fromUser?.profileImage || `https://ui-avatars.com/api/?name=${req.fromUser?.username}&background=random`} className="w-10 h-10 rounded-lg object-cover border border-[var(--border-primary)] hover:opacity-80 transition" alt={req.fromUser?.username} />
+                    </Link>
                     <div className="flex-1">
-                      <p className="font-bold text-[var(--text-primary)] text-[13px]">{req.fromUser?.username}</p>
+                      <Link to={`/profile/${req.fromUser?.username}`}>
+                        <p className="font-bold text-[var(--text-primary)] text-[13px] hover:text-[#7B5CFA] hover:underline transition">{req.fromUser?.username}</p>
+                      </Link>
                       <p className="text-[9px] font-medium text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Wants to connect</p>
                     </div>
                   </div>

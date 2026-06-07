@@ -6,6 +6,7 @@ import {
   Check, CheckCheck, Clock, UserPlus, Briefcase,
   SquarePen, X
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '../store/useAuthStore';
 import useChatStore from '../store/useChatStore';
@@ -159,7 +160,7 @@ const Messages = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex justify-between items-center mb-0.5">
-                      <p className="text-sm font-bold text-textMain truncate">@{partner?.username}</p>
+                      <Link to={`/profile/${partner?.username}`} onClick={e => e.stopPropagation()} className="text-sm font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline truncate">@{partner?.username}</Link>
                       <span className="text-[9px] text-textMuted font-medium">
                         {lastMsg ? new Date(lastMsg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                       </span>
@@ -191,7 +192,7 @@ const Messages = () => {
                     className="w-8 h-8 rounded-full border border-divider"
                   />
                   <div>
-                    <p className="text-sm font-bold text-textMain">@{getPartner(activeConversation)?.username}</p>
+                    <Link to={`/profile/${getPartner(activeConversation)?.username}`} className="text-sm font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline">@{getPartner(activeConversation)?.username}</Link>
                     <p className="text-[10px] text-green-500 font-bold">Active now</p>
                   </div>
                 </div>
@@ -298,7 +299,7 @@ const Messages = () => {
                 src={getPartner(activeConversation)?.profileImage || 'https://via.placeholder.com/150'} 
                 className="w-24 h-24 rounded-full mx-auto border-4 border-background shadow-xl mb-4 object-cover"
               />
-              <h3 className="text-lg font-black text-textMain">@{getPartner(activeConversation)?.username}</h3>
+              <Link to={`/profile/${getPartner(activeConversation)?.username}`} className="text-lg font-black text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline">@{getPartner(activeConversation)?.username}</Link>
               <p className="text-xs text-textMuted font-bold uppercase tracking-widest mt-1">{getPartner(activeConversation)?.profileType}</p>
               
               <div className="flex gap-2 mt-6">
@@ -387,7 +388,7 @@ const Messages = () => {
                            >
                               <img src={u.profileImage || `https://ui-avatars.com/api/?name=${u.username}`} className="w-10 h-10 rounded-full border border-divider" />
                               <div className="flex-1 min-w-0">
-                                 <p className="font-black text-textMain text-xs group-hover:text-primary transition-colors">@{u.username}</p>
+                                 <Link to={`/profile/${u.username}`} onClick={e => e.stopPropagation()} className="font-black text-[var(--text-primary)] text-xs hover:text-[#7B5CFA] hover:underline transition-colors block">@{u.username}</Link>
                                  <p className="text-[9px] text-textMuted uppercase tracking-widest truncate">{u.profileType} • {u.location || 'Global'}</p>
                               </div>
                               <ChevronLeft size={16} className="text-textMuted rotate-180 opacity-0 group-hover:opacity-100 transition-all" />
