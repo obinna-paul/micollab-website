@@ -26,8 +26,8 @@ function App() {
     initAuth();
   }, [initAuth]);
 
-  // A user is considered fully onboarded if they have defined their skills
-  const isOnboarded = isAuthenticated && Boolean(user?.skills);
+  // A user is considered fully onboarded if their skills property is present (even if empty string)
+  const isOnboarded = isAuthenticated && user?.skills !== null && user?.skills !== undefined;
 
   // Helper to protect routes that require full authentication and onboarding
   const requireAuth = (element) => {

@@ -313,6 +313,7 @@ exports.getMe = async (req, res) => {
         profileImage: true,
         bio: true,
         location: true,
+        skills: true,
         isVerified: true,
         isEmailVerified: true
       }
