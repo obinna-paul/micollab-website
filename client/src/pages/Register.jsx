@@ -820,7 +820,8 @@ const Register = () => {
             <div className="mt-6 text-center">
               <p className="text-[var(--text-secondary)] text-xs font-medium">
                 Didn't receive the code?{' '}
-                <button onClick={async () => {
+                <button type="button" onClick={async (e) => {
+                  e.preventDefault();
                   const res = await resendOTP(accountDetails.email);
                   if(!res.success) setError(res.error);
                   else alert("Code resent!");

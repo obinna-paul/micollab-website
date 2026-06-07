@@ -3,15 +3,16 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER || 'micollab.app@gmail.com',
+    pass: process.env.EMAIL_PASS || 'vpkb brih clkv wisj',
   },
 });
 
 exports.sendOTP = async (email, otp) => {
   try {
+    const senderEmail = process.env.EMAIL_USER || 'micollab.app@gmail.com';
     const mailOptions = {
-      from: `"Micollab" <${process.env.EMAIL_USER}>`,
+      from: `"Micollab" <${senderEmail}>`,
       to: email,
       subject: 'Verify your Micollab account',
       html: `
