@@ -23,7 +23,7 @@ exports.googleLogin = async (req, res) => {
       where: {
         OR: [
           { googleId },
-          { email }
+          { email: { equals: email, mode: 'insensitive' } }
         ]
       }
     });
@@ -72,7 +72,7 @@ exports.googleLogin = async (req, res) => {
     }
 
     // Frontend provided a username, create the account
-    const existingUsername = await prisma.user.findUnique({ where: { username } });
+    const existingUsername = await prisma.user.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } });
     if (existingUsername) {
       return res.status(400).json({ error: 'Username is already taken' });
     }
@@ -124,7 +124,12 @@ exports.register = async (req, res) => {
     const { username, email, password, profileType } = req.body;
 
     const existingUser = await prisma.user.findFirst({
-      where: { OR: [{ email }, { username }] }
+      where: { 
+        OR: [
+          { email: { equals: email, mode: 'insensitive' } }, 
+          { username: { equals: username, mode: 'insensitive' } }
+        ] 
+      }
     });
 
     if (existingUser) {
@@ -176,7 +181,7 @@ exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
 
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
@@ -231,7 +236,7 @@ exports.resendOTP = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
 
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
@@ -262,7 +267,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -324,8 +329,8 @@ exports.checkAvailability = async (req, res) => {
       return res.status(400).json({ error: 'Username and email are required' });
     }
     
-    const existingByUsername = await prisma.user.findUnique({ where: { username } });
-    const existingByEmail = await prisma.user.findUnique({ where: { email } });
+    const existingByUsername = await prisma.user.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } });
+    const existingByEmail = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
 
     if (existingByUsername && existingByEmail) {
       const suggestions = await generateUsernameSuggestions(username);

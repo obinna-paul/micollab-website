@@ -5,9 +5,13 @@ exports.getProfile = async (req, res) => {
   try {
     const { username: rawUsername } = req.params;
     const username = rawUsername.toLowerCase();
-    
-    const user = await prisma.user.findUnique({
-      where: { username },
+    const user = await prisma.user.findFirst({
+      where: { 
+        username: {
+          equals: rawUsername,
+          mode: 'insensitive'
+        }
+      },
       include: {
         posts: {
           where: { isCollabCard: false, isArchived: false },
