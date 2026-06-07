@@ -44,7 +44,7 @@ exports.getProfile = async (req, res) => {
             collabs: true
           }
         },
-        receivedTestimonials: {
+        testimonials: { 
           orderBy: { createdAt: 'desc' },
           include: {
             fromUser: { select: { username: true, profileImage: true, profileType: true } }
@@ -57,8 +57,8 @@ exports.getProfile = async (req, res) => {
 
     const connectionsCount = (user._count?.sentRequests || 0) + (user._count?.receivedRequests || 0);
     const collabsCount = user._count?.collabs || 0;
-    const { password: _, _count, ...userData } = user;
-    res.json({ ...userData, connectionsCount, followersCount: connectionsCount, collabsCount, mutualConnections: [] });
+    const { password: _, _count, testimonials, ...userData } = user;
+    res.json({ ...userData, connectionsCount, followersCount: connectionsCount, collabsCount, receivedTestimonials: testimonials, mutualConnections: [] });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch profile' });
