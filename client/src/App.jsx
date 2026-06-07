@@ -32,86 +32,60 @@ function App() {
       <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/" />} />
       
       <Route path="/" element={
-        <MainLayout>
-          <Feed />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Feed /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/profile/:username" element={
-        <MainLayout>
-          <Profile />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Profile /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/messages" element={
-        <MainLayout>
-          <Messages />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Messages /></MainLayout> : <Navigate to="/login" />
       } />
       
       <Route path="/network" element={
-        <MainLayout>
-          <Network />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Network /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/circles" element={
-        <MainLayout>
-          <Circles />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Circles /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/circles/:id" element={
-        <MainLayout>
-          <CircleWorkspace />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><CircleWorkspace /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/collabs" element={
-        <MainLayout>
-          <Collabs />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Collabs /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/collabs/new" element={
-        <MainLayout>
-          <NewCollab />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><NewCollab /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/collabs/:id" element={
-        <MainLayout>
-          <CollabDetail />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><CollabDetail /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/collabs/manage/:id" element={
-        <MainLayout>
-          <CollabManage />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><CollabManage /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/wallet" element={
-        <MainLayout>
-          <Wallet />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Wallet /></MainLayout> : <Navigate to="/login" />
       } />
       <Route path="/notifications" element={
-        <MainLayout>
-          <Notifications />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><Notifications /></MainLayout> : <Navigate to="/login" />
       } />
       
       <Route path="/files" element={
-        <MainLayout>
-          <FilesHub />
-        </MainLayout>
+        isAuthenticated ? <MainLayout><FilesHub /></MainLayout> : <Navigate to="/login" />
       } />
 
       <Route path="/share/:linkId" element={<PublicSharePage />} />
 
       {/* Catch all */}
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} />} />
     </Routes>
   );
 }
