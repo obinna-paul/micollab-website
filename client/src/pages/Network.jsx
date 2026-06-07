@@ -23,29 +23,9 @@ const getGradient = (str = 'creative') => {
 };
 
 const getCategory = (user) => {
-  const s = ((user.skills || '') + ' ' + (user.profileType || '')).toLowerCase();
-  if (s.includes('sound') || s.includes('music') || s.includes('audio')) return 'Music & Audio';
-  if (s.includes('film') || s.includes('video') || s.includes('motion') || s.includes('3d')) return 'Film & Motion';
-  if (s.includes('code') || s.includes('web') || s.includes('dev') || s.includes('ui') || s.includes('ux')) return 'Design & Creative Tech';
-  return 'Visual Arts';
+  if (!user.profileType) return 'Creative';
+  return user.profileType.split(',')[0].trim();
 };
-
-const getCuratedAssets = (user) => {
-  const s = ((user.skills || '') + ' ' + (user.profileType || '')).toLowerCase();
-  if (s.includes('sound') || s.includes('music') || s.includes('audio') || s.includes('vocal')) {
-    return { showcase: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&auto=format&fit=crop&q=80', headline: 'Need Vocalist for Synthwave EP', likes: 342, comments: 28 };
-  }
-  if (s.includes('film') || s.includes('video') || s.includes('director') || s.includes('motion') || s.includes('3d')) {
-    return { showcase: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&auto=format&fit=crop&q=80', headline: 'Cyber City Concepts', likes: 198, comments: 15 };
-  }
-  if (s.includes('code') || s.includes('developer') || s.includes('web') || s.includes('ui') || s.includes('ux')) {
-    return { showcase: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&auto=format&fit=crop&q=80', headline: 'NextJS Creative Agency Theme', likes: 512, comments: 43 };
-  }
-  return { showcase: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80', headline: 'Digital Landscape & Fluid Simulation', likes: 276, comments: 19 };
-};
-
-/* Card type sequence — alternating so profiles & posts weave nicely */
-const CARD_SEQ = ['post', 'profile', 'post', 'profile', 'profile', 'post', 'profile', 'post', 'profile', 'profile'];
 
 const Network = () => {
   const { token, user: currentUser } = useAuthStore();
@@ -115,7 +95,7 @@ const Network = () => {
   /* ── Profile Card — compact square ── */
   const ProfileCard = ({ user, idx }) => {
     const isFollowed = localFollows[user.id] || false;
-    const skills = user.skills ? user.skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 3) : ['Branding', 'UI/UX', 'Strategy'];
+    const skills = user.skills ? user.skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 3) : [];
 
     return (
       <motion.div
@@ -177,70 +157,7 @@ const Network = () => {
     );
   };
 
-  /* ── Post Snippet Card — same width, taller ── */
-  const PostSnippetCard = ({ user, idx }) => {
-    const assets = getCuratedAssets(user);
-    const isLiked = localLikes[user.id] || false;
 
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: idx * 0.03 }}
-        whileHover={{ y: -3, transition: { duration: 0.15 } }}
-        className="nw-card bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-xl overflow-hidden flex flex-col cursor-pointer group"
-        onClick={() => navigate(`/profile/${user.username}`)}
-      >
-        {/* Author row */}
-        <div className="flex items-center gap-2 px-3.5 pt-3.5">
-          <img
-            src={user.profileImage || `https://ui-avatars.com/api/?name=${user.username}&background=random&size=64`}
-            alt={user.username}
-            className="w-8 h-8 rounded-full object-cover border border-[var(--border-secondary)] flex-shrink-0"
-          />
-          <div className="min-w-0">
-            <h4 className="text-[12px] font-bold text-[var(--text-primary)] leading-none truncate">{user.username}</h4>
-            <p className="text-[9px] font-medium text-[#7B5CFA] mt-[2px]">{getCategory(user)}</p>
-          </div>
-        </div>
-
-        {/* Image */}
-        <div className="mx-3.5 mt-2.5 rounded-lg overflow-hidden bg-[var(--bg-sunken)] border border-[var(--border-primary)]" style={{ aspectRatio: '4/3' }}>
-          <img
-            src={assets.showcase}
-            alt={assets.headline}
-            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-          />
-        </div>
-
-        {/* Title */}
-        <div className="px-3.5 pt-2.5 flex-1">
-          <h4 className="text-[12px] font-bold text-[var(--text-primary)] leading-snug">{assets.headline}</h4>
-          <p className="text-[10px] text-[#6B7588] leading-relaxed mt-0.5 line-clamp-2">
-            {user.bio || 'Recent environment designs for an upcoming sci-fi title.'}
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div className="flex items-center gap-3.5 px-3.5 pb-3.5 pt-2 text-[var(--text-muted)]">
-          <button
-            onClick={(e) => { e.stopPropagation(); toggleLike(user.id); }}
-            className={`flex items-center gap-1 text-[10px] font-medium transition-all hover:text-red-400 ${isLiked ? 'text-red-500' : ''}`}
-          >
-            <Heart size={11} className={isLiked ? 'fill-red-500 text-red-500' : ''} />
-            {isLiked ? assets.likes + 1 : assets.likes}
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); handleStartChat(user.id); }}
-            className="flex items-center gap-1 text-[10px] font-medium transition-all hover:text-[#7B5CFA]"
-          >
-            <MessageSquare size={11} />
-            {assets.comments}
-          </button>
-        </div>
-      </motion.div>
-    );
-  };
 
   /* ── Skeletons ── */
   const SkeletonProfile = () => (
@@ -250,13 +167,6 @@ const Network = () => {
       <div className="w-14 h-2 bg-[var(--bg-elevated)] rounded mb-3" />
       <div className="flex gap-1 mb-3"><div className="w-10 h-4 bg-[var(--bg-elevated)] rounded" /><div className="w-8 h-4 bg-[var(--bg-elevated)] rounded" /><div className="w-12 h-4 bg-[var(--bg-elevated)] rounded" /></div>
       <div className="flex gap-2 w-full"><div className="flex-1 h-7 bg-[var(--bg-elevated)] rounded-lg" /><div className="flex-1 h-7 bg-[var(--bg-elevated)] rounded-lg" /></div>
-    </div>
-  );
-  const SkeletonPost = () => (
-    <div className="nw-card bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-xl overflow-hidden animate-pulse">
-      <div className="flex items-center gap-2 p-3.5"><div className="w-8 h-8 rounded-full bg-[var(--bg-elevated)]" /><div><div className="w-16 h-2.5 bg-[var(--bg-elevated)] rounded mb-1" /><div className="w-10 h-2 bg-[var(--bg-elevated)] rounded" /></div></div>
-      <div className="mx-3.5 rounded-lg bg-[var(--bg-elevated)]" style={{ aspectRatio: '4/3' }} />
-      <div className="p-3.5"><div className="w-24 h-2.5 bg-[var(--bg-elevated)] rounded mb-1.5" /><div className="w-full h-2 bg-[var(--bg-elevated)] rounded" /></div>
     </div>
   );
 
@@ -334,9 +244,9 @@ const Network = () => {
             <>
               {loading ? (
                 <div className="nw-masonry">
-                  {CARD_SEQ.slice(0, 8).map((type, i) =>
-                    type === 'profile' ? <SkeletonProfile key={i} /> : <SkeletonPost key={i} />
-                  )}
+                  {[...Array(8)].map((_, i) => (
+                    <SkeletonProfile key={i} />
+                  ))}
                 </div>
               ) : users.length === 0 ? (
                 <div className="py-16 text-center bg-[var(--bg-surface)]/40 rounded-xl border border-[var(--border-primary)]">
@@ -348,12 +258,9 @@ const Network = () => {
                 </div>
               ) : (
                 <div className="nw-masonry">
-                  {users.map((user, idx) => {
-                    const type = CARD_SEQ[idx % CARD_SEQ.length];
-                    return type === 'profile'
-                      ? <ProfileCard key={user.id} user={user} idx={idx} />
-                      : <PostSnippetCard key={user.id} user={user} idx={idx} />;
-                  })}
+                  {users.map((user, idx) => (
+                    <ProfileCard key={user.id} user={user} idx={idx} />
+                  ))}
                 </div>
               )}
             </>
