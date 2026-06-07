@@ -49,12 +49,12 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="relative w-full max-w-2xl bg-[#0F131E] border-l border-white/[0.06] h-full shadow-2xl flex flex-col"
+          className="relative w-full max-w-2xl bg-[var(--bg-base)] border-l border-[var(--border-primary)] h-full shadow-2xl flex flex-col"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/[0.04] bg-[#181D2A]/80">
+          <div className="flex items-center justify-between p-6 border-b border-[var(--border-primary)] bg-[var(--bg-surface-alt)]/80">
              <button onClick={onClose} className="p-2 hover:bg-white/[0.05] rounded-full transition-colors">
-                <X size={24} className="text-[#8B95A5]" />
+                <X size={24} className="text-[var(--text-secondary)]" />
              </button>
              <div className="flex gap-3">
                 <button 
@@ -71,7 +71,7 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
             {loading ? (
               <div className="h-full flex flex-col items-center justify-center gap-4">
                  <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-[#7B5CFA]"></div>
-                 <p className="text-[10px] font-black text-[#5A6478] uppercase tracking-widest">Loading opportunity...</p>
+                 <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">Loading opportunity...</p>
               </div>
             ) : collab && (
               <div className="space-y-10">
@@ -85,49 +85,35 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
                          </span>
                       )}
                    </div>
-                   <h2 className="text-3xl font-black text-white tracking-tighter leading-tight mb-6">{collab.title}</h2>
+                   <h2 className="text-3xl font-black text-[var(--text-primary)] tracking-tighter leading-tight mb-6">{collab.title}</h2>
                    
-                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-y border-white/[0.04]">
+                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-y border-[var(--border-primary)]">
                       <div>
-                         <p className="text-[10px] text-[#5A6478] font-black uppercase tracking-widest mb-1.5">Budget</p>
-                         <p className="font-black text-white text-sm">{collab.budget}</p>
+                         <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1.5">Budget</p>
+                         <p className="font-black text-[var(--text-primary)] text-sm">{collab.budget}</p>
                       </div>
                       <div>
-                         <p className="text-[10px] text-[#5A6478] font-black uppercase tracking-widest mb-1.5">Duration</p>
-                         <p className="font-black text-white text-sm">{collab.duration || collab.projectType.replace('_', ' ')}</p>
+                         <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1.5">Duration</p>
+                         <p className="font-black text-[var(--text-primary)] text-sm">{collab.duration || (collab.projectType ? collab.projectType.replace('_', ' ') : 'N/A')}</p>
                       </div>
                       <div>
-                         <p className="text-[10px] text-[#5A6478] font-black uppercase tracking-widest mb-1.5">Location</p>
-                         <p className="font-black text-white text-sm">{collab.location || 'Remote'}</p>
+                         <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1.5">Location</p>
+                         <p className="font-black text-[var(--text-primary)] text-sm">{collab.location || 'Remote'}</p>
                       </div>
                       <div>
-                         <p className="text-[10px] text-[#5A6478] font-black uppercase tracking-widest mb-1.5">Experience</p>
-                         <p className="font-black text-white text-sm">{collab.experienceLevel || 'Any'}</p>
+                         <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1.5">Experience</p>
+                         <p className="font-black text-[var(--text-primary)] text-sm">{collab.experienceLevel || 'Any'}</p>
                       </div>
                    </div>
                 </section>
 
-                {/* Poster Info */}
-                <section className="bg-[#181D2A] border border-white/[0.04] rounded-3xl p-6 flex items-center justify-between">
-                   <div className="flex items-center gap-4">
-                      <img 
-                        src={collab.poster?.profileImage || `https://ui-avatars.com/api/?name=${collab.poster?.username}`} 
-                        className="w-14 h-14 rounded-2xl border border-white/[0.06] object-cover bg-[#0F131E]" 
-                        alt="" 
-                      />
-                      <div>
-                         <p className="text-sm font-black text-white">@{collab.poster?.username}</p>
-                         <p className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest mt-0.5">{collab.poster?.profileType} • Posted {new Date(collab.createdAt).toLocaleDateString()}</p>
-                      </div>
-                   </div>
-                   <button className="text-[#7B5CFA] font-black uppercase text-[10px] tracking-widest hover:underline">View Profile</button>
-                </section>
+
 
                 {/* Description */}
                 <section>
-                   <h3 className="text-lg font-black text-white mb-4">Project Overview</h3>
-                   <div className="bg-[#181D2A] border border-white/[0.04] p-6 rounded-3xl">
-                     <p className="text-[#8B95A5] leading-relaxed font-medium whitespace-pre-wrap text-sm">
+                   <h3 className="text-lg font-black text-[var(--text-primary)] mb-4">Project Overview</h3>
+                   <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] p-6 rounded-3xl">
+                     <p className="text-[var(--text-secondary)] leading-relaxed font-medium whitespace-pre-wrap text-sm">
                         {collab.description}
                      </p>
                    </div>
@@ -136,10 +122,10 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
                 {/* Requirements */}
                 {collab.requirements?.length > 0 && (
                   <section>
-                    <h3 className="text-lg font-black text-white mb-4">Required Creative Skills</h3>
+                    <h3 className="text-lg font-black text-[var(--text-primary)] mb-4">Required Creative Skills</h3>
                     <div className="flex flex-wrap gap-2">
                        {collab.requirements.map(req => (
-                         <span key={req.id} className="bg-[#181D2A] border border-white/[0.06] px-4 py-2 rounded-xl text-xs font-bold text-[#8B95A5]">
+                         <span key={req.id} className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-4 py-2 rounded-xl text-xs font-bold text-[var(--text-secondary)]">
                             {req.skill}
                          </span>
                        ))}
@@ -150,13 +136,13 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
                 {/* Attachments */}
                 {collab.attachments?.length > 0 && (
                   <section>
-                    <h3 className="text-lg font-black text-white mb-4">Reference Media</h3>
+                    <h3 className="text-lg font-black text-[var(--text-primary)] mb-4">Reference Media</h3>
                     <div className="grid grid-cols-2 gap-4">
                        {collab.attachments.map(att => (
-                         <div key={att.id} className="group relative aspect-video bg-[#181D2A] rounded-2xl overflow-hidden border border-white/[0.06]">
+                         <div key={att.id} className="group relative aspect-video bg-[var(--bg-surface-alt)] rounded-2xl overflow-hidden border border-[var(--border-primary)]">
                             <img src={att.fileUrl} className="w-full h-full object-cover transition-transform group-hover:scale-105 opacity-80" alt="" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                               <Paperclip size={24} className="text-white" />
+                               <Paperclip size={24} className="text-[var(--text-primary)]" />
                             </div>
                          </div>
                        ))}
@@ -168,13 +154,13 @@ const CollabDetailsDrawer = ({ collabId, isOpen, onClose, onApply }) => {
           </div>
 
           {/* Footer CTA */}
-          <div className="p-8 border-t border-white/[0.04] bg-[#181D2A]/80">
+          <div className="p-8 border-t border-[var(--border-primary)] bg-[var(--bg-surface-alt)]/80">
              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2 text-[#8B95A5]">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                    <Users size={16} className="text-[#7B5CFA] opacity-50" />
                    <span className="text-[11px] font-black uppercase tracking-widest">{collab?._count?.proposals || 0} applications received</span>
                 </div>
-                <p className="text-[11px] text-[#5A6478] font-black uppercase tracking-widest">Closes: {collab?.deadline ? new Date(collab.deadline).toLocaleDateString() : 'Until filled'}</p>
+                <p className="text-[11px] text-[var(--text-muted)] font-black uppercase tracking-widest">Closes: {collab?.deadline ? new Date(collab.deadline).toLocaleDateString() : 'Until filled'}</p>
              </div>
              <button 
                onClick={() => onApply(collab)}

@@ -78,7 +78,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F131E] flex flex-col lg:flex-row relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[var(--bg-base)] flex flex-col lg:flex-row relative overflow-hidden font-sans">
       {/* Subtle Grid Background */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-40" 
@@ -92,25 +92,25 @@ const Login = () => {
       <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-20 relative z-10 min-h-[50vh] lg:min-h-screen">
         <Link to="/" className="flex items-center gap-3 mb-16 lg:mb-24 w-fit group">
           <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20 group-hover:bg-[#684CE0] transition-colors">M</div>
-          <h1 className="text-2xl font-black text-white tracking-tighter">Micollab</h1>
+          <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">Micollab</h1>
         </Link>
         
         <div className="max-w-xl">
-          <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+          <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
             Enter the Creative <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Multiverse.</span>
           </h2>
-          <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+          <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
             Connect, collaborate, and create with the world's most vibrant community of avant-garde professionals.
           </p>
           
-          <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-3 pr-6 rounded-2xl border border-white/5 shadow-xl">
+          <div className="flex items-center gap-4 bg-[var(--bg-surface-alt)] w-fit p-3 pr-6 rounded-2xl border border-[var(--border-primary)] shadow-xl">
             <div className="flex -space-x-3">
               <img src="https://ui-avatars.com/api/?name=Alice&background=7B5CFA&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
               <img src="https://ui-avatars.com/api/?name=Bob&background=00B5D8&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
               <img src="https://ui-avatars.com/api/?name=Charlie&background=10B981&color=fff" className="w-10 h-10 rounded-full border-2 border-[#181D2A] object-cover" alt="User" />
             </div>
             <div>
-              <p className="text-white text-sm font-bold">Join 50k+ creators</p>
+              <p className="text-[var(--text-primary)] text-sm font-bold">Join 50k+ creators</p>
               <p className="text-[#00B5D8] text-xs font-bold">Building the future</p>
             </div>
           </div>
@@ -124,7 +124,7 @@ const Login = () => {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md bg-[#181D2A] p-8 md:p-10 rounded-[2rem] border border-white/5 relative overflow-hidden"
+          className="w-full max-w-md bg-[var(--bg-surface-alt)] p-8 md:p-10 rounded-[2rem] border border-[var(--border-primary)] relative overflow-hidden"
           style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
         >
           {/* Top colored indicator line */}
@@ -133,7 +133,7 @@ const Login = () => {
           {!requiresVerification ? (
             <>
               {/* Form Header */}
-              <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+              <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                 <div className="flex gap-1.5 items-center">
                   <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                   <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -143,8 +143,8 @@ const Login = () => {
               </div>
 
               <div className="text-center mb-8">
-                <h3 className="text-3xl font-black text-white mb-2">Welcome Back</h3>
-                <p className="text-[#8B95A5] font-medium text-sm">Sign in to Micollab to continue.</p>
+                <h3 className="text-3xl font-black text-[var(--text-primary)] mb-2">Welcome Back</h3>
+                <p className="text-[var(--text-secondary)] font-medium text-sm">Sign in to Micollab to continue.</p>
               </div>
 
               {error && (
@@ -156,42 +156,42 @@ const Login = () => {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-white ml-1">Email Address</label>
+                  <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={18} />
                     <input 
                       type="email" 
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-white ml-1">Password</label>
+                  <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={18} />
                     <input 
                       type={showPassword ? "text" : "password"} 
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-12 text-white outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-12 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
                     />
                     <button 
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B95A5] hover:text-white transition"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                   <div className="flex justify-end pt-1.5">
-                    <button type="button" className="text-xs font-bold text-[#A37BFF] hover:text-white transition">Forgot password?</button>
+                    <button type="button" className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition">Forgot password?</button>
                   </div>
                 </div>
 
@@ -206,22 +206,22 @@ const Login = () => {
 
               <div className="flex items-center gap-4 my-8">
                 <div className="h-px bg-white/5 flex-1" />
-                <span className="text-xs font-bold text-[#8B95A5]">Or continue with</span>
+                <span className="text-xs font-bold text-[var(--text-secondary)]">Or continue with</span>
                 <div className="h-px bg-white/5 flex-1" />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <button type="button" className="flex items-center justify-center gap-2 py-3 bg-[#0F131E] hover:bg-white/5 border border-white/5 rounded-xl transition text-white text-xs font-bold">
+                <button type="button" className="flex items-center justify-center gap-2 py-3 bg-[var(--bg-base)] hover:bg-white/5 border border-[var(--border-primary)] rounded-xl transition text-[var(--text-primary)] text-xs font-bold">
                   <GoogleIcon /> Google
                 </button>
-                <button type="button" className="flex items-center justify-center gap-2 py-3 bg-[#0F131E] hover:bg-white/5 border border-white/5 rounded-xl transition text-white text-xs font-bold">
+                <button type="button" className="flex items-center justify-center gap-2 py-3 bg-[var(--bg-base)] hover:bg-white/5 border border-[var(--border-primary)] rounded-xl transition text-[var(--text-primary)] text-xs font-bold">
                   <AppleIcon /> Apple
                 </button>
               </div>
 
-              <p className="mt-8 text-center text-[#8B95A5] text-xs font-bold">
+              <p className="mt-8 text-center text-[var(--text-secondary)] text-xs font-bold">
                 New to Micollab? {' '}
-                <Link to="/register" className="text-[#00B5D8] hover:text-white transition">Create Account</Link>
+                <Link to="/register" className="text-[#00B5D8] hover:text-[var(--text-primary)] transition">Create Account</Link>
               </p>
             </>
           ) : (
@@ -230,8 +230,8 @@ const Login = () => {
                  <div className="w-16 h-16 bg-[#7B5CFA]/10 text-[#7B5CFA] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#7B5CFA]/20">
                    <Mail size={32} />
                  </div>
-                 <h3 className="text-2xl font-black text-white mb-2">Verify your email</h3>
-                 <p className="text-[#8B95A5] text-sm font-medium">
+                 <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Verify your email</h3>
+                 <p className="text-[var(--text-secondary)] text-sm font-medium">
                    Please check your email and enter the verification code.
                  </p>
                </div>
@@ -245,7 +245,7 @@ const Login = () => {
 
                <form onSubmit={handleVerifyOTP} className="space-y-6">
                  <div className="space-y-1.5">
-                   <label className="text-xs font-bold text-white ml-1 text-center block">Enter 6-digit Code</label>
+                   <label className="text-xs font-bold text-[var(--text-primary)] ml-1 text-center block">Enter 6-digit Code</label>
                    <input 
                      type="text" 
                      required
@@ -253,22 +253,22 @@ const Login = () => {
                      value={otpCode}
                      onChange={(e) => setOtpCode(e.target.value)}
                      placeholder="000000"
-                     className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-4 text-center text-3xl tracking-[1em] text-white outline-none focus:border-[#7B5CFA] transition font-black placeholder-[#8B95A5]/30"
+                     className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-4 text-center text-3xl tracking-[1em] text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-black placeholder-[#8B95A5]/30"
                    />
                  </div>
 
                  <button 
                    type="submit"
                    disabled={loading || otpCode.length !== 6}
-                   className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                   className="w-full py-3.5 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                  >
                    {loading ? <Loader2 className="animate-spin" size={20} /> : 'Verify Email'}
                  </button>
                </form>
 
-               <p className="text-center text-xs font-bold text-[#8B95A5] pt-8">
+               <p className="text-center text-xs font-bold text-[var(--text-secondary)] pt-8">
                  Didn't receive the code?{' '}
-                 <button onClick={handleResendOTP} disabled={loading} className="text-[#00B5D8] hover:text-white transition disabled:opacity-50">
+                 <button onClick={handleResendOTP} disabled={loading} className="text-[#00B5D8] hover:text-[var(--text-primary)] transition disabled:opacity-50">
                    Resend OTP
                  </button>
                </p>

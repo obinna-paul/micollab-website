@@ -161,24 +161,24 @@ const NewCollab = () => {
     <div className="max-w-4xl mx-auto pb-20 px-4">
       <button 
         onClick={() => navigate('/collabs')}
-        className="flex items-center gap-2 text-[#8B95A5] font-black text-[10px] uppercase tracking-widest mb-6 hover:text-[#7B5CFA] transition mt-6"
+        className="flex items-center gap-2 text-[var(--text-secondary)] font-black text-[10px] uppercase tracking-widest mb-6 hover:text-[#7B5CFA] transition mt-6"
       >
         <ChevronLeft size={16} /> Cancel & Return
       </button>
 
       <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-tight flex items-center gap-3">
+          <h1 className="text-3xl md:text-5xl font-black text-[var(--text-primary)] tracking-tighter leading-tight flex items-center gap-3">
             Create Collab
           </h1>
-          <p className="text-[#8B95A5] text-sm md:text-base font-medium mt-2">Design a posting that attracts top creative talent.</p>
+          <p className="text-[var(--text-secondary)] text-sm md:text-base font-medium mt-2">Design a posting that attracts top creative talent.</p>
         </div>
         
-        <div className="bg-[#181D2A] border border-[#7B5CFA]/20 px-4 py-3 rounded-2xl flex items-center gap-4 text-left shadow-lg shadow-[#7B5CFA]/5">
+        <div className="bg-[var(--bg-surface-alt)] border border-[#7B5CFA]/20 px-4 py-3 rounded-2xl flex items-center gap-4 text-left shadow-lg shadow-[#7B5CFA]/5">
            <div className="bg-[#7B5CFA]/10 p-2.5 rounded-xl text-[#7B5CFA]"><ShieldCheck size={24} /></div>
            <div>
               <p className="text-[10px] text-[#7B5CFA] font-black uppercase tracking-widest">Client Protection</p>
-              <p className="text-white text-sm font-bold mt-0.5">Payment held safely in escrow</p>
+              <p className="text-[var(--text-primary)] text-sm font-bold mt-0.5">Payment held safely in escrow</p>
            </div>
         </div>
       </div>
@@ -186,32 +186,32 @@ const NewCollab = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         
         {/* Section 1: Basic Information */}
-        <div className="bg-[#0F131E] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
+        <div className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
            <div className="absolute top-0 right-0 w-64 h-64 bg-[#7B5CFA]/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 rounded-full bg-[#181D2A] border border-white/[0.06] flex items-center justify-center text-white font-black text-sm">1</div>
-              <h2 className="text-xl font-black text-white tracking-tight">Project Overview</h2>
+              <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-primary)] font-black text-sm">1</div>
+              <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tight">Project Overview</h2>
            </div>
 
            <div className="space-y-6 relative z-10">
               <div>
-                 <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Project Title</label>
+                 <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Project Title</label>
                  <input 
                    required
                    value={formData.title}
                    onChange={(e) => setFormData({...formData, title: e.target.value})}
                    placeholder="e.g. Lead Singer for Afropop Track, UI Designer for Mobile App..."
-                   className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[15px] font-medium text-white placeholder-[#5A6478] outline-none focus:border-[#7B5CFA]/40 transition-all shadow-inner"
+                   className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[15px] font-medium text-[var(--text-primary)] placeholder-[#5A6478] outline-none focus:border-[#7B5CFA]/40 transition-all shadow-inner"
                  />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
-                   <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Category</label>
+                   <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Category</label>
                    <select 
                      value={formData.category}
                      onChange={(e) => setFormData({...formData, category: e.target.value})}
-                     className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
+                     className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
                    >
                      {CATEGORIES.map(cat => (
                        <option key={cat} value={cat}>{cat}</option>
@@ -219,11 +219,11 @@ const NewCollab = () => {
                    </select>
                  </div>
                  <div>
-                   <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Project Type</label>
+                   <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Project Type</label>
                    <select 
                      value={formData.projectType}
                      onChange={(e) => setFormData({...formData, projectType: e.target.value})}
-                     className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
+                     className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
                    >
                      <option value="ONE_OFF">One-off Project</option>
                      <option value="RECURRING">Recurring / Long Term</option>
@@ -232,37 +232,37 @@ const NewCollab = () => {
               </div>
 
               <div>
-                 <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Detailed Description</label>
+                 <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Detailed Description</label>
                  <textarea 
                    required
                    value={formData.description}
                    onChange={(e) => setFormData({...formData, description: e.target.value})}
                    placeholder="Describe the scope of work, deliverables, and what you expect from the freelancer..."
-                   className="w-full h-40 bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white placeholder-[#5A6478] outline-none focus:border-[#7B5CFA]/40 transition-all shadow-inner resize-none leading-relaxed"
+                   className="w-full h-40 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] placeholder-[#5A6478] outline-none focus:border-[#7B5CFA]/40 transition-all shadow-inner resize-none leading-relaxed"
                  />
               </div>
            </div>
         </div>
 
         {/* Section 2: Skills & Requirements */}
-        <div className="bg-[#0F131E] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
+        <div className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 rounded-full bg-[#181D2A] border border-white/[0.06] flex items-center justify-center text-white font-black text-sm">2</div>
-              <h2 className="text-xl font-black text-white tracking-tight">Skills & Requirements</h2>
+              <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-primary)] font-black text-sm">2</div>
+              <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tight">Skills & Requirements</h2>
            </div>
 
            <div className="space-y-6">
               <div>
-                 <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Search Skills</label>
+                 <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Search Skills</label>
                  <div className="flex gap-2">
                     <div className="relative flex-1">
-                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5A6478]" size={18} />
+                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" size={18} />
                        <input 
                          value={reqInput}
                          onChange={(e) => setReqInput(e.target.value)}
                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addRequirement())}
                          placeholder="e.g. Figma, Vocal Tuning, Storyboarding"
-                         className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 pl-12 pr-5 text-[14px] font-medium text-white placeholder-[#5A6478] outline-none focus:border-[#7B5CFA]/40 transition-all shadow-inner"
+                         className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 pl-12 pr-5 text-[14px] font-medium text-[var(--text-primary)] placeholder-[#5A6478] outline-none focus:border-[#7B5CFA]/40 transition-all shadow-inner"
                        />
                     </div>
                     <button 
@@ -275,7 +275,7 @@ const NewCollab = () => {
                  </div>
 
                  {formData.requirements.length > 0 && (
-                   <div className="flex flex-wrap gap-2 mt-4 p-4 bg-[#181D2A] border border-white/[0.04] rounded-2xl">
+                   <div className="flex flex-wrap gap-2 mt-4 p-4 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl">
                       {formData.requirements.map((req, i) => (
                         <motion.div 
                            initial={{ scale: 0.9, opacity: 0 }}
@@ -284,7 +284,7 @@ const NewCollab = () => {
                            className="bg-[#7B5CFA]/10 text-[#7B5CFA] border border-[#7B5CFA]/20 text-[11px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-2"
                         >
                            {req}
-                           <button type="button" onClick={() => setFormData({...formData, requirements: formData.requirements.filter((_, idx) => idx !== i)})} className="hover:text-white transition">
+                           <button type="button" onClick={() => setFormData({...formData, requirements: formData.requirements.filter((_, idx) => idx !== i)})} className="hover:text-[var(--text-primary)] transition">
                              <X size={12} />
                            </button>
                         </motion.div>
@@ -294,7 +294,7 @@ const NewCollab = () => {
               </div>
 
               <div className="pt-2">
-                 <p className="text-[10px] font-black text-[#5A6478] uppercase tracking-widest mb-3 flex items-center gap-2">
+                 <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-3 flex items-center gap-2">
                     <Sparkles size={12} className="text-[#7B5CFA]" /> Suggested Skills
                  </p>
                  <div className="flex flex-wrap gap-2">
@@ -306,7 +306,7 @@ const NewCollab = () => {
                           key={i}
                           type="button"
                           onClick={() => setFormData(p => ({ ...p, requirements: [...p.requirements, skill] }))}
-                          className="bg-[#181D2A] border border-white/[0.06] px-3 py-2 rounded-xl text-[11px] font-bold text-[#8B95A5] hover:border-[#7B5CFA]/40 hover:text-white transition-all flex items-center gap-1.5"
+                          className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-3 py-2 rounded-xl text-[11px] font-bold text-[var(--text-secondary)] hover:border-[#7B5CFA]/40 hover:text-[var(--text-primary)] transition-all flex items-center gap-1.5"
                         >
                            {skill} <Plus size={12} className="opacity-50" />
                         </button>
@@ -315,11 +315,11 @@ const NewCollab = () => {
               </div>
 
               <div>
-                 <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Required Experience Level</label>
+                 <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Required Experience Level</label>
                  <select 
                    value={formData.experienceLevel}
                    onChange={(e) => setFormData({...formData, experienceLevel: e.target.value})}
-                   className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
+                   className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
                  >
                     <option value="ANY">Any Experience Level</option>
                     <option value="BEGINNER">Beginner / Junior</option>
@@ -331,20 +331,20 @@ const NewCollab = () => {
         </div>
 
         {/* Section 3: Budget & Details */}
-        <div className="bg-[#0F131E] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
+        <div className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 rounded-full bg-[#181D2A] border border-white/[0.06] flex items-center justify-center text-white font-black text-sm">3</div>
-              <h2 className="text-xl font-black text-white tracking-tight">Budget & Timeline</h2>
+              <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-primary)] font-black text-sm">3</div>
+              <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tight">Budget & Timeline</h2>
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <div>
-                   <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Budget Range</label>
+                   <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Budget Range</label>
                    <select 
                      value={formData.budget}
                      onChange={(e) => setFormData({...formData, budget: e.target.value})}
-                     className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
+                     className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
                    >
                      {BUDGET_RANGES.map(range => (
                        <option key={range} value={range}>{range}</option>
@@ -354,27 +354,27 @@ const NewCollab = () => {
                 
                 {formData.budget === 'Custom Fixed Price' && (
                   <div>
-                     <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Fixed Amount (₦)</label>
+                     <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Fixed Amount (₦)</label>
                      <div className="relative">
-                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5A6478]" size={16} />
+                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" size={16} />
                         <input 
                           type="number"
                           required
                           value={formData.fixedAmount}
                           onChange={(e) => setFormData({...formData, fixedAmount: e.target.value})}
                           placeholder="0.00"
-                          className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 pl-12 pr-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all"
+                          className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 pl-12 pr-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all"
                         />
                      </div>
                   </div>
                 )}
 
                 <div>
-                   <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Work Location</label>
+                   <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Work Location</label>
                    <select 
                      value={formData.locationType}
                      onChange={(e) => setFormData({...formData, locationType: e.target.value})}
-                     className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
+                     className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer appearance-none"
                    >
                       <option value="REMOTE">Remote Work</option>
                       <option value="IN_PERSON">In-Person / On-site</option>
@@ -385,11 +385,11 @@ const NewCollab = () => {
                    <div className="grid grid-cols-2 gap-4">
                       <input 
                         required placeholder="State/Region" value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})}
-                        className="bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all"
+                        className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all"
                       />
                       <input 
                         required placeholder="Country" value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})}
-                        className="bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all"
+                        className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all"
                       />
                    </div>
                 )}
@@ -397,22 +397,22 @@ const NewCollab = () => {
 
               <div className="space-y-6">
                  <div>
-                   <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Expected Duration (Optional)</label>
+                   <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Expected Duration (Optional)</label>
                    <input 
                      value={formData.duration}
                      onChange={(e) => setFormData({...formData, duration: e.target.value})}
                      placeholder="e.g. 2 weeks, 1 month, Ongoing"
-                     className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all"
+                     className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all"
                    />
                  </div>
                  
                  <div>
-                   <label className="text-[10px] font-black uppercase text-[#8B95A5] tracking-widest mb-2 block">Deadline for Proposals (Optional)</label>
+                   <label className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-2 block">Deadline for Proposals (Optional)</label>
                    <input 
                      type="date"
                      value={formData.deadline}
                      onChange={(e) => setFormData({...formData, deadline: e.target.value})}
-                     className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 px-5 text-[14px] font-medium text-white outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer"
+                     className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 px-5 text-[14px] font-medium text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/40 transition-all cursor-pointer"
                    />
                  </div>
               </div>
@@ -420,51 +420,51 @@ const NewCollab = () => {
         </div>
 
         {/* Section 4: Attachments & Final */}
-        <div className="bg-[#0F131E] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
+        <div className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden">
            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 rounded-full bg-[#181D2A] border border-white/[0.06] flex items-center justify-center text-white font-black text-sm">4</div>
-              <h2 className="text-xl font-black text-white tracking-tight">Reference Media</h2>
+              <div className="w-8 h-8 rounded-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-primary)] font-black text-sm">4</div>
+              <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tight">Reference Media</h2>
            </div>
 
            <div>
-              <p className="text-sm text-[#8B95A5] mb-4">Attach brand guidelines, moodboards, project briefs, or audio/video files.</p>
+              <p className="text-sm text-[var(--text-secondary)] mb-4">Attach brand guidelines, moodboards, project briefs, or audio/video files.</p>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                  {formData.attachments.map((att, i) => (
-                   <div key={i} className="aspect-square bg-[#181D2A] rounded-2xl border border-white/[0.06] relative group overflow-hidden">
+                   <div key={i} className="aspect-square bg-[var(--bg-surface-alt)] rounded-2xl border border-[var(--border-primary)] relative group overflow-hidden">
                       <img src={att.url} className="w-full h-full object-cover opacity-80" alt="" />
                       <button 
                          type="button"
                          onClick={() => setFormData({...formData, attachments: formData.attachments.filter((_, idx) => idx !== i)})}
-                         className="absolute top-2 right-2 bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                         className="absolute top-2 right-2 bg-black/60 text-[var(--text-primary)] p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                          <X size={14} />
                       </button>
                    </div>
                  ))}
                  
-                 <label className="aspect-square bg-[#181D2A] border-2 border-dashed border-white/[0.06] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#7B5CFA]/40 transition-all group">
-                    <Paperclip size={24} className="text-[#5A6478] group-hover:text-[#7B5CFA] transition-colors mb-2" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#8B95A5]">{uploading ? 'Wait...' : 'Add Files'}</span>
+                 <label className="aspect-square bg-[var(--bg-surface-alt)] border-2 border-dashed border-[var(--border-primary)] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-[#7B5CFA]/40 transition-all group">
+                    <Paperclip size={24} className="text-[var(--text-muted)] group-hover:text-[#7B5CFA] transition-colors mb-2" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)]">{uploading ? 'Wait...' : 'Add Files'}</span>
                     <input type="file" multiple className="hidden" onChange={handleFileUpload} disabled={uploading} />
                  </label>
               </div>
            </div>
 
-           <label className="flex items-start gap-4 p-6 bg-[#181D2A] border border-white/[0.06] rounded-3xl cursor-pointer hover:border-[#7B5CFA]/30 transition-all mt-8 group">
+           <label className="flex items-start gap-4 p-6 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-3xl cursor-pointer hover:border-[#7B5CFA]/30 transition-all mt-8 group">
               <div className="pt-0.5">
                  <input 
                    type="checkbox" 
                    checked={formData.crossPostToFeed}
                    onChange={(e) => setFormData({...formData, crossPostToFeed: e.target.checked})}
-                   className="w-5 h-5 rounded bg-[#0F131E] border-white/[0.06] text-[#7B5CFA] focus:ring-[#7B5CFA]"
+                   className="w-5 h-5 rounded bg-[var(--bg-base)] border-[var(--border-primary)] text-[#7B5CFA] focus:ring-[#7B5CFA]"
                  />
               </div>
               <div>
-                 <p className="font-bold text-white group-hover:text-[#7B5CFA] transition-colors flex items-center gap-2">
+                 <p className="font-bold text-[var(--text-primary)] group-hover:text-[#7B5CFA] transition-colors flex items-center gap-2">
                     Boost visibility in the Community Feed
                  </p>
-                 <p className="text-sm text-[#8B95A5] mt-1 font-medium">
+                 <p className="text-sm text-[var(--text-secondary)] mt-1 font-medium">
                     This will create a dedicated post in the main community tab so more creatives can discover your project.
                  </p>
               </div>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Compass, User, Users, Briefcase, MessageSquare, Bell, LogOut, X, Circle, Search, ChevronDown, Flame, CheckCircle } from 'lucide-react';
+import { Compass, User, Users, Briefcase, MessageSquare, Bell, LogOut, X, Circle, Search, ChevronDown, Flame, CheckCircle, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
+import useThemeStore from '../store/useThemeStore';
 import FloatingChatWidget from './chat/FloatingChatWidget';
 import MobileNav from './MobileNav';
 import MobileDrawer from './MobileDrawer';
@@ -15,12 +16,12 @@ const SidebarItem = ({ to, icon: Icon, label }) => (
     to={to} 
     className={({ isActive }) => `
       flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group font-bold text-sm
-      ${isActive ? 'bg-[#7B5CFA]/10 text-[#A37BFF]' : 'text-[#8B95A5] hover:bg-white/5 hover:text-white'}
+      ${isActive ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-alt)] hover:text-[var(--text-primary)]'}
     `}
   >
     {({ isActive }) => (
       <>
-        <Icon size={18} className={isActive ? 'text-[#7B5CFA]' : 'text-[#8B95A5] group-hover:text-white transition-colors'} />
+        <Icon size={18} className={isActive ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors'} />
         <span>{label}</span>
       </>
     )}
@@ -29,6 +30,7 @@ const SidebarItem = ({ to, icon: Icon, label }) => (
 
 const MainLayout = ({ children }) => {
   const { user, token, isAuthenticated, logout } = useAuthStore();
+  const { theme, toggleTheme, initTheme } = useThemeStore();
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -36,6 +38,10 @@ const MainLayout = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
 
   useEffect(() => {
     if (isAuthenticated && token) {
@@ -58,16 +64,16 @@ const MainLayout = ({ children }) => {
   const userTags = user?.specializations ? user.specializations.split(',').slice(0, 5) : ['Creative', 'Design'];
 
   return (
-    <div className="min-h-screen bg-[#0F131E] transition-colors duration-500 pb-20 md:pb-0 font-sans text-white">
+    <div className="min-h-screen bg-[var(--bg-base)] transition-colors duration-500 pb-20 md:pb-0 font-sans text-[var(--text-primary)]">
       {/* Top Navigation */}
-      <header className="bg-[#0F131E] border-b border-white/5 sticky top-0 z-50 h-16 flex items-center">
+      <header className="bg-[var(--bg-base)] border-b border-[var(--border-primary)] sticky top-0 z-50 h-16 flex items-center">
         <div className="px-6 w-full flex items-center justify-between">
           
           <div className="flex items-center gap-2 w-auto md:w-[240px]">
             {/* Mobile Profile Trigger */}
             <button 
               onClick={() => setIsDrawerOpen(true)}
-              className="md:hidden w-8 h-8 rounded-full overflow-hidden border border-white/10 mr-2"
+              className="md:hidden w-8 h-8 rounded-full overflow-hidden border border-[var(--border-secondary)] mr-2"
             >
               <img 
                 src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=7B5CFA&color=fff`} 
@@ -77,39 +83,63 @@ const MainLayout = ({ children }) => {
             </button>
             <Link to="/" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-lg bg-gradient-to-br from-[#7B5CFA] to-[#684CE0] shadow-[0_0_15px_rgba(123,92,250,0.4)]">M</div>
-              <h1 className="text-xl font-black tracking-tighter text-white hidden md:block">Micollab</h1>
+              <h1 className="text-xl font-black tracking-tighter text-[var(--text-primary)] hidden md:block">Micollab</h1>
             </Link>
+
+            {/* Theme Toggle */}
+            <div className="hidden lg:flex items-center bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-full p-1 ml-4 shadow-sm">
+              <button
+                onClick={() => theme !== 'night-owl' && toggleTheme()}
+                className={`flex items-center justify-center w-7 h-7 rounded-full transition-all ${
+                  theme === 'night-owl' 
+                    ? 'bg-[var(--accent)] text-white shadow-md' 
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
+                }`}
+              >
+                <Moon size={14} fill={theme === 'night-owl' ? 'currentColor' : 'none'} />
+              </button>
+              <button
+                onClick={() => theme !== 'day-walker' && toggleTheme()}
+                className={`flex items-center justify-center w-7 h-7 rounded-full transition-all ${
+                  theme === 'day-walker' 
+                    ? 'bg-[var(--accent)] text-white shadow-md' 
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
+                }`}
+              >
+                <Sun size={14} fill={theme === 'day-walker' ? 'currentColor' : 'none'} />
+              </button>
+            </div>
           </div>
 
           <div className="hidden md:block flex-1 max-w-xl px-4 relative">
-            <Search className="absolute left-7 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={16} />
+            <Search className="absolute left-7 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={16} />
             <input 
               type="text" 
               placeholder="Search creatives, projects, or tags..." 
-              className="w-full bg-[#181D2A] border border-white/5 rounded-full py-2.5 pl-10 pr-4 text-sm text-white placeholder-[#8B95A5] outline-none focus:border-[#7B5CFA]/50 transition" 
+              className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-full py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder-[#8B95A5] outline-none focus:border-[#7B5CFA]/50 transition" 
             />
           </div>
 
           <div className="flex items-center gap-4 w-auto md:w-[240px] justify-end">
              {isAuthenticated ? (
                <div className="flex items-center gap-3">
-                 <button className="w-9 h-9 rounded-full border border-white/10 bg-[#181D2A] flex items-center justify-center hover:bg-white/5 transition relative group">
-                   <Bell size={16} className="text-[#8B95A5] group-hover:text-white transition" />
+                 <button className="w-9 h-9 rounded-full border border-[var(--border-secondary)] bg-[var(--bg-surface-alt)] flex items-center justify-center hover:bg-white/5 transition relative group">
+                   <Bell size={16} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
                    {unreadCount > 0 && <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#EC4899] rounded-full border-2 border-[#0F131E]" />}
                  </button>
-                 <Link to="/messages" className="w-9 h-9 rounded-full border border-white/10 bg-[#181D2A] flex items-center justify-center hover:bg-white/5 transition relative group">
-                   <MessageSquare size={16} className="text-[#8B95A5] group-hover:text-white transition" />
+                 <Link to="/messages" className="w-9 h-9 rounded-full border border-[var(--border-secondary)] bg-[var(--bg-surface-alt)] flex items-center justify-center hover:bg-white/5 transition relative group">
+                   <MessageSquare size={16} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
                  </Link>
                  
                  <div className="hidden md:flex items-center gap-2 ml-2 cursor-pointer group">
-                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-[var(--border-secondary)]">
                       <img 
                         src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=7B5CFA&color=fff`} 
                         className="w-full h-full object-cover" 
                         alt="" 
                       />
                     </div>
-                    <ChevronDown size={14} className="text-[#8B95A5] group-hover:text-white transition" />
+                    <ChevronDown size={14} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
                  </div>
                </div>
              ) : (
@@ -133,10 +163,10 @@ const MainLayout = ({ children }) => {
           </nav>
           
           <div className="px-4">
-            <p className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4">Your Tags</p>
+            <p className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4">Your Tags</p>
             <div className="flex flex-wrap gap-2">
               {userTags.map(tag => (
-                <span key={tag} className="px-3 py-1.5 bg-[#181D2A] rounded-lg text-[11px] font-bold text-[#8B95A5] hover:text-white transition cursor-pointer border border-white/5 hover:border-white/20">
+                <span key={tag} className="px-3 py-1.5 bg-[var(--bg-surface-alt)] rounded-lg text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition cursor-pointer border border-[var(--border-primary)] hover:border-white/20">
                   #{tag.trim().replace(/\s+/g, '')}
                 </span>
               ))}
@@ -177,16 +207,16 @@ const MainLayout = ({ children }) => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="relative w-full bg-[#181D2A] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-10 max-h-[90svh] flex flex-col border-t border-white/10"
+              className="relative w-full bg-[var(--bg-surface-alt)] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-10 max-h-[90svh] flex flex-col border-t border-[var(--border-secondary)]"
             >
               <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
                 <div className="w-10 h-1 bg-white/20 rounded-full" />
               </div>
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/5 flex-shrink-0">
-                <h2 className="text-base font-black text-white tracking-tight">Create a Post</h2>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-primary)] flex-shrink-0">
+                <h2 className="text-base font-black text-[var(--text-primary)] tracking-tight">Create a Post</h2>
                 <button
                   onClick={() => setIsCreateOpen(false)}
-                  className="p-2 hover:bg-white/5 rounded-xl transition-all text-[#8B95A5] hover:text-white"
+                  className="p-2 hover:bg-white/5 rounded-xl transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   <X size={18} />
                 </button>

@@ -14,7 +14,7 @@ const MobileNav = ({ onCreateClick }) => {
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[110]">
         <button
           onClick={onCreateClick}
-          className="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-primary/40 active:scale-90 transition-transform"
+          className="w-14 h-14 bg-primary text-[var(--text-primary)] rounded-full flex items-center justify-center shadow-xl shadow-primary/40 active:scale-90 transition-transform"
         >
           <Plus size={32} strokeWidth={3} />
         </button>

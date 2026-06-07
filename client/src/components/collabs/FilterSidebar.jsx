@@ -21,16 +21,16 @@ const FilterSidebar = ({ filters, setFilters }) => {
   };
 
   return (
-    <div className="bg-[#0F131E] border border-white/[0.04] p-6 rounded-3xl space-y-8">
+    <div className="bg-[var(--bg-base)] border border-[var(--border-primary)] p-6 rounded-3xl space-y-8">
       {/* Category */}
       <div>
-        <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4 flex items-center gap-2">
            <Briefcase size={14} className="text-[#7B5CFA]" /> Category
         </h3>
         <select 
           value={filters.category}
           onChange={(e) => setFilters(p => ({ ...p, category: e.target.value }))}
-          className="w-full bg-[#181D2A] border border-white/[0.06] rounded-xl py-3 px-4 text-xs font-bold text-white focus:border-[#7B5CFA]/40 outline-none transition-all cursor-pointer appearance-none"
+          className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl py-3 px-4 text-xs font-bold text-[var(--text-primary)] focus:border-[#7B5CFA]/40 outline-none transition-all cursor-pointer appearance-none"
         >
           <option value="">All Categories</option>
           {CATEGORIES.map(cat => (
@@ -41,20 +41,20 @@ const FilterSidebar = ({ filters, setFilters }) => {
 
       {/* Location */}
       <div>
-        <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4 flex items-center gap-2">
            <Globe size={14} className="text-[#7B5CFA]" /> Work Type
         </h3>
         <div className="flex flex-col gap-2">
            <button 
              onClick={() => handleToggle('locationType', 'REMOTE')}
-             className={`flex items-center justify-between py-2.5 px-4 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'REMOTE' ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-[#7B5CFA]' : 'border-white/[0.06] bg-[#181D2A] text-[#5A6478] hover:text-white hover:border-white/10'}`}
+             className={`flex items-center justify-between py-2.5 px-4 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'REMOTE' ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-[#7B5CFA]' : 'border-[var(--border-primary)] bg-[var(--bg-surface-alt)] text-[var(--text-muted)] hover:text-white hover:border-[var(--border-secondary)]'}`}
            >
               Remote
               {filters.locationType === 'REMOTE' && <CheckCircle size={14} />}
            </button>
            <button 
              onClick={() => handleToggle('locationType', 'IN_PERSON')}
-             className={`flex items-center justify-between py-2.5 px-4 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'IN_PERSON' ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-[#7B5CFA]' : 'border-white/[0.06] bg-[#181D2A] text-[#5A6478] hover:text-white hover:border-white/10'}`}
+             className={`flex items-center justify-between py-2.5 px-4 border rounded-xl text-xs font-bold transition-all ${filters.locationType === 'IN_PERSON' ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 text-[#7B5CFA]' : 'border-[var(--border-primary)] bg-[var(--bg-surface-alt)] text-[var(--text-muted)] hover:text-white hover:border-[var(--border-secondary)]'}`}
            >
               In-Person
               {filters.locationType === 'IN_PERSON' && <CheckCircle size={14} />}
@@ -64,7 +64,7 @@ const FilterSidebar = ({ filters, setFilters }) => {
 
       {/* Experience Level */}
       <div>
-        <h3 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4 flex items-center gap-2">
            <Filter size={14} className="text-[#7B5CFA]" /> Experience
         </h3>
         <div className="space-y-3">
@@ -72,11 +72,11 @@ const FilterSidebar = ({ filters, setFilters }) => {
              <label key={level} className="flex items-center gap-3 cursor-pointer group">
                 <input 
                   type="checkbox"
-                  className="w-4 h-4 rounded bg-[#181D2A] border-white/[0.06] text-[#7B5CFA] focus:ring-[#7B5CFA]"
+                  className="w-4 h-4 rounded bg-[var(--bg-surface-alt)] border-[var(--border-primary)] text-[#7B5CFA] focus:ring-[#7B5CFA]"
                   checked={filters.experienceLevel === level}
                   onChange={() => handleToggle('experienceLevel', level)}
                 />
-                <span className={`text-xs font-bold uppercase transition-colors ${filters.experienceLevel === level ? 'text-white' : 'text-[#5A6478] group-hover:text-[#8B95A5]'}`}>
+                <span className={`text-xs font-bold uppercase transition-colors ${filters.experienceLevel === level ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'}`}>
                   {level.toLowerCase()}
                 </span>
              </label>
@@ -85,12 +85,12 @@ const FilterSidebar = ({ filters, setFilters }) => {
       </div>
 
       {/* Verified Only */}
-      <div className="pt-6 border-t border-white/[0.04]">
+      <div className="pt-6 border-t border-[var(--border-primary)]">
          <label className="flex items-center justify-between cursor-pointer group">
-            <span className={`text-xs font-black uppercase transition-colors ${filters.verifiedOnly ? 'text-white' : 'text-[#8B95A5] group-hover:text-white'}`}>Verified Postings Only</span>
+            <span className={`text-xs font-black uppercase transition-colors ${filters.verifiedOnly ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]'}`}>Verified Postings Only</span>
             <div 
               onClick={() => setFilters(p => ({ ...p, verifiedOnly: !p.verifiedOnly }))}
-              className={`w-10 h-5 rounded-full relative transition-colors ${filters.verifiedOnly ? 'bg-[#7B5CFA]' : 'bg-[#181D2A] border border-white/[0.06]'}`}
+              className={`w-10 h-5 rounded-full relative transition-colors ${filters.verifiedOnly ? 'bg-[#7B5CFA]' : 'bg-[var(--bg-surface-alt)] border border-[var(--border-primary)]'}`}
             >
                <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${filters.verifiedOnly ? 'right-0.5' : 'left-0.5'}`} />
             </div>
@@ -99,7 +99,7 @@ const FilterSidebar = ({ filters, setFilters }) => {
 
       <button 
         onClick={() => setFilters({ category: '', locationType: '', experienceLevel: '', budgetRange: 'ALL', verifiedOnly: false })}
-        className="w-full py-3 text-[10px] font-black uppercase text-[#5A6478] hover:text-[#7B5CFA] transition-colors mt-8 bg-white/[0.02] hover:bg-[#7B5CFA]/10 rounded-xl"
+        className="w-full py-3 text-[10px] font-black uppercase text-[var(--text-muted)] hover:text-[#7B5CFA] transition-colors mt-8 bg-white/[0.02] hover:bg-[#7B5CFA]/10 rounded-xl"
       >
         Clear All Filters
       </button>

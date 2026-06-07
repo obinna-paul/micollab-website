@@ -143,7 +143,7 @@ const PostCard = ({ post }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="bg-[#181D2A] rounded-2xl border border-white/5 mb-6 overflow-hidden"
+        className="bg-[var(--bg-surface-alt)] rounded-2xl border border-[var(--border-primary)] mb-6 overflow-hidden"
       >
         {/* Repost Header */}
         {originalPost && (
@@ -165,12 +165,12 @@ const PostCard = ({ post }) => {
             </Link>
             <div className="min-w-0">
               <div className="flex items-center gap-1 flex-wrap">
-                <Link to={`/profile/${originalPost ? originalPost.creator.username : creator.username}`} className="font-bold text-sm text-white hover:text-[#7B5CFA] hover:underline truncate tracking-tight">
+                <Link to={`/profile/${originalPost ? originalPost.creator.username : creator.username}`} className="font-bold text-sm text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline truncate tracking-tight">
                   {originalPost ? originalPost.creator.name || originalPost.creator.username : creator.name || creator.username}
                 </Link>
                 {(originalPost ? originalPost.creator.isVerified : creator.isVerified) && <Star size={11} className="text-[#7B5CFA] fill-[#7B5CFA] flex-shrink-0" />}
               </div>
-              <p className="text-[11px] text-[#8B95A5] leading-tight">
+              <p className="text-[11px] text-[var(--text-secondary)] leading-tight">
                 {originalPost ? originalPost.creator.profileType : (creator.profileType || 'Creative')} • {new Date(createdAt).toLocaleDateString()}
               </p>
             </div>
@@ -224,11 +224,11 @@ const PostCard = ({ post }) => {
           {isEditing ? (
             <div className="space-y-3">
               <textarea value={caption} onChange={e => setCaption(e.target.value)}
-                className="w-full bg-[#0F131E] border border-white/5 rounded-xl p-3 text-sm text-white outline-none focus:border-[#7B5CFA] transition min-h-[100px] resize-none"
+                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl p-3 text-sm text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition min-h-[100px] resize-none"
                 autoFocus />
               <div className="flex justify-end gap-2">
                 <button onClick={() => { setIsEditing(false); setCaption(initialCaption); }}
-                  className="px-4 py-1.5 text-xs font-bold text-[#8B95A5] hover:bg-white/5 rounded-full">Cancel</button>
+                  className="px-4 py-1.5 text-xs font-bold text-[var(--text-secondary)] hover:bg-white/5 rounded-full">Cancel</button>
                 <button onClick={handleUpdate} disabled={loading || !caption.trim()}
                   className="px-4 py-1.5 text-xs font-bold bg-[#7B5CFA] text-white rounded-full disabled:opacity-50">
                   {loading ? 'Saving...' : 'Save'}
@@ -236,9 +236,9 @@ const PostCard = ({ post }) => {
               </div>
             </div>
           ) : (
-            <p className="text-[13px] text-white whitespace-pre-wrap leading-relaxed">
+            <p className="text-[13px] text-[var(--text-primary)] whitespace-pre-wrap leading-relaxed">
               {originalPost ? originalPost.caption : caption}
-              {isEdited && <span className="text-[10px] text-[#8B95A5] ml-2">(edited)</span>}
+              {isEdited && <span className="text-[10px] text-[var(--text-secondary)] ml-2">(edited)</span>}
             </p>
           )}
         </div>
@@ -248,9 +248,9 @@ const PostCard = ({ post }) => {
           <div className="px-4 pb-4">
             <div className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar rounded-xl overflow-hidden relative">
               {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).map((url, i) => (
-                <div key={i} className="w-full flex-shrink-0 snap-center flex justify-center items-center max-h-[480px] bg-[#0F131E]">
+                <div key={i} className="w-full flex-shrink-0 snap-center flex justify-center items-center max-h-[480px] bg-[var(--bg-base)]">
                   {(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length > 1 && (
-                    <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full font-bold z-10">
+                    <div className="absolute top-3 right-3 bg-black/60 text-[var(--text-primary)] text-xs px-2 py-1 rounded-full font-bold z-10">
                       {i + 1}/{(originalPost ? (originalPost.mediaUrl?.split(',') || []) : mediaUrls).length}
                     </div>
                   )}
@@ -272,22 +272,22 @@ const PostCard = ({ post }) => {
         )}
 
         {/* Actions Footer */}
-        <div className="px-4 py-3 flex items-center justify-between border-t border-white/5">
+        <div className="px-4 py-3 flex items-center justify-between border-t border-[var(--border-primary)]">
           <div className="flex items-center gap-6">
-            <button onClick={handleLike} className={`flex items-center gap-1.5 text-[11px] font-bold transition group ${liked ? 'text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}>
-              <ThumbsUp size={16} className={liked ? 'fill-[#7B5CFA]' : 'group-hover:text-white'} />
+            <button onClick={handleLike} className={`flex items-center gap-1.5 text-[11px] font-bold transition group ${liked ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
+              <ThumbsUp size={16} className={liked ? 'fill-[#7B5CFA]' : 'group-hover:text-[var(--text-primary)]'} />
               <span>{likesCount}</span>
             </button>
-            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-[11px] font-bold text-[#8B95A5] hover:text-white transition group">
+            <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition group">
               <MessageSquare size={16} />
               <span>{commentCount}</span>
             </button>
-            <button onClick={() => setShowShare(true)} className="flex items-center gap-1.5 text-[11px] font-bold text-[#8B95A5] hover:text-white transition group">
+            <button onClick={() => setShowShare(true)} className="flex items-center gap-1.5 text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition group">
               <Share2 size={16} />
             </button>
           </div>
 
-          <button className="text-[#8B95A5] hover:text-white transition">
+          <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition">
             <Archive size={16} />
           </button>
         </div>
@@ -311,7 +311,7 @@ const PostCard = ({ post }) => {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="Add a comment..."
-                      className="w-full bg-[#0F131E] border border-white/5 rounded-full px-4 py-2 text-xs text-white outline-none focus:border-[#7B5CFA] transition"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-full px-4 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition"
                     />
                     <button 
                       type="submit" 
@@ -327,20 +327,20 @@ const PostCard = ({ post }) => {
                 <div className="space-y-4 pt-2">
                   {comments.map((comment) => (
                     <div key={comment.id} className="flex gap-3">
-                      <img src={comment.user.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full object-cover border border-white/5" alt={comment.user.username} />
-                      <div className="flex-1 bg-[#0F131E] rounded-2xl p-3 border border-white/5">
+                      <img src={comment.user.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full object-cover border border-[var(--border-primary)]" alt={comment.user.username} />
+                      <div className="flex-1 bg-[var(--bg-base)] rounded-2xl p-3 border border-[var(--border-primary)]">
                         <div className="flex justify-between items-start mb-1">
                           <div>
-                            <span className="text-xs font-bold text-white">@{comment.user.username}</span>
-                            <span className="text-[9px] text-[#8B95A5] ml-2">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                            <span className="text-xs font-bold text-[var(--text-primary)]">@{comment.user.username}</span>
+                            <span className="text-[9px] text-[var(--text-secondary)] ml-2">{new Date(comment.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
-                        <p className="text-xs text-white leading-relaxed">{comment.content}</p>
+                        <p className="text-xs text-[var(--text-primary)] leading-relaxed">{comment.content}</p>
                       </div>
                     </div>
                   ))}
                   {comments.length === 0 && (
-                    <p className="text-xs text-[#8B95A5] text-center py-2">No comments yet. Be the first to share your thoughts!</p>
+                    <p className="text-xs text-[var(--text-secondary)] text-center py-2">No comments yet. Be the first to share your thoughts!</p>
                   )}
                 </div>
               </div>
@@ -358,29 +358,29 @@ const PostCard = ({ post }) => {
             <motion.div
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="relative w-full bg-[#181D2A] rounded-t-3xl shadow-2xl z-10 max-h-[90svh] flex flex-col border border-white/10"
+              className="relative w-full bg-[var(--bg-surface-alt)] rounded-t-3xl shadow-2xl z-10 max-h-[90svh] flex flex-col border border-[var(--border-secondary)]"
             >
               <div className="flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-white/20 rounded-full" /></div>
-              <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-                <h3 className="font-black text-white tracking-tight">Comments</h3>
-                <button onClick={() => setShowComments(false)} className="p-1.5 hover:bg-white/5 rounded-xl text-[#8B95A5]"><X size={17} /></button>
+              <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border-secondary)]">
+                <h3 className="font-black text-[var(--text-primary)] tracking-tight">Comments</h3>
+                <button onClick={() => setShowComments(false)} className="p-1.5 hover:bg-white/5 rounded-xl text-[var(--text-secondary)]"><X size={17} /></button>
               </div>
 
               <div className="overflow-y-auto flex-1 p-4 space-y-5">
                 {comments.map((comment) => (
                   <div key={comment.id} className="flex gap-3">
-                    <img src={comment.user.profileImage || fallbackAvatar} className="w-9 h-9 rounded-full object-cover border border-white/5" alt={comment.user.username} />
+                    <img src={comment.user.profileImage || fallbackAvatar} className="w-9 h-9 rounded-full object-cover border border-[var(--border-primary)]" alt={comment.user.username} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-black text-white">@{comment.user.username}</span>
-                        <span className="text-[9px] text-[#8B95A5]">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                        <span className="text-xs font-black text-[var(--text-primary)]">@{comment.user.username}</span>
+                        <span className="text-[9px] text-[var(--text-secondary)]">{new Date(comment.createdAt).toLocaleDateString()}</span>
                       </div>
-                      <p className="text-xs text-white leading-relaxed">{comment.content}</p>
+                      <p className="text-xs text-[var(--text-primary)] leading-relaxed">{comment.content}</p>
                     </div>
                   </div>
                 ))}
                 {comments.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-10 opacity-50 text-[#8B95A5]">
+                  <div className="flex flex-col items-center justify-center py-10 opacity-50 text-[var(--text-secondary)]">
                     <MessageSquare size={40} className="mb-2" />
                     <p className="text-xs font-bold">No comments yet</p>
                   </div>
@@ -388,16 +388,16 @@ const PostCard = ({ post }) => {
               </div>
 
               {/* Mobile Input (Sticky at bottom) */}
-              <div className="p-4 border-t border-white/10 pb-safe bg-[#181D2A]">
+              <div className="p-4 border-t border-[var(--border-secondary)] pb-safe bg-[var(--bg-surface-alt)]">
                 <form onSubmit={handleCommentSubmit} className="flex items-center gap-3">
-                  <img src={user?.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full border border-white/5 object-cover" alt="You" />
+                  <img src={user?.profileImage || fallbackAvatar} className="w-8 h-8 rounded-full border border-[var(--border-primary)] object-cover" alt="You" />
                   <div className="flex-1 relative">
                     <input 
                       type="text" 
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="Add a comment..."
-                      className="w-full bg-[#0F131E] border border-white/5 rounded-full px-4 py-2.5 text-xs text-white outline-none focus:border-[#7B5CFA] transition"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-full px-4 py-2.5 text-xs text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition"
                       autoFocus
                     />
                     <button type="submit" disabled={!newComment.trim() || isPostingComment} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7B5CFA] p-1.5 disabled:opacity-30">
@@ -423,30 +423,30 @@ const PostCard = ({ post }) => {
             <motion.div
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="relative w-full md:max-w-sm bg-[#181D2A] rounded-t-3xl md:rounded-3xl shadow-2xl z-10 overflow-hidden border border-white/10"
+              className="relative w-full md:max-w-sm bg-[var(--bg-surface-alt)] rounded-t-3xl md:rounded-3xl shadow-2xl z-10 overflow-hidden border border-[var(--border-secondary)]"
             >
               <div className="flex justify-center pt-3 pb-1 md:hidden"><div className="w-10 h-1 bg-white/20 rounded-full" /></div>
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-                <h3 className="font-black text-white tracking-tight">Share Post</h3>
-                <button onClick={() => setShowShare(false)} className="p-1.5 hover:bg-white/5 rounded-xl text-[#8B95A5]"><X size={17} /></button>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-secondary)]">
+                <h3 className="font-black text-[var(--text-primary)] tracking-tight">Share Post</h3>
+                <button onClick={() => setShowShare(false)} className="p-1.5 hover:bg-white/5 rounded-xl text-[var(--text-secondary)]"><X size={17} /></button>
               </div>
               <div className="p-5">
                 <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center gap-3 p-4 rounded-2xl border border-white/10 hover:border-[#7B5CFA] hover:bg-[#7B5CFA]/5 transition-all group text-left">
+                  <button className="flex items-center gap-3 p-4 rounded-2xl border border-[var(--border-secondary)] hover:border-[#7B5CFA] hover:bg-[#7B5CFA]/5 transition-all group text-left">
                     <div className="w-10 h-10 bg-[#7B5CFA]/10 rounded-xl flex items-center justify-center text-[#7B5CFA] flex-shrink-0"><Users size={18} /></div>
                     <div className="min-w-0">
-                      <p className="text-xs font-black text-white group-hover:text-[#7B5CFA] leading-tight">Network</p>
-                      <p className="text-[9px] text-[#8B95A5] mt-0.5">Share to connections</p>
+                      <p className="text-xs font-black text-[var(--text-primary)] group-hover:text-[#7B5CFA] leading-tight">Network</p>
+                      <p className="text-[9px] text-[var(--text-secondary)] mt-0.5">Share to connections</p>
                     </div>
                   </button>
                   <button onClick={handleCopyLink}
-                    className="flex items-center gap-3 p-4 rounded-2xl border border-white/10 hover:border-[#7B5CFA] hover:bg-[#7B5CFA]/5 transition-all group text-left">
-                    <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#7B5CFA]/10 group-hover:text-[#7B5CFA] text-[#8B95A5] transition-all">
+                    className="flex items-center gap-3 p-4 rounded-2xl border border-[var(--border-secondary)] hover:border-[#7B5CFA] hover:bg-[#7B5CFA]/5 transition-all group text-left">
+                    <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#7B5CFA]/10 group-hover:text-[#7B5CFA] text-[var(--text-secondary)] transition-all">
                       {copied ? <Check size={18} className="text-emerald-500" /> : <Copy size={18} />}
                     </div>
                     <div>
-                      <p className="text-xs font-black text-white group-hover:text-[#7B5CFA] leading-tight">{copied ? 'Copied!' : 'Copy Link'}</p>
-                      <p className="text-[9px] text-[#8B95A5] mt-0.5">Share anywhere</p>
+                      <p className="text-xs font-black text-[var(--text-primary)] group-hover:text-[#7B5CFA] leading-tight">{copied ? 'Copied!' : 'Copy Link'}</p>
+                      <p className="text-[9px] text-[var(--text-secondary)] mt-0.5">Share anywhere</p>
                     </div>
                   </button>
                 </div>

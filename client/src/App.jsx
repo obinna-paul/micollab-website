@@ -15,6 +15,8 @@ import Network from './pages/Network';
 import Circles from './pages/Circles';
 import CircleWorkspace from './pages/CircleWorkspace';
 import Notifications from './pages/Notifications';
+import FilesHub from './pages/FilesHub';
+import PublicSharePage from './pages/PublicSharePage';
 import useAuthStore from './store/useAuthStore';
 
 function App() {
@@ -100,6 +102,14 @@ function App() {
         </MainLayout>
       } />
       
+      <Route path="/files" element={
+        <MainLayout>
+          <FilesHub />
+        </MainLayout>
+      } />
+
+      <Route path="/share/:linkId" element={<PublicSharePage />} />
+
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

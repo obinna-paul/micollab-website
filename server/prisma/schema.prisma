@@ -1,6 +1,6 @@
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -284,6 +284,7 @@ model Circle {
   tasks             CircleTask[]
   messages          CircleMessage[]
   files             CircleFile[]
+  folders           CircleFolder[]
   milestones        CircleMilestone[]
   credits           ProjectCredit[]
   invitations       CircleInvitation[]
@@ -388,14 +389,43 @@ model MessageReaction {
 }
 
 model CircleFile {
-  id          String    @id @default(cuid())
-  circleId    String
-  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  uploadedBy  String
-  fileUrl     String
-  type        String
-  version     Int       @default(1)
-  createdAt   DateTime  @default(now())
+  id              String        @id @default(cuid())
+  circleId        String
+  circle          Circle        @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  uploadedBy      String
+  fileUrl         String
+  type            String
+  version         Int           @default(1)
+  folderId        String?
+  folder          CircleFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  originalName    String?
+  size            Int?
+  sourceTaskId    String?
+  versionHistory  String?       // JSON string
+  accessList      String?       // JSON string
+  publicLinks     String?       // JSON string
+  activityLog     String?       // JSON string
+  comments        String?       // JSON string
+  isDeleted       Boolean       @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+}
+
+model CircleFolder {
+  id           String         @id @default(cuid())
+  circleId     String
+  circle       Circle         @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  name         String
+  parentId     String?
+  parent       CircleFolder?  @relation("FolderSubfolders", fields: [parentId], references: [id], onDelete: Cascade)
+  subfolders   CircleFolder[] @relation("FolderSubfolders")
+  color        String?        @default("#3b82f6")
+  icon         String?        @default("folder")
+  files        CircleFile[]
+  folderAccess String?        // JSON String for folder-level access list
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model CircleMilestone {

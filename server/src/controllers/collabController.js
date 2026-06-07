@@ -97,7 +97,7 @@ exports.getCollabById = async (req, res) => {
         attachments: true,
         proposals: {
           include: {
-            creator: { select: { id: true, username: true, profileImage: true, profileType: true } },
+            user: { select: { id: true, username: true, profileImage: true, profileType: true } },
             attachments: true
           }
         }
@@ -106,7 +106,8 @@ exports.getCollabById = async (req, res) => {
     if (!collab) return res.status(404).json({ error: 'Collab not found' });
     res.json(collab);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch collab details' });
+    console.error('getCollabById Error:', error);
+    res.status(500).json({ error: 'Failed to fetch collab details', details: error.message, stack: error.stack });
   }
 };
 

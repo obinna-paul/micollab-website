@@ -185,6 +185,86 @@ exports.updateTask = async (req, res) => {
         logEntries.push({ user: username, action: `moved task from ${existingTask.status} to ${status}`, timestamp: new Date().toISOString() });
       }
       updates.status = status;
+
+      // Auto-push attachments to Files Hub if task becomes APPROVED or COMPLETED
+      if (status === 'APPROVED' || status === 'COMPLETED') {
+        try {
+          const attachments = await prisma.taskAttachment.findMany({
+            where: { taskId: id }
+          });
+          
+          if (attachments.length > 0) {
+            const crypto = require('crypto');
+            const getOriginalName = (fileUrl) => {
+              const filename = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+              const parts = filename.split('-');
+              if (parts.length > 2) {
+                return parts.slice(2).join('-');
+              }
+              return filename;
+            };
+
+            for (const att of attachments) {
+              // Check if already in Files Hub
+              const existingFile = await prisma.circleFile.findFirst({
+                where: { 
+                  circleId: existingTask.circleId, 
+                  fileUrl: att.fileUrl 
+                }
+              });
+
+              if (!existingFile) {
+                const cleanName = `${existingTask.taskCode || 'TASK'}_${getOriginalName(att.fileUrl)}`;
+                const accessList = '[]';
+                const publicLinks = '[]';
+                const versionHistory = JSON.stringify([{
+                  version: 1,
+                  fileUrl: att.fileUrl,
+                  uploadedBy: existingTask.assignedTo || existingTask.createdBy,
+                  uploaderName: 'System',
+                  createdAt: new Date().toISOString(),
+                  originalName: cleanName,
+                  size: 0
+                }]);
+                const activityLog = JSON.stringify([{
+                  id: crypto.randomBytes(8).toString('hex'),
+                  action: 'CREATED_AUTO',
+                  userId: existingTask.assignedTo || existingTask.createdBy,
+                  username: 'System',
+                  details: `Auto-submitted from completed task ${existingTask.taskCode}`,
+                  timestamp: new Date().toISOString()
+                }]);
+
+                await prisma.circleFile.create({
+                  data: {
+                    circleId: existingTask.circleId,
+                    uploadedBy: existingTask.assignedTo || existingTask.createdBy,
+                    fileUrl: att.fileUrl,
+                    type: att.type || 'application/octet-stream',
+                    version: 1,
+                    originalName: cleanName,
+                    size: 0,
+                    sourceTaskId: id,
+                    versionHistory,
+                    accessList,
+                    publicLinks,
+                    activityLog,
+                    comments: '[]',
+                    isDeleted: false
+                  }
+                });
+              }
+            }
+            logEntries.push({ 
+              user: 'System', 
+              action: 'automatically pushed completed task attachments into the Circle Files Hub', 
+              timestamp: new Date().toISOString() 
+            });
+          }
+        } catch (err) {
+          console.error('Error auto-pushing task attachments to Files Hub:', err);
+        }
+      }
     }
 
     // Append to existing activityLog

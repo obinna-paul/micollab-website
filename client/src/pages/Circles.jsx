@@ -39,10 +39,10 @@ const Circles = () => {
           <div className="flex items-center gap-2.5 text-[#7B5CFA] font-black uppercase text-[10px] tracking-[0.2em]">
             <Shield size={13} /> Collaboration Hub
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter leading-none">
+          <h1 className="text-5xl font-black text-[var(--text-primary)] tracking-tighter leading-none">
             Your <span className="text-[#7B5CFA] italic">Circles</span>
           </h1>
-          <p className="text-[#8B95A5] font-medium leading-relaxed text-sm">
+          <p className="text-[var(--text-secondary)] font-medium leading-relaxed text-sm">
             Project groups built from your network. Recruit trusted connections, share updates in your private chat, and ship together.
           </p>
         </div>
@@ -58,15 +58,15 @@ const Circles = () => {
       {/* Grid List */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-pulse">
-           {[1,2,3,4].map(i => <div key={i} className="h-64 bg-[#181D2A] rounded-3xl" />)}
+           {[1,2,3,4].map(i => <div key={i} className="h-64 bg-[var(--bg-surface-alt)] rounded-3xl" />)}
         </div>
       ) : circles.length === 0 ? (
-        <div className="py-24 text-center bg-[#0F131E] border border-white/5 rounded-[2.5rem] shadow-sm max-w-2xl mx-auto">
-           <Circle size={48} className="text-[#8B95A5]/20 mx-auto mb-4" />
-           <p className="text-[#8B95A5] font-black uppercase text-[10px] tracking-widest mb-1">
+        <div className="py-24 text-center bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-[2.5rem] shadow-sm max-w-2xl mx-auto">
+           <Circle size={48} className="text-[var(--text-secondary)]/20 mx-auto mb-4" />
+           <p className="text-[var(--text-secondary)] font-black uppercase text-[10px] tracking-widest mb-1">
              No active circles found
            </p>
-           <p className="text-xs text-[#8B95A5] max-w-xs mx-auto mb-6">
+           <p className="text-xs text-[var(--text-secondary)] max-w-xs mx-auto mb-6">
              Start a brand new circle workspace, invite creatives, and start collaborating on deliverables!
            </p>
            <button 
@@ -82,14 +82,14 @@ const Circles = () => {
              <motion.div 
                whileHover={{ scale: 1.01, y: -2 }}
                key={circle.id} 
-               className="bg-[#0F131E] border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-all"
+               className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-[2.5rem] p-8 relative overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-all"
                onClick={() => navigate(`/circles/${circle.id}`)}
              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#7B5CFA]/5 rounded-full -mr-16 -mt-16 group-hover:bg-[#7B5CFA]/10 transition-colors" />
                 
                 <div className="flex justify-between items-start mb-6">
                    <div>
-                      <h3 className="text-2xl font-black text-white tracking-tighter mb-2 truncate max-w-[240px]" title={circle.title}>
+                      <h3 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter mb-2 truncate max-w-[240px]" title={circle.title}>
                         {circle.title}
                       </h3>
                       <div className="flex items-center gap-2 text-[#7B5CFA] font-black uppercase text-[9px] tracking-widest">
@@ -106,7 +106,7 @@ const Circles = () => {
                         />
                       ))}
                       {circle._count?.members > 3 && (
-                        <div className="w-10 h-10 rounded-full bg-[#181D2A] border-4 border-[#0F131E] flex items-center justify-center text-[10px] font-black text-[#8B95A5]">
+                        <div className="w-10 h-10 rounded-full bg-[var(--bg-surface-alt)] border-4 border-[#0F131E] flex items-center justify-center text-[10px] font-black text-[var(--text-secondary)]">
                            +{circle._count.members - 3}
                         </div>
                       )}
@@ -114,19 +114,19 @@ const Circles = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-8">
-                   <div className="bg-[#181D2A] p-4 rounded-2xl">
-                      <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Proposed Duration</p>
-                      <p className="text-sm font-black text-white">{circle.duration || 'Flexible'}</p>
+                   <div className="bg-[var(--bg-surface-alt)] p-4 rounded-2xl">
+                      <p className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-1">Proposed Duration</p>
+                      <p className="text-sm font-black text-[var(--text-primary)]">{circle.duration || 'Flexible'}</p>
                    </div>
-                   <div className="bg-[#181D2A] p-4 rounded-2xl">
-                      <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mb-1">Start Date</p>
-                      <p className="text-sm font-black text-white">
+                   <div className="bg-[var(--bg-surface-alt)] p-4 rounded-2xl">
+                      <p className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-1">Start Date</p>
+                      <p className="text-sm font-black text-[var(--text-primary)]">
                         {circle.startDate ? new Date(circle.startDate).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD'}
                       </p>
                    </div>
                 </div>
 
-                <button className="w-full bg-[#181D2A] border border-white/5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-[#7B5CFA] hover:text-[#7B5CFA] transition-all shadow-sm text-white">
+                <button className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-[#7B5CFA] hover:text-[#7B5CFA] transition-all shadow-sm text-[var(--text-primary)]">
                    Enter Workspace
                 </button>
              </motion.div>

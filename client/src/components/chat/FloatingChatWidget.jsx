@@ -36,7 +36,7 @@ const FloatingChatWidget = () => {
             className="w-80 h-[450px] bg-surface border border-divider rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="p-3 bg-primary text-white flex items-center justify-between">
+            <div className="p-3 bg-primary text-[var(--text-primary)] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src={partner?.profileImage || 'https://via.placeholder.com/150'} className="w-8 h-8 rounded-full border border-white/20" />
                 <p className="text-xs font-bold truncate">@{partner?.username}</p>
@@ -54,7 +54,7 @@ const FloatingChatWidget = () => {
                 return (
                   <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[85%] p-2 rounded-xl text-xs ${
-                      isMine ? 'bg-primary text-white rounded-tr-none' : 'bg-white border border-divider text-textMain rounded-tl-none shadow-sm'
+                      isMine ? 'bg-primary text-[var(--text-primary)] rounded-tr-none' : 'bg-white border border-divider text-textMain rounded-tl-none shadow-sm'
                     }`}>
                       {msg.content}
                     </div>
@@ -85,7 +85,7 @@ const FloatingChatWidget = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-primary text-white rounded-full shadow-xl flex items-center justify-center relative group"
+        className="w-14 h-14 bg-primary text-[var(--text-primary)] rounded-full shadow-xl flex items-center justify-center relative group"
       >
         <MessageSquare size={24} />
         <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-surface">

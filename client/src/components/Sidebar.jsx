@@ -10,7 +10,7 @@ const SidebarItem = ({ to, icon: Icon, label }) => (
       flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200
       ${isActive 
         ? 'bg-primary/10 text-primary font-bold border border-primary/20' 
-        : 'text-textMuted hover:bg-white/5 hover:text-white'}
+        : 'text-textMuted hover:bg-white/5 hover:text-[var(--text-primary)]'}
     `}
   >
     <Icon size={22} />
@@ -30,7 +30,7 @@ const Sidebar = () => {
   return (
     <aside className="w-20 lg:w-64 h-screen sticky top-0 border-r border-gray-800 p-4 flex flex-col gap-2">
       <div className="mb-8 px-4">
-        <h2 className="text-2xl font-black tracking-tighter text-white hidden lg:block">
+        <h2 className="text-2xl font-black tracking-tighter text-[var(--text-primary)] hidden lg:block">
           Mi<span className="text-primary">collab</span>
         </h2>
         <div className="w-10 h-10 bg-primary rounded-xl flex lg:hidden items-center justify-center font-black">M</div>
@@ -59,7 +59,7 @@ const Sidebar = () => {
               className="w-8 h-8 rounded-full border border-gray-700"
             />
             <div className="hidden lg:block min-w-0">
-              <p className="text-sm font-bold text-white truncate">@{user?.username}</p>
+              <p className="text-sm font-bold text-[var(--text-primary)] truncate">@{user?.username}</p>
               <p className="text-[10px] text-textMuted uppercase font-bold">{user?.role}</p>
             </div>
           </div>
@@ -76,7 +76,7 @@ const Sidebar = () => {
           <p className="text-xs text-textMuted mb-3">Join our community</p>
           <button 
             onClick={() => navigate('/login')}
-            className="w-full py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-violet-600 transition"
+            className="w-full py-2 bg-primary text-[var(--text-primary)] text-sm font-bold rounded-lg hover:bg-violet-600 transition"
           >
             Sign In
           </button>

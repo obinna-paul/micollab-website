@@ -7,7 +7,7 @@ const StatCard = ({ label, value, icon: Icon, color, trend }) => (
   <div className="card p-6">
     <div className="flex justify-between items-start mb-4">
       <div className={`p-2.5 rounded-lg ${color}`}>
-        <Icon size={20} className="text-white" />
+        <Icon size={20} className="text-[var(--text-primary)]" />
       </div>
       {trend && (
         <span className="flex items-center text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
@@ -149,7 +149,7 @@ const Wallet = () => {
 
           <div className="card p-5 bg-gradient-to-br from-primary to-primaryHover shadow-lg border-none text-white">
             <h3 className="font-black text-lg mb-2">Grow Your Income</h3>
-            <p className="text-white/80 text-[10px] leading-relaxed mb-4">
+            <p className="text-[var(--text-primary)]/80 text-[10px] leading-relaxed mb-4">
               Completing more gigs and getting positive reviews increases your **Reputation Score**, which helps you rank higher in talent searches.
             </p>
             <button className="w-full py-2 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition text-xs shadow-md">

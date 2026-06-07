@@ -66,11 +66,11 @@ const CollabManage = () => {
   if (loading) return (
     <div className="py-40 text-center flex flex-col items-center gap-6">
        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#7B5CFA]"></div>
-       <p className="text-[10px] font-black text-[#5A6478] uppercase tracking-widest">Entering Dashboard...</p>
+       <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">Entering Dashboard...</p>
     </div>
   );
 
-  if (!collab) return <div className="max-w-4xl mx-auto py-20 text-center text-white font-bold">Opportunity not found</div>;
+  if (!collab) return <div className="max-w-4xl mx-auto py-20 text-center text-[var(--text-primary)] font-bold">Opportunity not found</div>;
 
   const filteredProposals = collab.proposals?.filter(p => {
      if (activeTab === 'ALL') return true;
@@ -83,18 +83,18 @@ const CollabManage = () => {
         <div>
           <button 
             onClick={() => navigate('/collabs')}
-            className="flex items-center gap-2 text-[#8B95A5] font-black text-[10px] uppercase tracking-widest mb-4 hover:text-[#7B5CFA] transition mt-6"
+            className="flex items-center gap-2 text-[var(--text-secondary)] font-black text-[10px] uppercase tracking-widest mb-4 hover:text-[#7B5CFA] transition mt-6"
           >
             <ChevronLeft size={16} /> Back to Hub
           </button>
-          <h1 className="text-3xl font-black text-white tracking-tighter leading-tight">{collab.title}</h1>
-          <p className="text-[#8B95A5] text-sm font-medium mt-1">Reviewing proposals and applicant tracking.</p>
+          <h1 className="text-3xl font-black text-[var(--text-primary)] tracking-tighter leading-tight">{collab.title}</h1>
+          <p className="text-[var(--text-secondary)] text-sm font-medium mt-1">Reviewing proposals and applicant tracking.</p>
         </div>
 
         <div className="flex items-center gap-3">
-           <div className="bg-[#181D2A] border border-white/[0.06] px-6 py-3 rounded-2xl flex items-center gap-3 shadow-inner">
+           <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-6 py-3 rounded-2xl flex items-center gap-3 shadow-inner">
               <div className="text-right">
-                 <p className="text-[9px] text-[#5A6478] font-black uppercase tracking-widest">Status</p>
+                 <p className="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest">Status</p>
                  <p className="text-sm font-black text-[#7B5CFA] uppercase tracking-wider">{collab.status}</p>
               </div>
               <div className="w-3 h-3 rounded-full bg-[#7B5CFA] animate-pulse" />
@@ -110,25 +110,25 @@ const CollabManage = () => {
            { label: 'Budget Allocation', val: collab.budget, icon: DollarSign },
            { label: 'Category', val: collab.category, icon: Layout }
          ].map((stat, i) => (
-           <div key={i} className="bg-[#0F131E] border border-white/[0.04] p-6 rounded-[2rem] shadow-sm relative overflow-hidden group hover:border-[#7B5CFA]/30 transition-all">
+           <div key={i} className="bg-[var(--bg-base)] border border-[var(--border-primary)] p-6 rounded-[2rem] shadow-sm relative overflow-hidden group hover:border-[#7B5CFA]/30 transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-[#7B5CFA]/5 rounded-full blur-2xl group-hover:bg-[#7B5CFA]/10 transition-colors" />
               <stat.icon size={20} className="text-[#7B5CFA] mb-3" />
-              <p className="text-[9px] text-[#5A6478] font-black uppercase tracking-widest">{stat.label}</p>
-              <p className="text-xl font-black text-white mt-1">{stat.val}</p>
+              <p className="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest">{stat.label}</p>
+              <p className="text-xl font-black text-[var(--text-primary)] mt-1">{stat.val}</p>
            </div>
          ))}
       </div>
 
       {/* ATS Tabs */}
-      <div className="flex border-b border-white/[0.04] mb-8 overflow-x-auto no-scrollbar">
+      <div className="flex border-b border-[var(--border-primary)] mb-8 overflow-x-auto no-scrollbar">
          {['ALL', 'PENDING', 'SHORTLISTED', 'ACCEPTED', 'REJECTED'].map(tab => (
            <button 
              key={tab}
              onClick={() => setActiveTab(tab)}
-             className={`flex items-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 flex-shrink-0 ${activeTab === tab ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[#5A6478] hover:text-[#8B95A5]'}`}
+             className={`flex items-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 flex-shrink-0 ${activeTab === tab ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
            >
               {tab} 
-              <span className="bg-[#181D2A] px-2 py-0.5 rounded-md text-white border border-white/[0.06]">
+              <span className="bg-[var(--bg-surface-alt)] px-2 py-0.5 rounded-md text-[var(--text-primary)] border border-[var(--border-primary)]">
                  {tab === 'ALL' ? collab.proposals?.length : collab.proposals?.filter(p => p.status === tab).length || 0}
               </span>
            </button>
@@ -142,18 +142,18 @@ const CollabManage = () => {
               key={proposal.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-[#0F131E] border border-white/[0.04] p-8 rounded-[2.5rem] shadow-sm transition-all group hover:border-white/[0.1] relative overflow-hidden ${proposal.status === 'SHORTLISTED' ? 'ring-1 ring-[#7B5CFA]/30 bg-[#181D2A]/30' : ''}`}
+              className={`bg-[var(--bg-base)] border border-[var(--border-primary)] p-8 rounded-[2.5rem] shadow-sm transition-all group hover:border-white/[0.1] relative overflow-hidden ${proposal.status === 'SHORTLISTED' ? 'ring-1 ring-[#7B5CFA]/30 bg-[var(--bg-surface-alt)]/30' : ''}`}
             >
               {proposal.status === 'ACCEPTED' && <div className="absolute top-0 left-0 w-1 h-full bg-[#34D399]" />}
               {proposal.status === 'SHORTLISTED' && <div className="absolute top-0 left-0 w-1 h-full bg-[#7B5CFA]" />}
               
               <div className="flex flex-col md:flex-row gap-8">
                  {/* Talent Profile Snapshot */}
-                 <div className="flex-shrink-0 flex flex-col items-center w-full md:w-48 bg-[#181D2A] rounded-3xl p-6 border border-white/[0.04]">
+                 <div className="flex-shrink-0 flex flex-col items-center w-full md:w-48 bg-[var(--bg-surface-alt)] rounded-3xl p-6 border border-[var(--border-primary)]">
                     <div className="relative">
                        <img 
                         src={proposal.creator?.profileImage || `https://ui-avatars.com/api/?name=${proposal.creator?.username}`} 
-                        className="w-20 h-20 rounded-2xl border border-white/[0.06] object-cover shadow-inner bg-[#0F131E]" 
+                        className="w-20 h-20 rounded-2xl border border-[var(--border-primary)] object-cover shadow-inner bg-[var(--bg-base)]" 
                         alt="" 
                        />
                        {proposal.status === 'SHORTLISTED' && (
@@ -162,12 +162,12 @@ const CollabManage = () => {
                          </div>
                        )}
                     </div>
-                    <h3 className="font-black text-white text-lg mt-4 truncate w-full text-center tracking-tight">@{proposal.creator?.username}</h3>
+                    <h3 className="font-black text-[var(--text-primary)] text-lg mt-4 truncate w-full text-center tracking-tight">@{proposal.creator?.username}</h3>
                     <p className="text-[9px] text-[#7B5CFA] font-black uppercase tracking-widest mt-1 text-center">{proposal.creator?.profileType}</p>
                     
                     <Link 
                       to={`/profile/${proposal.creator?.username}`}
-                      className="w-full text-center text-[10px] font-bold text-[#8B95A5] uppercase mt-4 hover:text-white transition-colors bg-[#0F131E] py-2 rounded-xl border border-white/[0.04] flex items-center justify-center gap-1.5"
+                      className="w-full text-center text-[10px] font-bold text-[var(--text-secondary)] uppercase mt-4 hover:text-[var(--text-primary)] transition-colors bg-[var(--bg-base)] py-2 rounded-xl border border-[var(--border-primary)] flex items-center justify-center gap-1.5"
                     >
                       Full Profile <ExternalLink size={12} />
                     </Link>
@@ -177,8 +177,8 @@ const CollabManage = () => {
                  <div className="flex-1 min-w-0">
                     <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
                        <div className="flex flex-wrap gap-2">
-                          <span className="bg-[#181D2A] border border-white/[0.06] text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-xl flex items-center gap-1.5 tracking-widest">
-                             <Clock size={12} className="text-[#5A6478]" /> Applied {new Date(proposal.createdAt).toLocaleDateString()}
+                          <span className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] text-[var(--text-primary)] text-[10px] font-black uppercase px-3 py-1.5 rounded-xl flex items-center gap-1.5 tracking-widest">
+                             <Clock size={12} className="text-[var(--text-muted)]" /> Applied {new Date(proposal.createdAt).toLocaleDateString()}
                           </span>
                           {proposal.bidAmount && (
                              <span className="bg-[#34D399]/10 border border-[#34D399]/20 text-[#34D399] text-[10px] font-black uppercase px-3 py-1.5 rounded-xl flex items-center gap-1.5 tracking-widest">
@@ -192,7 +192,7 @@ const CollabManage = () => {
                             <button 
                               onClick={() => handleUpdateStatus(proposal.id, 'SHORTLISTED')}
                               disabled={updating === proposal.id}
-                              className="flex-1 md:flex-none p-3 bg-[#181D2A] border border-white/[0.06] text-[#8B95A5] hover:border-[#7B5CFA]/50 hover:text-[#7B5CFA] rounded-xl transition-all flex items-center justify-center"
+                              className="flex-1 md:flex-none p-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:border-[#7B5CFA]/50 hover:text-[#7B5CFA] rounded-xl transition-all flex items-center justify-center"
                               title="Shortlist"
                             >
                                {updating === proposal.id ? <Loader2 size={18} className="animate-spin" /> : <Star size={18} />}
@@ -221,9 +221,9 @@ const CollabManage = () => {
                        </div>
                     </div>
 
-                    <div className="bg-[#181D2A]/50 p-6 rounded-2xl border border-white/[0.04] mb-6 shadow-inner">
-                       <p className="text-[9px] font-black uppercase text-[#5A6478] mb-3 tracking-widest">Cover Letter / Pitch</p>
-                       <p className="text-sm text-white leading-relaxed font-medium">
+                    <div className="bg-[var(--bg-surface-alt)]/50 p-6 rounded-2xl border border-[var(--border-primary)] mb-6 shadow-inner">
+                       <p className="text-[9px] font-black uppercase text-[var(--text-muted)] mb-3 tracking-widest">Cover Letter / Pitch</p>
+                       <p className="text-sm text-[var(--text-primary)] leading-relaxed font-medium">
                          {proposal.coverLetter}
                        </p>
                     </div>
@@ -232,11 +232,11 @@ const CollabManage = () => {
                     <div className="flex flex-col sm:flex-row gap-6">
                        {proposal.attachments?.length > 0 && (
                           <div className="flex-1">
-                             <p className="text-[9px] font-black uppercase text-[#5A6478] mb-3 tracking-widest">Attached Media</p>
+                             <p className="text-[9px] font-black uppercase text-[var(--text-muted)] mb-3 tracking-widest">Attached Media</p>
                              <div className="flex flex-wrap gap-2">
                                 {proposal.attachments.map(att => (
-                                  <a key={att.id} href={att.fileUrl} target="_blank" rel="noreferrer" className="bg-[#181D2A] border border-white/[0.06] px-4 py-2.5 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase text-white hover:border-[#7B5CFA]/50 transition-all">
-                                     <Paperclip size={14} className="text-[#5A6478]" /> {att.fileType || 'Document'}
+                                  <a key={att.id} href={att.fileUrl} target="_blank" rel="noreferrer" className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-4 py-2.5 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase text-[var(--text-primary)] hover:border-[#7B5CFA]/50 transition-all">
+                                     <Paperclip size={14} className="text-[var(--text-muted)]" /> {att.fileType || 'Document'}
                                   </a>
                                 ))}
                              </div>
@@ -245,11 +245,11 @@ const CollabManage = () => {
 
                        {proposal.portfolioLinks && (
                           <div className="flex-1">
-                             <p className="text-[9px] font-black uppercase text-[#5A6478] mb-3 tracking-widest">Portfolio Selection</p>
+                             <p className="text-[9px] font-black uppercase text-[var(--text-muted)] mb-3 tracking-widest">Portfolio Selection</p>
                              <div className="flex flex-wrap gap-2">
                                 {proposal.portfolioLinks.split(',').map((link, i) => (
-                                  <a key={i} href={link} target="_blank" rel="noreferrer" className="bg-[#181D2A] border border-white/[0.06] px-4 py-2.5 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase text-white hover:border-[#7B5CFA]/50 transition-all">
-                                     <ExternalLink size={14} className="text-[#5A6478]" /> View Project
+                                  <a key={i} href={link} target="_blank" rel="noreferrer" className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-4 py-2.5 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase text-[var(--text-primary)] hover:border-[#7B5CFA]/50 transition-all">
+                                     <ExternalLink size={14} className="text-[var(--text-muted)]" /> View Project
                                   </a>
                                 ))}
                              </div>
@@ -257,10 +257,10 @@ const CollabManage = () => {
                        )}
                     </div>
                     
-                    <div className="flex justify-end pt-6 mt-6 border-t border-white/[0.04]">
+                    <div className="flex justify-end pt-6 mt-6 border-t border-[var(--border-primary)]">
                        <button 
                          onClick={() => handleStartChat(proposal.creatorId)}
-                         className="flex items-center gap-2 text-[10px] font-black uppercase text-[#8B95A5] hover:text-white bg-[#181D2A] border border-white/[0.06] px-6 py-3 rounded-xl transition-all"
+                         className="flex items-center gap-2 text-[10px] font-black uppercase text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-6 py-3 rounded-xl transition-all"
                        >
                           <MessageSquare size={16} className="text-[#7B5CFA]" /> Message Candidate
                        </button>
@@ -270,12 +270,12 @@ const CollabManage = () => {
             </motion.div>
           ))
         ) : (
-          <div className="bg-[#0F131E] border border-white/[0.04] p-20 rounded-[3rem] text-center shadow-sm">
-             <div className="w-24 h-24 bg-[#181D2A] border border-white/[0.06] rounded-full flex items-center justify-center text-[#5A6478] mx-auto mb-6 shadow-inner">
+          <div className="bg-[var(--bg-base)] border border-[var(--border-primary)] p-20 rounded-[3rem] text-center shadow-sm">
+             <div className="w-24 h-24 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-full flex items-center justify-center text-[var(--text-muted)] mx-auto mb-6 shadow-inner">
                 <Users size={40} className="opacity-50" />
              </div>
-             <h3 className="text-xl font-black text-white tracking-tight">No proposals found</h3>
-             <p className="text-[#8B95A5] mt-2 font-medium">There are no {activeTab !== 'ALL' ? activeTab.toLowerCase() : ''} proposals yet.</p>
+             <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight">No proposals found</h3>
+             <p className="text-[var(--text-secondary)] mt-2 font-medium">There are no {activeTab !== 'ALL' ? activeTab.toLowerCase() : ''} proposals yet.</p>
           </div>
         )}
       </div>

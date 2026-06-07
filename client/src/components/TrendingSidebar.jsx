@@ -1,73 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Flame, UserPlus, ScanFace, Plus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Flame, UserPlus, ScanFace, Plus, Sparkles } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const TrendingSidebar = () => {
   const [creators, setCreators] = useState([]);
+  const [newCollabs, setNewCollabs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTrending = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get('/api/users/trending');
-        setCreators(res.data);
+        const [creatorsRes, collabsRes] = await Promise.all([
+          axios.get('/api/users/trending'),
+          axios.get('/api/collabs')
+        ]);
+        setCreators(creatorsRes.data);
+        const sortedCollabs = collabsRes.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setNewCollabs(sortedCollabs.slice(0, 2));
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-    fetchTrending();
+    fetchData();
   }, []);
 
   return (
     <div className="flex flex-col gap-8 pb-10">
       
-      {/* Trending Collabs */}
+      {/* New Collabs */}
       <div>
         <div className="flex items-center gap-2 mb-4 px-2">
-          <Flame size={16} className="text-[#FF5C00]" />
-          <h3 className="text-sm font-black text-white tracking-tight">Trending Collabs</h3>
+          <Sparkles size={16} className="text-[#34D399]" />
+          <h3 className="text-sm font-black text-[var(--text-primary)] tracking-tight">New Collabs</h3>
         </div>
 
-        <div className="flex flex-col gap-3">
-          {/* Collab 1 */}
-          <div className="bg-[#181D2A] p-4 rounded-2xl border border-white/5 hover:border-white/10 transition cursor-pointer">
-             <div className="flex justify-between items-center mb-1">
-               <span className="text-[10px] font-black text-[#00B5D8] tracking-widest uppercase">Audio/Visual</span>
-               <span className="text-[10px] font-bold text-[#8B95A5]">1.2k active</span>
-             </div>
-             <p className="text-sm font-bold text-white mb-4">Synthwave Revival Project</p>
-             <div className="flex items-center gap-[-8px]">
-               <img src="https://ui-avatars.com/api/?name=J&background=7B5CFA&color=fff" className="w-6 h-6 rounded-full border border-[#181D2A] z-30" alt="" />
-               <img src="https://ui-avatars.com/api/?name=A&background=EC4899&color=fff" className="w-6 h-6 rounded-full border border-[#181D2A] z-20 -ml-2" alt="" />
-               <img src="https://ui-avatars.com/api/?name=M&background=00B5D8&color=fff" className="w-6 h-6 rounded-full border border-[#181D2A] z-10 -ml-2" alt="" />
-               <div className="w-6 h-6 rounded-full border border-[#181D2A] z-0 -ml-2 bg-[#0F131E] flex items-center justify-center text-[8px] font-bold text-[#8B95A5]">+12</div>
-             </div>
+        {loading ? (
+          <div className="flex justify-center py-4">
+             <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-[#7B5CFA]"></div>
           </div>
-
-          {/* Collab 2 */}
-          <div className="bg-[#181D2A] p-4 rounded-2xl border border-white/5 hover:border-white/10 transition cursor-pointer">
-             <div className="flex justify-between items-center mb-1">
-               <span className="text-[10px] font-black text-[#EC4899] tracking-widest uppercase">Game Dev</span>
-               <span className="text-[10px] font-bold text-[#8B95A5]">850 active</span>
-             </div>
-             <p className="text-sm font-bold text-white mb-4">Indie RPG Asset Creation</p>
-             <div className="flex items-center gap-[-8px]">
-               <img src="https://ui-avatars.com/api/?name=S&background=00B5D8&color=fff" className="w-6 h-6 rounded-full border border-[#181D2A] z-20" alt="" />
-               <img src="https://ui-avatars.com/api/?name=K&background=7B5CFA&color=fff" className="w-6 h-6 rounded-full border border-[#181D2A] z-10 -ml-2" alt="" />
-               <div className="w-6 h-6 rounded-full border border-[#181D2A] z-0 -ml-2 bg-[#0F131E] flex items-center justify-center text-[8px] font-bold text-[#8B95A5]">+5</div>
-             </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {newCollabs.length > 0 ? newCollabs.map(collab => (
+              <div 
+                key={collab.id}
+                onClick={() => navigate('/collabs')}
+                className="bg-[var(--bg-surface-alt)] p-4 rounded-2xl border border-[var(--border-primary)] hover:border-[var(--border-secondary)] transition cursor-pointer"
+              >
+                 <div className="flex justify-between items-center mb-1">
+                   <span className="text-[10px] font-black text-[#7B5CFA] tracking-widest uppercase">{collab.category}</span>
+                   <span className="text-[10px] font-bold text-[var(--text-secondary)]">{collab.budget || 'Open Budget'}</span>
+                 </div>
+                 <p className="text-sm font-bold text-[var(--text-primary)] mb-4">{collab.title}</p>
+                 <div className="flex items-center gap-2">
+                   <img 
+                     src={collab.poster?.profileImage || `https://ui-avatars.com/api/?name=${collab.poster?.username}`} 
+                     className="w-6 h-6 rounded-full border border-[var(--border-primary)] z-30 bg-[var(--bg-base)] object-cover" 
+                     alt="" 
+                   />
+                   <span className="text-[10px] font-bold text-[var(--text-secondary)]">
+                     @{collab.poster?.username}
+                   </span>
+                 </div>
+              </div>
+            )) : (
+              <div className="text-center py-4 text-xs font-bold text-[var(--text-muted)]">No new collabs found.</div>
+            )}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Suggested Peers */}
       <div>
         <div className="flex items-center gap-2 mb-4 px-2">
           <ScanFace size={16} className="text-[#A37BFF]" />
-          <h3 className="text-sm font-black text-white tracking-tight">Suggested Peers</h3>
+          <h3 className="text-sm font-black text-[var(--text-primary)] tracking-tight">Suggested Peers</h3>
         </div>
 
         {loading ? (
@@ -82,14 +92,14 @@ const TrendingSidebar = () => {
                   <img 
                     src={creator.profileImage || `https://ui-avatars.com/api/?name=${creator.username}&background=random`} 
                     alt={creator.username} 
-                    className="w-9 h-9 rounded-full object-cover border border-white/10"
+                    className="w-9 h-9 rounded-full object-cover border border-[var(--border-secondary)]"
                   />
                   <div>
-                    <p className="font-bold text-white text-sm hover:underline">{creator.name || creator.username}</p>
-                    <p className="text-[11px] text-[#8B95A5] font-medium">{creator.profileType || 'Creator'}</p>
+                    <p className="font-bold text-[var(--text-primary)] text-sm hover:underline">{creator.name || creator.username}</p>
+                    <p className="text-[11px] text-[var(--text-secondary)] font-medium">{creator.profileType || 'Creator'}</p>
                   </div>
                 </Link>
-                <button className="w-7 h-7 rounded-full bg-[#181D2A] border border-white/5 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/20 transition-all shadow-sm">
+                <button className="w-7 h-7 rounded-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-primary)] hover:bg-white/10 hover:border-white/20 transition-all shadow-sm">
                   <Plus size={14} />
                 </button>
               </div>

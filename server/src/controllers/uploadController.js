@@ -2,15 +2,21 @@ const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
 
-// Configure Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(6).toString('hex');
-    const ext = path.extname(file.originalname);
-    cb(null, uniqueSuffix + ext);
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'creative-platform/media',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'mp4', 'mov', 'webp'],
+    resource_type: 'auto'
   }
 });
 
@@ -37,9 +43,8 @@ exports.uploadMedia = (req, res) => {
       return res.status(400).json({ error: 'No files uploaded' });
     }
     
-    // Return an array of URLs for the uploaded files
-    // Use http://localhost:5000/uploads/...
-    const urls = req.files.map(file => `http://localhost:5000/uploads/${file.filename}`);
+    // Return an array of Cloudinary URLs for the uploaded files
+    const urls = req.files.map(file => file.path);
     
     res.json({ urls });
   } catch (error) {

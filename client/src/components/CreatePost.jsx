@@ -116,15 +116,15 @@ const CreatePost = ({ onPostCreated, mobile }) => {
 
   return (
     <>
-    <div className="bg-[#181D2A] rounded-2xl border border-white/5 mb-8 overflow-hidden">
+    <div className="bg-[var(--bg-surface-alt)] rounded-2xl border border-[var(--border-primary)] mb-8 overflow-hidden">
       <div className="p-4 sm:p-5">
         <div className="flex items-center gap-3 mb-4">
           <img 
             src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=7B5CFA&color=fff`} 
-            className="w-10 h-10 rounded-full border border-white/5 object-cover" 
+            className="w-10 h-10 rounded-full border border-[var(--border-primary)] object-cover" 
             alt="" 
           />
-          <h3 className="font-bold text-white tracking-tight">Share something cool</h3>
+          <h3 className="font-bold text-[var(--text-primary)] tracking-tight">Share something cool</h3>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -136,7 +136,7 @@ const CreatePost = ({ onPostCreated, mobile }) => {
               activeTab === 'EVENT' ? "Describe your event... (Agenda, Speakers, Requirements)" :
               "Drop a caption for your media..."
             }
-            className="w-full bg-transparent resize-none outline-none text-white placeholder-[#8B95A5] min-h-[60px]"
+            className="w-full bg-transparent resize-none outline-none text-[var(--text-primary)] placeholder-[#8B95A5] min-h-[60px]"
           />
 
           {activeTab === 'MEDIA' && (
@@ -148,17 +148,17 @@ const CreatePost = ({ onPostCreated, mobile }) => {
                 className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
                   isDragging 
                     ? 'border-[#7B5CFA] bg-[#7B5CFA]/10' 
-                    : 'border-white/10 hover:border-[#7B5CFA]/50 bg-[#0F131E]'
+                    : 'border-[var(--border-secondary)] hover:border-[#7B5CFA]/50 bg-[var(--bg-base)]'
                 }`}
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
-                  <Image className={`w-8 h-8 mb-3 ${isDragging ? 'text-[#7B5CFA]' : 'text-[#8B95A5]'}`} />
-                  <p className={`mb-2 text-sm ${isDragging ? 'text-[#7B5CFA]' : 'text-[#8B95A5]'}`}>
+                  <Image className={`w-8 h-8 mb-3 ${isDragging ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`} />
+                  <p className={`mb-2 text-sm ${isDragging ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`}>
                     <span className="font-bold text-[#7B5CFA]">
                       {mobile ? 'Upload Media' : "Drop it like it's hot!"}
                     </span>
                   </p>
-                  <p className="text-xs text-[#8B95A5] text-center px-4">
+                  <p className="text-xs text-[var(--text-secondary)] text-center px-4">
                     {mobile ? 'Tap to select photos or videos' : 'Or click to select Images/Videos'}
                   </p>
                 </div>
@@ -170,42 +170,42 @@ const CreatePost = ({ onPostCreated, mobile }) => {
           {activeTab === 'EVENT' && (
              <div className="mb-4 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2 bg-[#0F131E] border border-white/5 rounded-xl px-3 py-2">
-                    <Calendar size={16} className="text-[#8B95A5]" />
+                  <div className="flex items-center gap-2 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl px-3 py-2">
+                    <Calendar size={16} className="text-[var(--text-secondary)]" />
                     <input 
                       type="date" 
                       value={eventDate}
                       onChange={(e) => setEventDate(e.target.value)}
-                      className="bg-transparent border-none outline-none text-sm w-full text-white"
+                      className="bg-transparent border-none outline-none text-sm w-full text-[var(--text-primary)]"
                       style={{ colorScheme: 'dark' }}
                     />
                   </div>
-                  <div className="flex items-center gap-2 bg-[#0F131E] border border-white/5 rounded-xl px-3 py-2">
-                    <Clock size={16} className="text-[#8B95A5]" />
+                  <div className="flex items-center gap-2 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl px-3 py-2">
+                    <Clock size={16} className="text-[var(--text-secondary)]" />
                     <input 
                       type="time" 
                       value={eventTime}
                       onChange={(e) => setEventTime(e.target.value)}
-                      className="bg-transparent border-none outline-none text-sm w-full text-white"
+                      className="bg-transparent border-none outline-none text-sm w-full text-[var(--text-primary)]"
                       style={{ colorScheme: 'dark' }}
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 bg-[#0F131E] border border-white/5 rounded-xl px-3 py-2">
-                  <MapPin size={16} className="text-[#8B95A5]" />
+                <div className="flex items-center gap-2 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl px-3 py-2">
+                  <MapPin size={16} className="text-[var(--text-secondary)]" />
                   <input 
                     type="text" 
                     value={eventLocation}
                     onChange={(e) => setEventLocation(e.target.value)}
                     placeholder="Event Location (e.g. Lagos, Zoom, etc.)"
-                    className="bg-transparent border-none outline-none text-sm w-full text-white placeholder-[#8B95A5]"
+                    className="bg-transparent border-none outline-none text-sm w-full text-[var(--text-primary)] placeholder-[#8B95A5]"
                   />
                 </div>
 
-                <div className="flex items-center gap-2 bg-[#0F131E] border border-white/5 rounded-xl px-3 py-2 cursor-pointer hover:border-[#7B5CFA]/50 relative">
-                  <Image size={16} className="text-[#8B95A5]" />
-                  <span className="text-sm text-[#8B95A5]">{mediaFiles.length > 0 ? `${mediaFiles.length} file(s) selected` : 'Upload Event Flyer Image/Video (Optional)'}</span>
+                <div className="flex items-center gap-2 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl px-3 py-2 cursor-pointer hover:border-[#7B5CFA]/50 relative">
+                  <Image size={16} className="text-[var(--text-secondary)]" />
+                  <span className="text-sm text-[var(--text-secondary)]">{mediaFiles.length > 0 ? `${mediaFiles.length} file(s) selected` : 'Upload Event Flyer Image/Video (Optional)'}</span>
                   <input 
                     type="file" 
                     multiple
@@ -215,16 +215,16 @@ const CreatePost = ({ onPostCreated, mobile }) => {
                   />
                 </div>
 
-                <div className="flex items-center gap-2 bg-[#0F131E] border border-white/5 rounded-xl px-3 py-2">
-                  <Users size={16} className="text-[#8B95A5]" />
+                <div className="flex items-center gap-2 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl px-3 py-2">
+                  <Users size={16} className="text-[var(--text-secondary)]" />
                   <select 
                     value={inviteTarget}
                     onChange={(e) => setInviteTarget(e.target.value)}
-                    className="bg-transparent border-none outline-none text-sm w-full text-white font-medium"
+                    className="bg-transparent border-none outline-none text-sm w-full text-[var(--text-primary)] font-medium"
                   >
-                    <option value="NONE" className="bg-[#181D2A]">No Special Invitations</option>
-                    <option value="ALL_NETWORK" className="bg-[#181D2A]">Invite Entire Network</option>
-                    <option value="SELECTED" className="bg-[#181D2A]">Invite Select Connections</option>
+                    <option value="NONE" className="bg-[var(--bg-surface-alt)]">No Special Invitations</option>
+                    <option value="ALL_NETWORK" className="bg-[var(--bg-surface-alt)]">Invite Entire Network</option>
+                    <option value="SELECTED" className="bg-[var(--bg-surface-alt)]">Invite Select Connections</option>
                   </select>
                 </div>
                 
@@ -242,9 +242,9 @@ const CreatePost = ({ onPostCreated, mobile }) => {
               {previewUrls.map((url, idx) => (
                 <div key={idx} className="relative flex-shrink-0 snap-start">
                   {mediaFiles[idx]?.type.startsWith('video/') ? (
-                    <video src={url} className="w-24 h-24 object-cover rounded-xl border border-white/5" muted />
+                    <video src={url} className="w-24 h-24 object-cover rounded-xl border border-[var(--border-primary)]" muted />
                   ) : (
-                    <img src={url} className="w-24 h-24 object-cover rounded-xl border border-white/5" alt="Preview" />
+                    <img src={url} className="w-24 h-24 object-cover rounded-xl border border-[var(--border-primary)]" alt="Preview" />
                   )}
                   <button 
                     type="button" 
@@ -258,7 +258,7 @@ const CreatePost = ({ onPostCreated, mobile }) => {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t border-white/5 gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t border-[var(--border-primary)] gap-4">
             <div className="flex gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto">
               <button
                 type="button"
@@ -266,7 +266,7 @@ const CreatePost = ({ onPostCreated, mobile }) => {
                 className={`p-2 rounded-full transition-colors flex items-center gap-2 px-4 text-xs font-bold whitespace-nowrap ${
                   activeTab === 'UPDATE' 
                     ? 'bg-[#7B5CFA]/10 text-[#7B5CFA]' 
-                    : 'text-[#8B95A5] hover:text-white hover:bg-white/5'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5'
                 }`}
               >
                 <FileText size={16} /> <span>Update</span>
@@ -277,7 +277,7 @@ const CreatePost = ({ onPostCreated, mobile }) => {
                 className={`p-2 rounded-full transition-colors flex items-center gap-2 px-4 text-xs font-bold whitespace-nowrap ${
                   activeTab === 'MEDIA' 
                     ? 'bg-[#7B5CFA]/10 text-[#7B5CFA]' 
-                    : 'text-[#8B95A5] hover:text-white hover:bg-white/5'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5'
                 }`}
               >
                 <Image size={16} /> <span>Media</span>
@@ -288,7 +288,7 @@ const CreatePost = ({ onPostCreated, mobile }) => {
                 className={`p-2 rounded-full transition-colors flex items-center gap-2 px-4 text-xs font-bold whitespace-nowrap ${
                   activeTab === 'EVENT' 
                     ? 'bg-[#7B5CFA]/10 text-[#7B5CFA]' 
-                    : 'text-[#8B95A5] hover:text-white hover:bg-white/5'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5'
                 }`}
               >
                 <Calendar size={16} /> <span>Event</span>

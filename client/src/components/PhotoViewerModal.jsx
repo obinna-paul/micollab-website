@@ -18,14 +18,14 @@ const PhotoViewerModal = ({ isOpen, onClose, photoUrl, title }) => {
       {/* Controls */}
       <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-10">
         <div className="flex flex-col">
-          <h3 className="text-white font-black text-lg tracking-tight">{title}</h3>
-          <p className="text-white/50 text-[10px] font-black uppercase tracking-widest">Full Resolution View</p>
+          <h3 className="text-[var(--text-primary)] font-black text-lg tracking-tight">{title}</h3>
+          <p className="text-[var(--text-primary)]/50 text-[10px] font-black uppercase tracking-widest">Full Resolution View</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl transition backdrop-blur-md">
+          <button className="p-3 bg-white/10 hover:bg-white/20 text-[var(--text-primary)] rounded-2xl transition backdrop-blur-md">
             <Download size={20} />
           </button>
-          <button className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl transition backdrop-blur-md">
+          <button className="p-3 bg-white/10 hover:bg-white/20 text-[var(--text-primary)] rounded-2xl transition backdrop-blur-md">
             <Share2 size={20} />
           </button>
           <button 
@@ -42,7 +42,7 @@ const PhotoViewerModal = ({ isOpen, onClose, photoUrl, title }) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="relative max-w-[90vw] max-h-[80vh] rounded-3xl overflow-hidden shadow-2xl border border-white/10 z-10"
+        className="relative max-w-[90vw] max-h-[80vh] rounded-3xl overflow-hidden shadow-2xl border border-[var(--border-secondary)] z-10"
       >
         <img 
           src={photoUrl} 

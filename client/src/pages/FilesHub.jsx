@@ -329,20 +329,20 @@ const FilesHub = ({ circleIdScope = null }) => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex bg-[#181D2A]/50">
+    <div className="min-h-[calc(100vh-64px)] flex bg-[var(--bg-surface-alt)]/50">
       
       {/* ── SIDEBAR SECTIONS PANEL ── */}
-      <div className="w-64 border-r border-[#0F131E]/5 bg-[#0F131E] flex flex-col p-4 space-y-6">
+      <div className="w-64 border-r border-[#0F131E]/5 bg-[var(--bg-base)] flex flex-col p-4 space-y-6">
         
         {/* Circle Selector */}
         {!circleIdScope && (
           <div className="relative">
             <button
               onClick={() => setIsCircleSelectorOpen(!isCircleSelectorOpen)}
-              className="w-full bg-[#181D2A] border border-[#0F131E]/5 hover:border-[#7B5CFA] rounded-xl px-4 py-3 text-left font-black text-xs text-white flex items-center justify-between transition"
+              className="w-full bg-[var(--bg-surface-alt)] border border-[#0F131E]/5 hover:border-[#7B5CFA] rounded-xl px-4 py-3 text-left font-black text-xs text-[var(--text-primary)] flex items-center justify-between transition"
             >
               <span className="truncate uppercase tracking-wider">{activeCircleName}</span>
-              <ChevronDown size={14} className="text-[#8B95A5]" />
+              <ChevronDown size={14} className="text-[var(--text-secondary)]" />
             </button>
             
             <AnimatePresence>
@@ -353,7 +353,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute left-0 right-0 mt-2 bg-[#0F131E] border border-[#0F131E]/5 shadow-xl rounded-xl p-1.5 z-20 space-y-1 max-h-48 overflow-y-auto no-scrollbar"
+                    className="absolute left-0 right-0 mt-2 bg-[var(--bg-base)] border border-[#0F131E]/5 shadow-xl rounded-xl p-1.5 z-20 space-y-1 max-h-48 overflow-y-auto no-scrollbar"
                   >
                     {circles.map(c => (
                       <button
@@ -363,7 +363,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                           setIsCircleSelectorOpen(false);
                         }}
                         className={`w-full text-left px-3 py-2 text-xs font-bold rounded-lg transition ${
-                          c.id === selectedCircleId ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]' : 'text-[#8B95A5] hover:bg-[#181D2A]'
+                          c.id === selectedCircleId ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-alt)]'
                         }`}
                       >
                         {c.title}
@@ -392,7 +392,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider transition ${
                   sidebarTab === tab.id
                     ? 'bg-[#7B5CFA]/5 text-[#7B5CFA] border-l-4 border-[#7B5CFA]'
-                    : 'text-[#8B95A5] hover:bg-[#181D2A]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-alt)]'
                 }`}
               >
                 <Icon size={16} />
@@ -410,7 +410,7 @@ const FilesHub = ({ circleIdScope = null }) => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-[#0F131E]/5 pb-4">
           
           {/* Breadcrumb Trail */}
-          <div className="flex items-center gap-1.5 text-xs text-[#8B95A5] flex-wrap">
+          <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] flex-wrap">
             <button
               onClick={() => setCurrentFolderId(null)}
               className="hover:text-[#7B5CFA] font-black uppercase tracking-wider text-[10px]"
@@ -436,7 +436,7 @@ const FilesHub = ({ circleIdScope = null }) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsNewFolderModalOpen(true)}
-                className="flex items-center gap-1.5 border border-[#0F131E]/5 hover:border-[#7B5CFA] px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition bg-[#0F131E]"
+                className="flex items-center gap-1.5 border border-[#0F131E]/5 hover:border-[#7B5CFA] px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-[var(--text-primary)] transition bg-[var(--bg-base)]"
               >
                 <Plus size={14} /> New Folder
               </button>
@@ -464,7 +464,7 @@ const FilesHub = ({ circleIdScope = null }) => {
             {sidebarTab === 'EXPLORER' && (
               <>
                 {/* Categories Tabs Filter */}
-                <div className="flex border-b border-[#0F131E]/5 p-0.5 max-w-lg bg-[#0F131E] rounded-xl border">
+                <div className="flex border-b border-[#0F131E]/5 p-0.5 max-w-lg bg-[var(--bg-base)] rounded-xl border">
                   {[
                     { id: 'ALL', label: 'All Files' },
                     { id: 'IMAGE', label: 'Images' },
@@ -479,7 +479,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                       className={`flex-1 py-1.5 text-center rounded-lg text-[9px] font-black uppercase tracking-wider transition ${
                         categoryFilter === tab.id
                           ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]'
-                          : 'text-[#8B95A5] hover:text-white'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                       }`}
                     >
                       {tab.label}
@@ -490,7 +490,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                 {/* Subheader: Folder layout */}
                 {currentFolders.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="text-[9px] font-black text-[#8B95A5] uppercase tracking-widest flex items-center gap-1">
+                    <h4 className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest flex items-center gap-1">
                       <Folder size={10} /> Directories Tree
                     </h4>
                     
@@ -501,7 +501,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                           onDragOver={(e) => handleDragOver(e, folder.id)}
                           onDragLeave={handleDragLeave}
                           onDrop={(e) => handleDrop(e, folder.id)}
-                          className={`relative border rounded-2xl p-4 bg-[#0F131E] hover:shadow-md cursor-pointer transition flex items-center justify-between group ${
+                          className={`relative border rounded-2xl p-4 bg-[var(--bg-base)] hover:shadow-md cursor-pointer transition flex items-center justify-between group ${
                             dragOverFolderId === folder.id ? 'border-[#7B5CFA] bg-[#7B5CFA]/5 ring-4 ring-primary/10' : 'border-[#0F131E]/5'
                           }`}
                           onClick={() => setCurrentFolderId(folder.id)}
@@ -514,8 +514,8 @@ const FilesHub = ({ circleIdScope = null }) => {
                               <Folder size={20} />
                             </div>
                             <div>
-                              <p className="font-black text-white text-xs leading-tight">{folder.name}</p>
-                              <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest mt-0.5">Dir Scope</p>
+                              <p className="font-black text-[var(--text-primary)] text-xs leading-tight">{folder.name}</p>
+                              <p className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest mt-0.5">Dir Scope</p>
                             </div>
                           </div>
 
@@ -538,21 +538,21 @@ const FilesHub = ({ circleIdScope = null }) => {
                 {/* Subheader: Active Files Explorer */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-[9px] font-black text-[#8B95A5] uppercase tracking-widest flex items-center gap-1">
+                    <h4 className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest flex items-center gap-1">
                       <FileText size={10} /> Deliverables Explorer
                     </h4>
                     
                     {/* Grid/List View Toggles */}
-                    <div className="flex border border-[#0F131E]/5 bg-[#0F131E] rounded-lg p-0.5 gap-0.5">
+                    <div className="flex border border-[#0F131E]/5 bg-[var(--bg-base)] rounded-lg p-0.5 gap-0.5">
                       <button
                         onClick={() => setViewMode('GRID')}
-                        className={`p-1 rounded ${viewMode === 'GRID' ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}
+                        className={`p-1 rounded ${viewMode === 'GRID' ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]' : 'text-[var(--text-secondary)] hover:text-white'}`}
                       >
                         <Grid size={14} />
                       </button>
                       <button
                         onClick={() => setViewMode('LIST')}
-                        className={`p-1 rounded ${viewMode === 'LIST' ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]' : 'text-[#8B95A5] hover:text-white'}`}
+                        className={`p-1 rounded ${viewMode === 'LIST' ? 'bg-[#7B5CFA]/5 text-[#7B5CFA]' : 'text-[var(--text-secondary)] hover:text-white'}`}
                       >
                         <List size={14} />
                       </button>
@@ -571,7 +571,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                             setSelectedFile(file);
                             setIsDetailDrawerOpen(true);
                           }}
-                          className="border border-[#0F131E]/5 rounded-2xl p-4 bg-[#0F131E] hover:shadow-md cursor-pointer transition flex flex-col justify-between aspect-square group relative"
+                          className="border border-[#0F131E]/5 rounded-2xl p-4 bg-[var(--bg-base)] hover:shadow-md cursor-pointer transition flex flex-col justify-between aspect-square group relative"
                         >
                           {/* File extension colored icon */}
                           <div className="flex justify-between items-start">
@@ -593,9 +593,9 @@ const FilesHub = ({ circleIdScope = null }) => {
 
                           {/* File Details name / size */}
                           <div className="mt-4">
-                            <h5 className="font-black text-white text-xs leading-snug break-all line-clamp-2">{file.originalName}</h5>
+                            <h5 className="font-black text-[var(--text-primary)] text-xs leading-snug break-all line-clamp-2">{file.originalName}</h5>
                             <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#0F131E]/5/50">
-                              <span className="text-[9px] font-bold text-[#8B95A5]">{formatSize(file.size)}</span>
+                              <span className="text-[9px] font-bold text-[var(--text-secondary)]">{formatSize(file.size)}</span>
                               <span className="text-[8px] font-black text-[#7B5CFA] uppercase tracking-wider bg-[#7B5CFA]/5 px-2 py-0.5 rounded">v{file.version}</span>
                             </div>
                           </div>
@@ -604,18 +604,18 @@ const FilesHub = ({ circleIdScope = null }) => {
 
                       {viewableFiles.length === 0 && (
                         <div className="col-span-full border-2 border-dashed border-[#0F131E]/5 rounded-2xl py-12 text-center">
-                          <FolderOpen className="text-[#8B95A5] mx-auto opacity-50 mb-3" size={32} />
-                          <p className="text-xs font-black text-white uppercase tracking-wider">Directory is Empty</p>
-                          <p className="text-[10px] text-[#8B95A5] mt-1">Upload files or drag deliverables here.</p>
+                          <FolderOpen className="text-[var(--text-secondary)] mx-auto opacity-50 mb-3" size={32} />
+                          <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-wider">Directory is Empty</p>
+                          <p className="text-[10px] text-[var(--text-secondary)] mt-1">Upload files or drag deliverables here.</p>
                         </div>
                       )}
                     </div>
                   ) : (
                     /* List Layout View Table */
-                    <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 rounded-2xl overflow-hidden shadow-sm">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="border-b border-[#0F131E]/5 bg-[#181D2A]/50 text-[8px] font-black text-[#8B95A5] uppercase tracking-widest">
+                          <tr className="border-b border-[#0F131E]/5 bg-[var(--bg-surface-alt)]/50 text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest">
                             <th className="p-4">Name</th>
                             <th className="p-4">Size</th>
                             <th className="p-4">Type</th>
@@ -635,7 +635,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                                 setSelectedFile(file);
                                 setIsDetailDrawerOpen(true);
                               }}
-                              className="hover:bg-[#181D2A]/50 cursor-pointer transition text-xs font-medium text-white"
+                              className="hover:bg-[var(--bg-surface-alt)]/50 cursor-pointer transition text-xs font-medium text-[var(--text-primary)]"
                             >
                               <td className="p-4 flex items-center gap-3">
                                 <div className={`p-2 rounded-lg ${getFileIconColor(file.type, file.originalName)}`}>
@@ -643,15 +643,15 @@ const FilesHub = ({ circleIdScope = null }) => {
                                 </div>
                                 <span className="font-bold break-all max-w-xs">{file.originalName}</span>
                               </td>
-                              <td className="p-4 text-[#8B95A5] font-bold">{formatSize(file.size)}</td>
-                              <td className="p-4 text-[#8B95A5] truncate max-w-[100px]">{file.type}</td>
+                              <td className="p-4 text-[var(--text-secondary)] font-bold">{formatSize(file.size)}</td>
+                              <td className="p-4 text-[var(--text-secondary)] truncate max-w-[100px]">{file.type}</td>
                               <td className="p-4 font-bold text-[#7B5CFA]">@{file.uploader?.username || 'member'}</td>
                               <td className="p-4"><span className="text-[9px] font-black bg-[#7B5CFA]/5 px-2 py-0.5 rounded text-[#7B5CFA] border border-[#7B5CFA]/10">v{file.version}</span></td>
                               <td className="p-4">
                                 {file.sourceTaskId ? (
                                   <span className="bg-indigo-50 border border-indigo-100 text-indigo-700 text-[8px] font-black px-2 py-0.5 rounded uppercase">{file.sourceTaskId}</span>
                                 ) : (
-                                  <span className="text-[#8B95A5] opacity-60 text-[9px] font-bold">—</span>
+                                  <span className="text-[var(--text-secondary)] opacity-60 text-[9px] font-bold">—</span>
                                 )}
                               </td>
                               <td className="p-4 text-right">
@@ -671,8 +671,8 @@ const FilesHub = ({ circleIdScope = null }) => {
                           {viewableFiles.length === 0 && (
                             <tr>
                               <td colSpan="7" className="p-12 text-center">
-                                <FolderOpen className="text-[#8B95A5] mx-auto opacity-50 mb-3" size={32} />
-                                <p className="text-xs font-black text-white uppercase tracking-wider">No files explorer match</p>
+                                <FolderOpen className="text-[var(--text-secondary)] mx-auto opacity-50 mb-3" size={32} />
+                                <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-wider">No files explorer match</p>
                               </td>
                             </tr>
                           )}
@@ -705,18 +705,18 @@ const FilesHub = ({ circleIdScope = null }) => {
                         setSelectedFile(file);
                         setIsDetailDrawerOpen(true);
                       }}
-                      className="border border-[#0F131E]/5 rounded-2xl p-4 bg-[#0F131E] hover:shadow-md cursor-pointer transition flex flex-col justify-between aspect-square group"
+                      className="border border-[#0F131E]/5 rounded-2xl p-4 bg-[var(--bg-base)] hover:shadow-md cursor-pointer transition flex flex-col justify-between aspect-square group"
                     >
                       <div className={`p-3 rounded-xl self-start ${getFileIconColor(file.type, file.originalName)}`}>
                         {renderFileIcon(file.type, file.originalName, 22)}
                       </div>
                       
                       <div className="mt-4">
-                        <h5 className="font-black text-white text-xs leading-snug break-all line-clamp-2">{file.originalName}</h5>
-                        <p className="text-[9px] font-bold text-[#8B95A5] mt-1">From @{file.uploader?.username || 'member'}</p>
+                        <h5 className="font-black text-[var(--text-primary)] text-xs leading-snug break-all line-clamp-2">{file.originalName}</h5>
+                        <p className="text-[9px] font-bold text-[var(--text-secondary)] mt-1">From @{file.uploader?.username || 'member'}</p>
                         
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#0F131E]/5/50">
-                          <span className="text-[9px] font-bold text-[#8B95A5]">{formatSize(file.size)}</span>
+                          <span className="text-[9px] font-bold text-[var(--text-secondary)]">{formatSize(file.size)}</span>
                           <span className="text-[8px] font-black text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">v{file.version}</span>
                         </div>
                       </div>
@@ -724,10 +724,10 @@ const FilesHub = ({ circleIdScope = null }) => {
                   ))}
 
                   {viewableFiles.length === 0 && (
-                    <div className="col-span-full border-2 border-dashed border-[#0F131E]/5 rounded-2xl py-12 text-center bg-[#0F131E]">
-                      <Users className="text-[#8B95A5] mx-auto opacity-50 mb-3" size={32} />
-                      <p className="text-xs font-black text-white uppercase tracking-wider">No files shared yet</p>
-                      <p className="text-[10px] text-[#8B95A5] mt-1">Files shared by team members will appear here.</p>
+                    <div className="col-span-full border-2 border-dashed border-[#0F131E]/5 rounded-2xl py-12 text-center bg-[var(--bg-base)]">
+                      <Users className="text-[var(--text-secondary)] mx-auto opacity-50 mb-3" size={32} />
+                      <p className="text-xs font-black text-[var(--text-primary)] uppercase tracking-wider">No files shared yet</p>
+                      <p className="text-[10px] text-[var(--text-secondary)] mt-1">Files shared by team members will appear here.</p>
                     </div>
                   )}
                 </div>
@@ -747,10 +747,10 @@ const FilesHub = ({ circleIdScope = null }) => {
                   </div>
                 </div>
 
-                <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-2xl overflow-hidden shadow-sm">
+                <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 rounded-2xl overflow-hidden shadow-sm">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-[#0F131E]/5 bg-[#181D2A]/50 text-[8px] font-black text-[#8B95A5] uppercase tracking-widest">
+                      <tr className="border-b border-[#0F131E]/5 bg-[var(--bg-surface-alt)]/50 text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest">
                         <th className="p-4">Asset</th>
                         <th className="p-4">Size</th>
                         <th className="p-4">Deleted Date</th>
@@ -759,15 +759,15 @@ const FilesHub = ({ circleIdScope = null }) => {
                     </thead>
                     <tbody className="divide-y divide-divider">
                       {viewableFiles.map(file => (
-                        <tr key={file.id} className="text-xs font-medium text-white">
+                        <tr key={file.id} className="text-xs font-medium text-[var(--text-primary)]">
                           <td className="p-4 flex items-center gap-3">
                             <div className={`p-2 rounded-lg ${getFileIconColor(file.type, file.originalName)}`}>
                               {renderFileIcon(file.type, file.originalName, 14)}
                             </div>
                             <span className="font-bold break-all">{file.originalName}</span>
                           </td>
-                          <td className="p-4 text-[#8B95A5] font-bold">{formatSize(file.size)}</td>
-                          <td className="p-4 text-[#8B95A5]">
+                          <td className="p-4 text-[var(--text-secondary)] font-bold">{formatSize(file.size)}</td>
+                          <td className="p-4 text-[var(--text-secondary)]">
                             {file.deletedAt ? new Date(file.deletedAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recently'}
                           </td>
                           <td className="p-4 text-right flex justify-end gap-2">
@@ -789,7 +789,7 @@ const FilesHub = ({ circleIdScope = null }) => {
 
                       {viewableFiles.length === 0 && (
                         <tr>
-                          <td colSpan="4" className="p-12 text-center text-[#8B95A5] text-xs font-bold uppercase tracking-wider">
+                          <td colSpan="4" className="p-12 text-center text-[var(--text-secondary)] text-xs font-bold uppercase tracking-wider">
                             Recycling bin is completely clean!
                           </td>
                         </tr>
@@ -811,11 +811,11 @@ const FilesHub = ({ circleIdScope = null }) => {
                 ) : (
                   <>
                     {/* Storage progress details */}
-                    <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-3xl p-6 shadow-sm space-y-4 max-w-4xl">
+                    <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 rounded-3xl p-6 shadow-sm space-y-4 max-w-4xl">
                       <div className="flex justify-between items-center text-xs">
                         <div>
-                          <p className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest">Workspace Storage Usage</p>
-                          <p className="font-black text-white text-lg mt-1">{formatSize(storageStats.totalUsed)} used <span className="text-[#8B95A5] text-xs font-normal">of {formatSize(storageStats.limit)}</span></p>
+                          <p className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Workspace Storage Usage</p>
+                          <p className="font-black text-[var(--text-primary)] text-lg mt-1">{formatSize(storageStats.totalUsed)} used <span className="text-[var(--text-secondary)] text-xs font-normal">of {formatSize(storageStats.limit)}</span></p>
                         </div>
                         <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 shadow-sm">
                           {((storageStats.totalUsed / storageStats.limit) * 100).toFixed(1)}% Capacity
@@ -832,7 +832,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                       </div>
 
                       {/* Colors Legend checklist */}
-                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2 text-[10px] font-bold text-[#8B95A5]">
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2 text-[10px] font-bold text-[var(--text-secondary)]">
                         <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-rose-500 flex-shrink-0" /> Images ({formatSize(storageStats.fileTypeStats.images)})</div>
                         <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-purple-500 flex-shrink-0" /> Videos ({formatSize(storageStats.fileTypeStats.video)})</div>
                         <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-emerald-500 flex-shrink-0" /> Audio ({formatSize(storageStats.fileTypeStats.audio)})</div>
@@ -843,32 +843,32 @@ const FilesHub = ({ circleIdScope = null }) => {
 
                     {/* Stat Cards Breakdown Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl">
-                      <div className="bg-[#0F131E] border border-[#0F131E]/5 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                      <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                         <div>
-                          <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest">Active Public Links</p>
-                          <p className="font-black text-white text-xl mt-1">{storageStats.activePublicLinksCount}</p>
+                          <p className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Active Public Links</p>
+                          <p className="font-black text-[var(--text-primary)] text-xl mt-1">{storageStats.activePublicLinksCount}</p>
                         </div>
                         <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600"><Link2 size={18} /></div>
                       </div>
-                      <div className="bg-[#0F131E] border border-[#0F131E]/5 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                      <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                         <div>
-                          <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest">Private Unshared Assets</p>
-                          <p className="font-black text-white text-xl mt-1">{storageStats.unsharedFilesCount}</p>
+                          <p className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Private Unshared Assets</p>
+                          <p className="font-black text-[var(--text-primary)] text-xl mt-1">{storageStats.unsharedFilesCount}</p>
                         </div>
                         <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl text-amber-600"><Lock size={18} /></div>
                       </div>
-                      <div className="bg-[#0F131E] border border-[#0F131E]/5 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                      <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                         <div>
-                          <p className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest">Trashed Recovery Assets</p>
-                          <p className="font-black text-white text-xl mt-1">{storageStats.trashedCount}</p>
+                          <p className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Trashed Recovery Assets</p>
+                          <p className="font-black text-[var(--text-primary)] text-xl mt-1">{storageStats.trashedCount}</p>
                         </div>
                         <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-600"><Trash2 size={18} /></div>
                       </div>
                     </div>
 
                     {/* Largest Files Table List */}
-                    <div className="bg-[#0F131E] border border-[#0F131E]/5 rounded-2xl shadow-sm overflow-hidden max-w-4xl space-y-4 p-5">
-                      <h4 className="text-[9px] font-black text-[#8B95A5] uppercase tracking-widest flex items-center gap-1.5"><Sparkles size={10} /> Top Largest Creative Assets</h4>
+                    <div className="bg-[var(--bg-base)] border border-[#0F131E]/5 rounded-2xl shadow-sm overflow-hidden max-w-4xl space-y-4 p-5">
+                      <h4 className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest flex items-center gap-1.5"><Sparkles size={10} /> Top Largest Creative Assets</h4>
                       
                       <div className="divide-y divide-divider">
                         {storageStats.largestFiles.map((file, idx) => (
@@ -882,13 +882,13 @@ const FilesHub = ({ circleIdScope = null }) => {
                                 setIsDetailDrawerOpen(true);
                               }
                             }}
-                            className="py-3 flex items-center justify-between hover:bg-[#181D2A]/50 cursor-pointer transition text-xs font-bold"
+                            className="py-3 flex items-center justify-between hover:bg-[var(--bg-surface-alt)]/50 cursor-pointer transition text-xs font-bold"
                           >
                             <div className="flex items-center gap-3">
-                              <span className="text-[10px] font-black text-[#8B95A5] bg-white/5 px-2 py-0.5 rounded">#{idx + 1}</span>
-                              <span className="text-white break-all truncate max-w-xs">{file.name}</span>
+                              <span className="text-[10px] font-black text-[var(--text-secondary)] bg-white/5 px-2 py-0.5 rounded">#{idx + 1}</span>
+                              <span className="text-[var(--text-primary)] break-all truncate max-w-xs">{file.name}</span>
                             </div>
-                            <span className="text-[#8B95A5] font-bold">{formatSize(file.size)}</span>
+                            <span className="text-[var(--text-secondary)] font-bold">{formatSize(file.size)}</span>
                           </div>
                         ))}
                       </div>
@@ -918,28 +918,28 @@ const FilesHub = ({ circleIdScope = null }) => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md bg-[#0F131E] border border-[#0F131E]/5 p-6 rounded-3xl shadow-2xl space-y-5 z-10"
+              className="relative w-full max-w-md bg-[var(--bg-base)] border border-[#0F131E]/5 p-6 rounded-3xl shadow-2xl space-y-5 z-10"
             >
               <div className="text-center">
-                <h3 className="font-black text-white text-sm uppercase tracking-wider">Initialize Folder Directory</h3>
-                <p className="text-[10px] text-[#8B95A5] mt-1">Configure nested folders for team-sync deliverables.</p>
+                <h3 className="font-black text-[var(--text-primary)] text-sm uppercase tracking-wider">Initialize Folder Directory</h3>
+                <p className="text-[10px] text-[var(--text-secondary)] mt-1">Configure nested folders for team-sync deliverables.</p>
               </div>
 
               <form onSubmit={handleCreateFolder} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest">Directory Name</label>
+                  <label className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Directory Name</label>
                   <input
                     type="text"
                     required
                     value={newFolderName}
                     onChange={e => setNewFolderName(e.target.value)}
                     placeholder="E.g. Logo Deliverables..."
-                    className="w-full bg-[#181D2A] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#7B5CFA] transition"
+                    className="w-full bg-[var(--bg-surface-alt)] border border-[#0F131E]/5 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#7B5CFA] transition"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[8px] font-black text-[#8B95A5] uppercase tracking-widest block mb-1">Color Palette Accent</label>
+                  <label className="text-[8px] font-black text-[var(--text-secondary)] uppercase tracking-widest block mb-1">Color Palette Accent</label>
                   <div className="flex gap-2.5">
                     {['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'].map(color => (
                       <button

@@ -317,7 +317,7 @@ const CircleWorkspace = () => {
     return (
       <div className="flex flex-col items-center justify-center h-[80vh] gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#7B5CFA]" />
-        <p className="text-[#8B95A5] text-sm font-medium">Powering up workspace...</p>
+        <p className="text-[var(--text-secondary)] text-sm font-medium">Powering up workspace...</p>
       </div>
     );
   }
@@ -328,39 +328,39 @@ const CircleWorkspace = () => {
 
   const OverviewPanel = () => (
     <div className="space-y-6 pb-12">
-      <div className="bg-[#181D2A] rounded-2xl p-7 border border-white/[0.04]">
+      <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-7 border border-[var(--border-primary)]">
         <div className="flex items-center gap-2 text-[#7B5CFA] text-[10px] font-bold uppercase tracking-widest mb-4">
           <Target size={13} /> Project Vision
         </div>
-        <h2 className="text-2xl font-black text-white tracking-tight mb-3">{circle.title}</h2>
-        <p className="text-[13px] text-[#8B95A5] leading-relaxed">
+        <h2 className="text-2xl font-black text-[var(--text-primary)] tracking-tight mb-3">{circle.title}</h2>
+        <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
           {circle.description || "Establish a clear vision for this collaboration by adding a project description."}
         </p>
         
-        <div className="mt-7 pt-6 border-t border-white/[0.04] grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-[#0F131E] p-4 rounded-xl border border-white/[0.04]">
-             <p className="text-[9px] font-bold text-[#5A6478] uppercase tracking-widest mb-1.5">Status</p>
+        <div className="mt-7 pt-6 border-t border-[var(--border-primary)] grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-[var(--bg-base)] p-4 rounded-xl border border-[var(--border-primary)]">
+             <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1.5">Status</p>
              <p className="text-xs font-bold text-[#34D399]">{circle.status}</p>
           </div>
-          <div className="bg-[#0F131E] p-4 rounded-xl border border-white/[0.04]">
-             <p className="text-[9px] font-bold text-[#5A6478] uppercase tracking-widest mb-1.5">Category</p>
-             <p className="text-xs font-bold text-white">{circle.category}</p>
+          <div className="bg-[var(--bg-base)] p-4 rounded-xl border border-[var(--border-primary)]">
+             <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1.5">Category</p>
+             <p className="text-xs font-bold text-[var(--text-primary)]">{circle.category}</p>
           </div>
-          <div className="bg-[#0F131E] p-4 rounded-xl border border-white/[0.04]">
-             <p className="text-[9px] font-bold text-[#5A6478] uppercase tracking-widest mb-1.5">Members</p>
-             <p className="text-xs font-bold text-white">{circle.members?.length || 0}</p>
+          <div className="bg-[var(--bg-base)] p-4 rounded-xl border border-[var(--border-primary)]">
+             <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1.5">Members</p>
+             <p className="text-xs font-bold text-[var(--text-primary)]">{circle.members?.length || 0}</p>
           </div>
-          <div className="bg-[#0F131E] p-4 rounded-xl border border-white/[0.04]">
-             <p className="text-[9px] font-bold text-[#5A6478] uppercase tracking-widest mb-1.5">Tasks</p>
-             <p className="text-xs font-bold text-white">{tasks.length}</p>
+          <div className="bg-[var(--bg-base)] p-4 rounded-xl border border-[var(--border-primary)]">
+             <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1.5">Tasks</p>
+             <p className="text-xs font-bold text-[var(--text-primary)]">{tasks.length}</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="bg-[#181D2A] rounded-2xl p-7 border border-white/[0.04]">
+        <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-7 border border-[var(--border-primary)]">
            <div className="flex items-center justify-between mb-5">
-              <h3 className="font-bold text-white text-sm">Active Team</h3>
+              <h3 className="font-bold text-[var(--text-primary)] text-sm">Active Team</h3>
               <button className="text-[10px] font-bold text-[#7B5CFA] hover:text-[#A78BFA] transition">+ Recruit</button>
            </div>
            <div className="space-y-3.5">
@@ -368,8 +368,8 @@ const CircleWorkspace = () => {
                 <div key={i} className="flex items-center gap-3">
                    <img src={m.user?.profileImage || `https://ui-avatars.com/api/?name=${m.user?.username}`} className="w-9 h-9 rounded-lg object-cover" />
                    <div>
-                      <p className="font-bold text-white text-[13px]">@{m.user?.username}</p>
-                      <p className="text-[10px] text-[#5A6478] font-medium">{m.role}</p>
+                      <p className="font-bold text-[var(--text-primary)] text-[13px]">@{m.user?.username}</p>
+                      <p className="text-[10px] text-[var(--text-muted)] font-medium">{m.role}</p>
                    </div>
                 </div>
               ))}
@@ -378,9 +378,9 @@ const CircleWorkspace = () => {
         
         <div className="bg-gradient-to-br from-[#1E1B4B] to-[#181D2A] rounded-2xl p-7 relative overflow-hidden border border-[#7B5CFA]/10">
            <Zap className="absolute -top-4 -right-4 w-24 h-24 text-[#7B5CFA]/10" />
-           <h3 className="font-bold text-white text-sm mb-2">Upcoming Deadline</h3>
-           <p className="text-[13px] text-[#8B95A5] mb-6 leading-relaxed">No immediate deadlines set. Add milestones to track progress.</p>
-           <button className="w-full py-3 bg-white/[0.05] border border-white/[0.06] rounded-xl text-[10px] font-bold text-[#8B95A5] uppercase tracking-widest hover:bg-white/[0.08] hover:text-white transition">
+           <h3 className="font-bold text-[var(--text-primary)] text-sm mb-2">Upcoming Deadline</h3>
+           <p className="text-[13px] text-[var(--text-secondary)] mb-6 leading-relaxed">No immediate deadlines set. Add milestones to track progress.</p>
+           <button className="w-full py-3 bg-white/[0.05] border border-[var(--border-primary)] rounded-xl text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest hover:bg-white/[0.08] hover:text-[var(--text-primary)] transition">
               Set Milestone
            </button>
         </div>
@@ -405,9 +405,9 @@ const CircleWorkspace = () => {
     const approvedPercent = total > 0 ? (approvedCount / total) * 100 : 0;
 
     return (
-      <div className="bg-[#181D2A] border border-white/[0.04] rounded-xl p-4 mb-5">
+      <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl p-4 mb-5">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-[10px] font-bold text-[#8B95A5] uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1.5">
             <Zap size={12} className="text-[#7B5CFA]" /> Sprint Progress
           </span>
           <span className="text-[11px] font-bold text-[#7B5CFA]">
@@ -422,7 +422,7 @@ const CircleWorkspace = () => {
           {todoPercent > 0 && <div style={{ width: `${todoPercent}%` }} className="bg-[#FF6B6B] h-full transition-all duration-500" />}
         </div>
         
-        <div className="flex items-center gap-4 mt-3 text-[9px] font-medium text-[#5A6478]">
+        <div className="flex items-center gap-4 mt-3 text-[9px] font-medium text-[var(--text-muted)]">
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#FF6B6B]" /> To Do {todoCount}</span>
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#FFAB4C]" /> Active {inProgressCount}</span>
           <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#A78BFA]" /> Review {reviewCount}</span>
@@ -445,7 +445,7 @@ const CircleWorkspace = () => {
         case 'URGENT': return { badge: 'bg-[#FF4757]/10 text-[#FF4757] border-[#FF4757]/20', strip: '#FF4757', label: 'Urgent' };
         case 'HIGH':   return { badge: 'bg-[#FF6348]/10 text-[#FF6348] border-[#FF6348]/20', strip: '#FF6348', label: 'High' };
         case 'MEDIUM': return { badge: 'bg-[#7B5CFA]/10 text-[#7B5CFA] border-[#7B5CFA]/20', strip: '#7B5CFA', label: 'Medium' };
-        default:       return { badge: 'bg-white/[0.04] text-[#5A6478] border-white/[0.06]', strip: '#5A6478', label: 'Low' };
+        default:       return { badge: 'bg-white/[0.04] text-[var(--text-muted)] border-[var(--border-primary)]', strip: '#5A6478', label: 'Low' };
       }
     };
 
@@ -543,8 +543,8 @@ const CircleWorkspace = () => {
         {/* Title Row */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
            <div>
-              <h3 className="text-lg font-bold text-white tracking-tight">Task Board</h3>
-              <p className="text-[12px] text-[#5A6478] mt-0.5">Manage priorities, assignees, and track progress.</p>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">Task Board</h3>
+              <p className="text-[12px] text-[var(--text-muted)] mt-0.5">Manage priorities, assignees, and track progress.</p>
            </div>
            <button 
              onClick={() => setIsTaskModalOpen(true)}
@@ -557,30 +557,30 @@ const CircleWorkspace = () => {
         <TaskProgressBar />
 
         {/* Filter Toolbar */}
-        <div className="bg-[#181D2A] border border-white/[0.04] rounded-xl p-3 flex flex-col gap-3">
+        <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl p-3 flex flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 flex-1 min-w-0">
               <div className="relative flex-1 max-w-xs">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5A6478]" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                 <input 
                   type="text"
                   value={taskSearchQuery}
                   onChange={e => setTaskSearchQuery(e.target.value)}
                   placeholder="Search tasks..."
-                  className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg pl-9 pr-3 py-2 text-[12px] text-white placeholder-[#5A6478] focus:outline-none focus:border-[#7B5CFA]/40 transition font-medium"
+                  className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg pl-9 pr-3 py-2 text-[12px] text-[var(--text-primary)] placeholder-[#5A6478] focus:outline-none focus:border-[#7B5CFA]/40 transition font-medium"
                 />
               </div>
               
-              <div className="flex bg-[#0F131E] p-0.5 rounded-lg border border-white/[0.06]">
+              <div className="flex bg-[var(--bg-base)] p-0.5 rounded-lg border border-[var(--border-primary)]">
                 <button 
                   onClick={() => setTasksLayout('board')}
-                  className={`p-1.5 rounded-md transition-all ${tasksLayout === 'board' ? 'bg-[#7B5CFA]/15 text-[#7B5CFA]' : 'text-[#5A6478] hover:text-white'}`}
+                  className={`p-1.5 rounded-md transition-all ${tasksLayout === 'board' ? 'bg-[#7B5CFA]/15 text-[#7B5CFA]' : 'text-[var(--text-muted)] hover:text-white'}`}
                 >
                   <Grid size={13} />
                 </button>
                 <button 
                   onClick={() => setTasksLayout('list')}
-                  className={`p-1.5 rounded-md transition-all ${tasksLayout === 'list' ? 'bg-[#7B5CFA]/15 text-[#7B5CFA]' : 'text-[#5A6478] hover:text-white'}`}
+                  className={`p-1.5 rounded-md transition-all ${tasksLayout === 'list' ? 'bg-[#7B5CFA]/15 text-[#7B5CFA]' : 'text-[var(--text-muted)] hover:text-white'}`}
                 >
                   <List size={13} />
                 </button>
@@ -589,7 +589,7 @@ const CircleWorkspace = () => {
 
             <div className="flex flex-wrap items-center gap-2">
               <select value={taskAssigneeFilter} onChange={e => setTaskAssigneeFilter(e.target.value)}
-                className="bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[#8B95A5] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
+                className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
                 <option value="ALL">All Members</option>
                 {circle.members?.map(m => (
                   <option key={m.userId} value={m.userId}>@{m.user?.username || 'member'}</option>
@@ -597,7 +597,7 @@ const CircleWorkspace = () => {
               </select>
 
               <select value={taskPriorityFilter} onChange={e => setTaskPriorityFilter(e.target.value)}
-                className="bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[#8B95A5] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
+                className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
                 <option value="ALL">All Priority</option>
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
@@ -607,7 +607,7 @@ const CircleWorkspace = () => {
 
               {distinctTags.length > 0 && (
                 <select value={taskLabelFilter} onChange={e => setTaskLabelFilter(e.target.value)}
-                  className="bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[#8B95A5] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
+                  className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
                   <option value="ALL">All Tags</option>
                   {distinctTags.map(tag => (
                     <option key={tag} value={tag}>{tag}</option>
@@ -616,7 +616,7 @@ const CircleWorkspace = () => {
               )}
 
               <select value={taskDueDateFilter} onChange={e => setTaskDueDateFilter(e.target.value)}
-                className="bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[#8B95A5] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
+                className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
                 <option value="ALL">Any Date</option>
                 <option value="OVERDUE">Overdue</option>
                 <option value="THIS_WEEK">This Week</option>
@@ -624,7 +624,7 @@ const CircleWorkspace = () => {
 
               <button 
                 onClick={() => setTaskMyTasksOnly(!taskMyTasksOnly)}
-                className={`px-3 py-1.5 border rounded-lg text-[11px] font-medium transition-all ${taskMyTasksOnly ? 'bg-[#7B5CFA]/15 border-[#7B5CFA]/30 text-[#7B5CFA]' : 'bg-[#0F131E] border-white/[0.06] text-[#5A6478] hover:text-white hover:border-white/10'}`}
+                className={`px-3 py-1.5 border rounded-lg text-[11px] font-medium transition-all ${taskMyTasksOnly ? 'bg-[#7B5CFA]/15 border-[#7B5CFA]/30 text-[#7B5CFA]' : 'bg-[var(--bg-base)] border-[var(--border-primary)] text-[var(--text-muted)] hover:text-white hover:border-[var(--border-secondary)]'}`}
               >
                 My Tasks
               </button>
@@ -646,15 +646,15 @@ const CircleWorkspace = () => {
                   key={col.id} 
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, col.id)}
-                  className="flex flex-col bg-[#0F131E]/60 rounded-xl border border-white/[0.04] min-h-[480px] max-h-[680px]"
+                  className="flex flex-col bg-[var(--bg-base)]/60 rounded-xl border border-[var(--border-primary)] min-h-[480px] max-h-[680px]"
                   style={{ borderTopColor: col.accent, borderTopWidth: '2px' }}
                 >
                   {/* Column Header */}
                   <div className="flex items-center justify-between px-3.5 py-3">
-                    <span className="text-[11px] font-bold text-[#8B95A5] flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-[var(--text-secondary)] flex items-center gap-2">
                       <span className={`w-2 h-2 rounded-full ${col.dotBg}`} /> {col.title}
                     </span>
-                    <span className="text-[10px] font-bold text-[#5A6478] bg-white/[0.04] px-2 py-0.5 rounded-md min-w-[22px] text-center">
+                    <span className="text-[10px] font-bold text-[var(--text-muted)] bg-white/[0.04] px-2 py-0.5 rounded-md min-w-[22px] text-center">
                       {colTasks.length}
                     </span>
                   </div>
@@ -662,9 +662,9 @@ const CircleWorkspace = () => {
                   {/* Cards Container */}
                   <div className="space-y-2.5 flex-1 overflow-y-auto no-scrollbar px-2.5 pb-3">
                     {colTasks.length === 0 && (
-                      <div className="h-20 rounded-lg border border-dashed border-white/[0.06] bg-white/[0.01] flex flex-col items-center justify-center">
-                        <ListTodo size={14} className="text-[#5A6478]/40 mb-1" />
-                        <p className="text-[10px] text-[#5A6478]/60">No tasks</p>
+                      <div className="h-20 rounded-lg border border-dashed border-[var(--border-primary)] bg-white/[0.01] flex flex-col items-center justify-center">
+                        <ListTodo size={14} className="text-[var(--text-muted)]/40 mb-1" />
+                        <p className="text-[10px] text-[var(--text-muted)]/60">No tasks</p>
                       </div>
                     )}
 
@@ -686,7 +686,7 @@ const CircleWorkspace = () => {
                             setDetailDesc(task.description || '');
                             setIsDetailPanelOpen(true);
                           }}
-                          className={`bg-[#181D2A] rounded-lg border cursor-pointer group transition-all duration-200 hover:border-[#7B5CFA]/30 hover:shadow-lg hover:shadow-[#7B5CFA]/[0.04] ${isOverdue ? 'border-[#FF6B6B]/20' : 'border-white/[0.04]'}`}
+                          className={`bg-[var(--bg-surface-alt)] rounded-lg border cursor-pointer group transition-all duration-200 hover:border-[#7B5CFA]/30 hover:shadow-lg hover:shadow-[#7B5CFA]/[0.04] ${isOverdue ? 'border-[#FF6B6B]/20' : 'border-[var(--border-primary)]'}`}
                           style={{ borderLeftWidth: '3px', borderLeftColor: pStyle.strip }}
                         >
                           <div className="p-3.5 space-y-2.5">
@@ -706,10 +706,10 @@ const CircleWorkspace = () => {
                             </div>
 
                             {/* Title */}
-                            <h4 className="font-bold text-white text-[13px] leading-snug group-hover:text-[#A78BFA] transition-colors">{task.title}</h4>
+                            <h4 className="font-bold text-[var(--text-primary)] text-[13px] leading-snug group-hover:text-[#A78BFA] transition-colors">{task.title}</h4>
                             
                             {task.description && (
-                              <p className="text-[11px] text-[#5A6478] line-clamp-2 leading-relaxed">{task.description}</p>
+                              <p className="text-[11px] text-[var(--text-muted)] line-clamp-2 leading-relaxed">{task.description}</p>
                             )}
 
                             {/* Tags */}
@@ -741,32 +741,32 @@ const CircleWorkspace = () => {
                                 <div className="flex-1 bg-white/[0.04] rounded-full h-1 overflow-hidden">
                                   <div className="bg-[#34D399] h-full rounded-full transition-all" style={{ width: `${(completedSubtasks / task.subtasks.length) * 100}%` }} />
                                 </div>
-                                <span className="text-[9px] text-[#5A6478] font-medium">{completedSubtasks}/{task.subtasks.length}</span>
+                                <span className="text-[9px] text-[var(--text-muted)] font-medium">{completedSubtasks}/{task.subtasks.length}</span>
                               </div>
                             )}
                           </div>
 
                           {/* Card Footer */}
-                          <div className="px-3.5 py-2.5 border-t border-white/[0.03] flex items-center justify-between">
+                          <div className="px-3.5 py-2.5 border-t border-[var(--border-primary)] flex items-center justify-between">
                             <div className="flex items-center gap-1.5 min-w-0">
                               {task.assignee ? (
                                 <>
                                   <img src={task.assignee.profileImage || `https://ui-avatars.com/api/?name=${task.assignee.username}&background=181D2A&color=8B95A5&size=20`} className="w-5 h-5 rounded-md object-cover" />
-                                  <span className="text-[10px] text-[#8B95A5] font-medium truncate">{task.assignee.username}</span>
+                                  <span className="text-[10px] text-[var(--text-secondary)] font-medium truncate">{task.assignee.username}</span>
                                 </>
                               ) : (
-                                <span className="text-[10px] text-[#5A6478] italic">Unassigned</span>
+                                <span className="text-[10px] text-[var(--text-muted)] italic">Unassigned</span>
                               )}
                             </div>
 
                             <div className="flex items-center gap-2 flex-shrink-0">
                               {task.deadline && (
-                                <span className={`flex items-center gap-1 text-[10px] font-medium ${isOverdue ? 'text-[#FF6B6B]' : 'text-[#5A6478]'}`}>
+                                <span className={`flex items-center gap-1 text-[10px] font-medium ${isOverdue ? 'text-[#FF6B6B]' : 'text-[var(--text-muted)]'}`}>
                                   <Calendar size={10} /> {new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                 </span>
                               )}
                               {task._count?.comments > 0 && (
-                                <span className="text-[10px] text-[#5A6478] flex items-center gap-0.5">
+                                <span className="text-[10px] text-[var(--text-muted)] flex items-center gap-0.5">
                                   <MessageSquare size={9} /> {task._count.comments}
                                 </span>
                               )}
@@ -782,30 +782,30 @@ const CircleWorkspace = () => {
           </div>
         ) : (
           /* LIST VIEW */
-          <div className="bg-[#181D2A] border border-white/[0.04] rounded-xl overflow-hidden">
+          <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-white/[0.04]">
+                  <tr className="border-b border-[var(--border-primary)]">
                     <th onClick={() => { setTaskSortField('taskCode'); setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc'); }}
-                      className="px-4 py-3.5 text-[10px] font-bold text-[#5A6478] uppercase tracking-wider cursor-pointer hover:text-white transition">
+                      className="px-4 py-3.5 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider cursor-pointer hover:text-[var(--text-primary)] transition">
                       ID {taskSortField === 'taskCode' ? (taskSortOrder === 'asc' ? '↑' : '↓') : ''}
                     </th>
                     <th onClick={() => { setTaskSortField('title'); setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc'); }}
-                      className="px-4 py-3.5 text-[10px] font-bold text-[#5A6478] uppercase tracking-wider cursor-pointer hover:text-white transition">
+                      className="px-4 py-3.5 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider cursor-pointer hover:text-[var(--text-primary)] transition">
                       Title {taskSortField === 'title' ? (taskSortOrder === 'asc' ? '↑' : '↓') : ''}
                     </th>
                     <th onClick={() => { setTaskSortField('status'); setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc'); }}
-                      className="px-4 py-3.5 text-[10px] font-bold text-[#5A6478] uppercase tracking-wider cursor-pointer hover:text-white transition">
+                      className="px-4 py-3.5 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider cursor-pointer hover:text-[var(--text-primary)] transition">
                       Status {taskSortField === 'status' ? (taskSortOrder === 'asc' ? '↑' : '↓') : ''}
                     </th>
                     <th onClick={() => { setTaskSortField('priority'); setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc'); }}
-                      className="px-4 py-3.5 text-[10px] font-bold text-[#5A6478] uppercase tracking-wider cursor-pointer hover:text-white transition">
+                      className="px-4 py-3.5 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider cursor-pointer hover:text-[var(--text-primary)] transition">
                       Priority {taskSortField === 'priority' ? (taskSortOrder === 'asc' ? '↑' : '↓') : ''}
                     </th>
-                    <th className="px-4 py-3.5 text-[10px] font-bold text-[#5A6478] uppercase tracking-wider">Assignee</th>
+                    <th className="px-4 py-3.5 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Assignee</th>
                     <th onClick={() => { setTaskSortField('deadline'); setTaskSortOrder(prev => prev === 'asc' ? 'desc' : 'asc'); }}
-                      className="px-4 py-3.5 text-[10px] font-bold text-[#5A6478] uppercase tracking-wider cursor-pointer hover:text-white transition">
+                      className="px-4 py-3.5 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider cursor-pointer hover:text-[var(--text-primary)] transition">
                       Due {taskSortField === 'deadline' ? (taskSortOrder === 'asc' ? '↑' : '↓') : ''}
                     </th>
                   </tr>
@@ -813,7 +813,7 @@ const CircleWorkspace = () => {
                 <tbody>
                   {getSortedTasks().length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-4 py-10 text-center text-[#5A6478] text-xs">
+                      <td colSpan={6} className="px-4 py-10 text-center text-[var(--text-muted)] text-xs">
                         No tasks match the selected filters
                       </td>
                     </tr>
@@ -830,12 +830,12 @@ const CircleWorkspace = () => {
                           setDetailDesc(task.description || '');
                           setIsDetailPanelOpen(true);
                         }}
-                        className={`border-b border-white/[0.03] hover:bg-white/[0.02] transition cursor-pointer group ${isOverdue ? 'bg-[#FF6B6B]/[0.02]' : ''}`}
+                        className={`border-b border-[var(--border-primary)] hover:bg-white/[0.02] transition cursor-pointer group ${isOverdue ? 'bg-[#FF6B6B]/[0.02]' : ''}`}
                       >
                         <td className="px-4 py-3.5 text-[11px] font-bold text-[#7B5CFA]/70">{task.taskCode || 'TASK'}</td>
                         <td className="px-4 py-3.5">
                           <div className="flex flex-col gap-0.5">
-                            <span className="text-[13px] font-bold text-white group-hover:text-[#A78BFA] transition">{task.title}</span>
+                            <span className="text-[13px] font-bold text-[var(--text-primary)] group-hover:text-[#A78BFA] transition">{task.title}</span>
                             {task.rejectionComment && (
                               <span className="text-[9px] font-bold text-[#FF4757] flex items-center gap-1 mt-0.5">
                                 <AlertTriangle size={9} /> Changes Requested
@@ -857,19 +857,19 @@ const CircleWorkspace = () => {
                           {task.assignee ? (
                             <div className="flex items-center gap-2">
                               <img src={task.assignee.profileImage || `https://ui-avatars.com/api/?name=${task.assignee.username}&background=181D2A&color=8B95A5&size=20`} className="w-5 h-5 rounded-md object-cover" />
-                              <span className="text-[11px] font-medium text-[#8B95A5]">{task.assignee.username}</span>
+                              <span className="text-[11px] font-medium text-[var(--text-secondary)]">{task.assignee.username}</span>
                             </div>
                           ) : (
-                            <span className="text-[11px] text-[#5A6478] italic">Unassigned</span>
+                            <span className="text-[11px] text-[var(--text-muted)] italic">Unassigned</span>
                           )}
                         </td>
                         <td className="px-4 py-3.5">
                           {task.deadline ? (
-                            <span className={`text-[11px] font-medium ${isOverdue ? 'text-[#FF6B6B]' : 'text-[#8B95A5]'}`}>
+                            <span className={`text-[11px] font-medium ${isOverdue ? 'text-[#FF6B6B]' : 'text-[var(--text-secondary)]'}`}>
                               {new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                             </span>
                           ) : (
-                            <span className="text-[11px] text-[#5A6478]">—</span>
+                            <span className="text-[11px] text-[var(--text-muted)]">—</span>
                           )}
                         </td>
                       </tr>
@@ -885,11 +885,11 @@ const CircleWorkspace = () => {
   };
 
   const ChatPanel = () => (
-    <div className="flex flex-col h-full bg-[#181D2A] md:border md:border-white/[0.04] md:rounded-2xl overflow-hidden">
-       <div className="p-4 border-b border-white/[0.04] flex items-center justify-between">
+    <div className="flex flex-col h-full bg-[var(--bg-surface-alt)] md:border md:border-[var(--border-primary)] md:rounded-2xl overflow-hidden">
+       <div className="p-4 border-b border-[var(--border-primary)] flex items-center justify-between">
           <div className="flex items-center gap-2">
              <MessageSquare size={15} className="text-[#7B5CFA]" />
-             <span className="text-[12px] font-bold text-white">Team Chat</span>
+             <span className="text-[12px] font-bold text-[var(--text-primary)]">Team Chat</span>
           </div>
           <span className="text-[10px] font-medium text-[#34D399] flex items-center gap-1.5">
              <span className="w-1.5 h-1.5 bg-[#34D399] rounded-full animate-pulse" /> Live
@@ -903,10 +903,10 @@ const CircleWorkspace = () => {
               <div key={msg.id || i} className={`flex gap-2.5 ${isMine ? 'flex-row-reverse' : ''}`}>
                  <img src={msg.sender?.profileImage} className="w-7 h-7 rounded-lg object-cover flex-shrink-0 mt-0.5" />
                  <div className={`max-w-[75%] ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
-                    <div className={`px-3.5 py-2 rounded-2xl text-[13px] leading-relaxed ${isMine ? 'bg-[#7B5CFA] text-white rounded-tr-sm' : 'bg-white/[0.05] text-white rounded-tl-sm'}`}>
+                    <div className={`px-3.5 py-2 rounded-2xl text-[13px] leading-relaxed ${isMine ? 'bg-[#7B5CFA] text-white rounded-tr-sm' : 'bg-white/[0.05] text-[var(--text-primary)] rounded-tl-sm'}`}>
                        {msg.content}
                     </div>
-                    <p className="text-[9px] text-[#5A6478] mt-1 px-1 font-medium">
+                    <p className="text-[9px] text-[var(--text-muted)] mt-1 px-1 font-medium">
                        {msg.sender?.username} · {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                  </div>
@@ -915,13 +915,13 @@ const CircleWorkspace = () => {
           })}
        </div>
 
-       <form onSubmit={handleSendMessage} className="p-3 border-t border-white/[0.04]">
-          <div className="flex gap-2 bg-[#0F131E] border border-white/[0.06] rounded-xl p-1.5 focus-within:border-[#7B5CFA]/30 transition">
+       <form onSubmit={handleSendMessage} className="p-3 border-t border-[var(--border-primary)]">
+          <div className="flex gap-2 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl p-1.5 focus-within:border-[#7B5CFA]/30 transition">
              <input 
                value={msgInput}
                onChange={e => setMsgInput(e.target.value)}
                placeholder="Write a message..."
-               className="flex-1 bg-transparent border-none outline-none text-[13px] px-2 text-white placeholder-[#5A6478]"
+               className="flex-1 bg-transparent border-none outline-none text-[13px] px-2 text-[var(--text-primary)] placeholder-[#5A6478]"
              />
              <button type="submit" className="bg-[#7B5CFA] text-white p-2 rounded-lg hover:bg-[#6B4CE0] transition">
                 <Send size={14} />
@@ -943,14 +943,14 @@ const CircleWorkspace = () => {
       {/* Workspace Header */}
       <div className="flex items-center justify-between mb-6 md:mb-8 pt-4 md:pt-0">
         <div className="flex items-center gap-3">
-           <button onClick={() => navigate('/circles')} className="p-2 bg-[#181D2A] border border-white/[0.06] rounded-lg hover:text-[#7B5CFA] transition text-[#8B95A5]">
+           <button onClick={() => navigate('/circles')} className="p-2 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-lg hover:text-[#7B5CFA] transition text-[var(--text-secondary)]">
               <ChevronLeft size={18} />
            </button>
            <div className="min-w-0">
               <div className="flex items-center gap-1.5 text-[#7B5CFA] text-[9px] font-bold uppercase tracking-widest mb-0.5">
                  <Shield size={10} /> Circle Workspace
               </div>
-              <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight truncate">{circle.title}</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-[var(--text-primary)] tracking-tight truncate">{circle.title}</h1>
            </div>
         </div>
         <div className="hidden md:flex items-center gap-2">
@@ -959,19 +959,19 @@ const CircleWorkspace = () => {
                 <img key={i} src={m.user?.profileImage || `https://ui-avatars.com/api/?name=${m.user?.username}`} className="w-8 h-8 rounded-lg border-2 border-[#0F131E] object-cover" />
               ))}
            </div>
-           <button className="p-2 bg-[#181D2A] border border-white/[0.06] rounded-lg text-[#8B95A5] hover:text-white transition ml-1">
+           <button className="p-2 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition ml-1">
               <MoreHorizontal size={16} />
            </button>
         </div>
       </div>
 
       {/* Mobile Tabs */}
-      <div className="md:hidden flex border-b border-white/[0.04] -mx-4 mb-5 sticky top-14 bg-[#0F131E]/95 backdrop-blur-md z-40">
+      <div className="md:hidden flex border-b border-[var(--border-primary)] -mx-4 mb-5 sticky top-14 bg-[var(--bg-base)]/95 backdrop-blur-md z-40">
         {TABS.map(tab => (
           <button 
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-3.5 flex flex-col items-center gap-1 transition-all relative ${activeTab === tab.id ? 'text-[#7B5CFA]' : 'text-[#5A6478]'}`}
+            className={`flex-1 py-3.5 flex flex-col items-center gap-1 transition-all relative ${activeTab === tab.id ? 'text-[#7B5CFA]' : 'text-[var(--text-muted)]'}`}
           >
             <tab.icon size={15} />
             <span className="text-[9px] font-bold uppercase tracking-wider">{tab.label}</span>
@@ -1003,12 +1003,12 @@ const CircleWorkspace = () => {
 
         {/* Desktop */}
         <div className="hidden md:flex flex-col h-[calc(100vh-240px)]">
-           <div className="flex gap-1 mb-6 bg-[#181D2A]/50 p-1 rounded-xl border border-white/[0.04] w-fit flex-shrink-0">
+           <div className="flex gap-1 mb-6 bg-[var(--bg-surface-alt)]/50 p-1 rounded-xl border border-[var(--border-primary)] w-fit flex-shrink-0">
               {TABS.map(tab => (
                 <button 
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-5 py-2 rounded-lg text-[11px] font-bold transition-all flex items-center gap-2 ${activeTab === tab.id ? 'bg-[#0F131E] text-[#7B5CFA] shadow-sm' : 'text-[#5A6478] hover:text-white'}`}
+                  className={`px-5 py-2 rounded-lg text-[11px] font-bold transition-all flex items-center gap-2 ${activeTab === tab.id ? 'bg-[var(--bg-base)] text-[#7B5CFA] shadow-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                 >
                   <tab.icon size={13} /> {tab.label}
                 </button>
@@ -1032,42 +1032,42 @@ const CircleWorkspace = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#181D2A] border border-white/[0.06] rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden"
+              className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden"
             >
-              <div className="p-6 border-b border-white/[0.04] flex items-center justify-between">
+              <div className="p-6 border-b border-[var(--border-primary)] flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-white">New Task</h3>
-                  <p className="text-[12px] text-[#5A6478] mt-0.5">Assign deliverables to team members.</p>
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">New Task</h3>
+                  <p className="text-[12px] text-[var(--text-muted)] mt-0.5">Assign deliverables to team members.</p>
                 </div>
-                <button onClick={() => setIsTaskModalOpen(false)} className="p-2 hover:bg-white/[0.05] rounded-lg text-[#5A6478] hover:text-white transition">
+                <button onClick={() => setIsTaskModalOpen(false)} className="p-2 hover:bg-white/[0.05] rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] transition">
                   <X size={18} />
                 </button>
               </div>
 
               <form onSubmit={handleCreateTask} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto no-scrollbar">
                 <div>
-                  <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Task Title</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Task Title</label>
                   <input 
                     type="text" required value={taskTitle} onChange={e => setTaskTitle(e.target.value)}
                     placeholder="e.g. Design Home Hero Section"
-                    className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3.5 py-2.5 text-[13px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium"
+                    className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Description</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Description</label>
                   <textarea 
                     value={taskDesc} onChange={e => setTaskDesc(e.target.value)} rows={3}
                     placeholder="Requirements, deliverables, inspiration..."
-                    className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3.5 py-2.5 text-[13px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium resize-none"
+                    className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium resize-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Priority</label>
+                    <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Priority</label>
                     <select value={taskPriority} onChange={e => setTaskPriority(e.target.value)}
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3 py-2.5 text-[13px] text-white focus:border-[#7B5CFA]/40 outline-none transition font-medium appearance-none cursor-pointer">
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[#7B5CFA]/40 outline-none transition font-medium appearance-none cursor-pointer">
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
                       <option value="HIGH">High</option>
@@ -1075,34 +1075,34 @@ const CircleWorkspace = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Deadline</label>
+                    <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Deadline</label>
                     <input type="date" value={taskDeadline} onChange={e => setTaskDeadline(e.target.value)}
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3 py-2.5 text-[13px] text-white focus:border-[#7B5CFA]/40 outline-none transition font-medium cursor-pointer"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[#7B5CFA]/40 outline-none transition font-medium cursor-pointer"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Story Points</label>
+                    <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Story Points</label>
                     <input type="number" min="1" value={taskEffort} onChange={e => setTaskEffort(e.target.value)}
                       placeholder="e.g. 5"
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3 py-2.5 text-[13px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3 py-2.5 text-[13px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Labels</label>
+                    <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Labels</label>
                     <input type="text" value={taskLabels} onChange={e => setTaskLabels(e.target.value)}
                       placeholder="e.g. UI, Frontend"
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3 py-2.5 text-[13px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3 py-2.5 text-[13px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none transition font-medium"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Assign To</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Assign To</label>
                   <select value={taskAssignee} onChange={e => setTaskAssignee(e.target.value)}
-                    className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-3 py-2.5 text-[13px] text-white focus:border-[#7B5CFA]/40 outline-none transition font-medium appearance-none cursor-pointer">
+                    className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-3 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[#7B5CFA]/40 outline-none transition font-medium appearance-none cursor-pointer">
                     <option value="">Unassigned</option>
                     {circle.members?.map(m => (
                       <option key={m.userId} value={m.userId}>{m.user?.username || 'member'} ({m.role})</option>
@@ -1112,7 +1112,7 @@ const CircleWorkspace = () => {
 
                 <div className="pt-3 flex gap-3">
                   <button type="button" onClick={() => setIsTaskModalOpen(false)}
-                    className="flex-1 py-3 bg-white/[0.04] border border-white/[0.06] rounded-xl text-[11px] font-bold text-[#8B95A5] hover:bg-white/[0.06] hover:text-white transition">
+                    className="flex-1 py-3 bg-white/[0.04] border border-[var(--border-primary)] rounded-xl text-[11px] font-bold text-[var(--text-secondary)] hover:bg-white/[0.06] hover:text-[var(--text-primary)] transition">
                     Cancel
                   </button>
                   <button type="submit" disabled={taskSaving}
@@ -1137,10 +1137,10 @@ const CircleWorkspace = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-xl bg-[#0F131E] h-full shadow-2xl flex flex-col border-l border-white/[0.06] z-10"
+              className="relative w-full max-w-xl bg-[var(--bg-base)] h-full shadow-2xl flex flex-col border-l border-[var(--border-primary)] z-10"
             >
               {/* Panel Header */}
-              <div className="p-5 border-b border-white/[0.04] flex items-center justify-between bg-[#181D2A]/80">
+              <div className="p-5 border-b border-[var(--border-primary)] flex items-center justify-between bg-[var(--bg-surface-alt)]/80">
                 <div className="flex items-center gap-2.5">
                   <span className="text-[10px] font-bold text-[#7B5CFA] bg-[#7B5CFA]/10 border border-[#7B5CFA]/20 px-2.5 py-1 rounded-md">
                     {selectedTask.taskCode || 'TASK'}
@@ -1151,13 +1151,13 @@ const CircleWorkspace = () => {
                       navigator.clipboard.writeText(shareUrl);
                       alert("Link copied to clipboard!");
                     }}
-                    className="p-1.5 hover:bg-white/[0.05] rounded-lg text-[#5A6478] hover:text-[#7B5CFA] transition flex items-center gap-1.5 border border-white/[0.06]"
+                    className="p-1.5 hover:bg-white/[0.05] rounded-lg text-[var(--text-muted)] hover:text-[#7B5CFA] transition flex items-center gap-1.5 border border-[var(--border-primary)]"
                   >
                     <Share2 size={11} />
                     <span className="text-[9px] font-bold">Share</span>
                   </button>
                 </div>
-                <button onClick={() => setIsDetailPanelOpen(false)} className="p-2 hover:bg-white/[0.05] rounded-lg text-[#5A6478] hover:text-white transition">
+                <button onClick={() => setIsDetailPanelOpen(false)} className="p-2 hover:bg-white/[0.05] rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] transition">
                   <X size={16} />
                 </button>
               </div>
@@ -1166,7 +1166,7 @@ const CircleWorkspace = () => {
               <div className="flex-1 overflow-y-auto p-5 space-y-5 no-scrollbar">
                 {/* Title */}
                 <div>
-                  <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Title</label>
+                  <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Title</label>
                   {isEditingTitle ? (
                     <input 
                       type="text" value={detailTitle} onChange={e => setDetailTitle(e.target.value)}
@@ -1185,12 +1185,12 @@ const CircleWorkspace = () => {
                         }
                       }}
                       autoFocus
-                      className="w-full bg-[#181D2A] border border-[#7B5CFA]/40 rounded-lg px-3 py-2 text-base font-bold text-white outline-none"
+                      className="w-full bg-[var(--bg-surface-alt)] border border-[#7B5CFA]/40 rounded-lg px-3 py-2 text-base font-bold text-[var(--text-primary)] outline-none"
                     />
                   ) : (
                     <h3 onClick={() => setIsEditingTitle(true)}
-                      className="text-lg font-bold text-white cursor-pointer hover:bg-[#181D2A] p-2 -m-2 rounded-lg border border-transparent hover:border-white/[0.06] transition flex items-center gap-2 group">
-                      {selectedTask.title} <Edit2 size={13} className="text-[#5A6478] opacity-0 group-hover:opacity-100 transition" />
+                      className="text-lg font-bold text-[var(--text-primary)] cursor-pointer hover:bg-[var(--bg-surface-alt)] p-2 -m-2 rounded-lg border border-transparent hover:border-[var(--border-primary)] transition flex items-center gap-2 group">
+                      {selectedTask.title} <Edit2 size={13} className="text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition" />
                     </h3>
                   )}
                 </div>
@@ -1208,9 +1208,9 @@ const CircleWorkspace = () => {
                 )}
 
                 {/* Fields Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 bg-[#181D2A]/60 border border-white/[0.04] p-4 rounded-xl">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 bg-[var(--bg-surface-alt)]/60 border border-[var(--border-primary)] p-4 rounded-xl">
                   <div>
-                    <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Status</label>
+                    <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Status</label>
                     <select 
                       value={selectedTask.status}
                       onChange={e => {
@@ -1227,7 +1227,7 @@ const CircleWorkspace = () => {
                           updateTaskStatus(selectedTask.id, targetStatus);
                         }
                       }}
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-2 text-[11px] font-bold text-white outline-none cursor-pointer appearance-none"
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-2 text-[11px] font-bold text-[var(--text-primary)] outline-none cursor-pointer appearance-none"
                     >
                       <option value="TODO">To Do</option>
                       <option value="IN_PROGRESS">In Progress</option>
@@ -1236,9 +1236,9 @@ const CircleWorkspace = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Priority</label>
+                    <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Priority</label>
                     <select value={selectedTask.priority} onChange={e => updateTaskDetails(selectedTask.id, { priority: e.target.value })}
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-2 text-[11px] font-bold text-white outline-none cursor-pointer appearance-none">
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-2 text-[11px] font-bold text-[var(--text-primary)] outline-none cursor-pointer appearance-none">
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
                       <option value="HIGH">High</option>
@@ -1246,24 +1246,24 @@ const CircleWorkspace = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Story Pts</label>
+                    <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Story Pts</label>
                     <input type="number" min="1" value={selectedTask.estimatedEffort || ''} onChange={e => updateTaskDetails(selectedTask.id, { estimatedEffort: e.target.value ? parseInt(e.target.value) : null })}
-                      placeholder="—" className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white outline-none" />
+                      placeholder="—" className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-[var(--text-primary)] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Labels</label>
+                    <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Labels</label>
                     <input type="text" value={selectedTask.labels || ''} onChange={e => updateTaskDetails(selectedTask.id, { labels: e.target.value })}
-                      placeholder="design, UI" className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white outline-none" />
+                      placeholder="design, UI" className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-[var(--text-primary)] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Deadline</label>
+                    <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Deadline</label>
                     <input type="date" value={selectedTask.deadline ? selectedTask.deadline.split('T')[0] : ''} onChange={e => updateTaskDetails(selectedTask.id, { deadline: e.target.value || null })}
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white outline-none cursor-pointer" />
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-[var(--text-primary)] outline-none cursor-pointer" />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Assignee</label>
+                    <label className="block text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Assignee</label>
                     <select value={selectedTask.assignedTo || ''} onChange={e => updateTaskDetails(selectedTask.id, { assignedTo: e.target.value || null })}
-                      className="w-full bg-[#0F131E] border border-white/[0.06] rounded-lg px-2.5 py-2 text-[11px] font-bold text-white outline-none cursor-pointer appearance-none">
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-2 text-[11px] font-bold text-[var(--text-primary)] outline-none cursor-pointer appearance-none">
                       <option value="">Unassigned</option>
                       {circle.members?.map(m => (
                         <option key={m.userId} value={m.userId}>@{m.user?.username || 'member'}</option>
@@ -1274,10 +1274,10 @@ const CircleWorkspace = () => {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider mb-1.5">Description</label>
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Description</label>
                   <textarea value={detailDesc} onChange={e => setDetailDesc(e.target.value)} rows={3}
                     placeholder="Add a description..."
-                    className="w-full bg-[#181D2A] border border-white/[0.06] rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/30 outline-none transition font-medium resize-none" />
+                    className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/30 outline-none transition font-medium resize-none" />
                   {detailDesc !== (selectedTask.description || '') && (
                     <button onClick={() => updateTaskDetails(selectedTask.id, { description: detailDesc })}
                       className="mt-2 bg-[#7B5CFA] text-white px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-[#6B4CE0] transition">
@@ -1289,15 +1289,15 @@ const CircleWorkspace = () => {
                 {/* Subtasks */}
                 <div>
                   <div className="flex items-center justify-between mb-2.5">
-                    <label className="text-[10px] font-bold text-[#5A6478] uppercase tracking-wider">Subtasks</label>
-                    <span className="text-[9px] font-bold text-[#5A6478] bg-white/[0.04] px-2 py-0.5 rounded-md">
+                    <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Subtasks</label>
+                    <span className="text-[9px] font-bold text-[var(--text-muted)] bg-white/[0.04] px-2 py-0.5 rounded-md">
                       {selectedTask.subtasks?.filter(s => s.status === 'APPROVED' || s.status === 'COMPLETED').length || 0}/{selectedTask.subtasks?.length || 0}
                     </span>
                   </div>
 
                   <div className="space-y-1.5 mb-2.5">
                     {selectedTask.subtasks?.map(sub => (
-                      <div key={sub.id} className="flex items-center gap-2.5 bg-[#181D2A] border border-white/[0.04] px-3 py-2 rounded-lg">
+                      <div key={sub.id} className="flex items-center gap-2.5 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] px-3 py-2 rounded-lg">
                         <input 
                           type="checkbox"
                           checked={sub.status === 'APPROVED' || sub.status === 'COMPLETED'}
@@ -1313,16 +1313,16 @@ const CircleWorkspace = () => {
                               alert("Failed to toggle subtask.");
                             }
                           }}
-                          className="w-3.5 h-3.5 rounded text-[#7B5CFA] border-white/10 cursor-pointer accent-[#7B5CFA]"
+                          className="w-3.5 h-3.5 rounded text-[#7B5CFA] border-[var(--border-secondary)] cursor-pointer accent-[#7B5CFA]"
                         />
-                        <span className={`text-[12px] font-medium ${sub.status === 'APPROVED' || sub.status === 'COMPLETED' ? 'line-through text-[#5A6478]' : 'text-white'}`}>
+                        <span className={`text-[12px] font-medium ${sub.status === 'APPROVED' || sub.status === 'COMPLETED' ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-primary)]'}`}>
                           {sub.title}
                         </span>
                       </div>
                     ))}
                     
                     {(!selectedTask.subtasks || selectedTask.subtasks.length === 0) && (
-                      <p className="text-[11px] text-[#5A6478] italic bg-[#181D2A] p-3 rounded-lg border border-dashed border-white/[0.06] text-center">
+                      <p className="text-[11px] text-[var(--text-muted)] italic bg-[var(--bg-surface-alt)] p-3 rounded-lg border border-dashed border-[var(--border-primary)] text-center">
                         No subtasks yet
                       </p>
                     )}
@@ -1330,25 +1330,25 @@ const CircleWorkspace = () => {
 
                   <form onSubmit={handleAddSubtask} className="flex items-center gap-2">
                     <input type="text" value={newSubtaskTitle} onChange={e => setNewSubtaskTitle(e.target.value)}
-                      placeholder="+ Add subtask..." className="flex-1 bg-[#181D2A] border border-white/[0.06] rounded-lg px-3 py-2 text-[12px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/30 outline-none transition font-medium" />
-                    <button type="submit" className="bg-white/[0.06] hover:bg-white/[0.1] text-white px-3 py-2 rounded-lg text-[10px] font-bold transition">
+                      placeholder="+ Add subtask..." className="flex-1 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-lg px-3 py-2 text-[12px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/30 outline-none transition font-medium" />
+                    <button type="submit" className="bg-white/[0.06] hover:bg-white/[0.1] text-[var(--text-primary)] px-3 py-2 rounded-lg text-[10px] font-bold transition">
                       Add
                     </button>
                   </form>
                 </div>
 
                 {/* Comments */}
-                <div className="border-t border-white/[0.04] pt-5 space-y-3">
+                <div className="border-t border-[var(--border-primary)] pt-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-bold text-[#5A6478] uppercase tracking-wider">Comments</label>
-                    <span className="text-[9px] font-bold text-[#5A6478] bg-white/[0.04] px-2 py-0.5 rounded-md">
+                    <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Comments</label>
+                    <span className="text-[9px] font-bold text-[var(--text-muted)] bg-white/[0.04] px-2 py-0.5 rounded-md">
                       {selectedTask.comments?.length || 0}
                     </span>
                   </div>
 
                   <form onSubmit={handleAddTaskComment} className="flex items-start gap-2">
                     <input type="text" value={commentInput} onChange={e => setCommentInput(e.target.value)}
-                      placeholder="Write a comment..." className="flex-1 bg-[#181D2A] border border-white/[0.06] rounded-lg px-3 py-2 text-[12px] text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/30 outline-none transition font-medium" />
+                      placeholder="Write a comment..." className="flex-1 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-lg px-3 py-2 text-[12px] text-[var(--text-primary)] placeholder-[#5A6478] focus:border-[#7B5CFA]/30 outline-none transition font-medium" />
                     <button type="submit" className="bg-[#7B5CFA] hover:bg-[#6B4CE0] text-white px-3 py-2 rounded-lg text-[10px] font-bold transition">
                       Post
                     </button>
@@ -1358,28 +1358,28 @@ const CircleWorkspace = () => {
                     {selectedTask.comments?.slice().sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)).map(c => {
                       const isSystem = c.user?.username === 'SYSTEM' || !c.user;
                       return (
-                        <div key={c.id} className={`p-3 rounded-xl border ${isSystem ? 'bg-[#FFAB4C]/5 border-[#FFAB4C]/10' : 'bg-[#181D2A] border-white/[0.04]'}`}>
+                        <div key={c.id} className={`p-3 rounded-xl border ${isSystem ? 'bg-[#FFAB4C]/5 border-[#FFAB4C]/10' : 'bg-[var(--bg-surface-alt)] border-[var(--border-primary)]'}`}>
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-bold text-white">
+                            <span className="text-[10px] font-bold text-[var(--text-primary)]">
                               {isSystem ? '⚙ System' : `@${c.user?.username}`}
                             </span>
-                            <span className="text-[9px] text-[#5A6478]">
+                            <span className="text-[9px] text-[var(--text-muted)]">
                               {new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
-                          <p className="text-[12px] text-[#8B95A5] leading-relaxed">{c.content}</p>
+                          <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">{c.content}</p>
                         </div>
                       );
                     })}
                     {(!selectedTask.comments || selectedTask.comments.length === 0) && (
-                      <p className="text-[11px] text-[#5A6478] italic text-center py-2">No comments yet</p>
+                      <p className="text-[11px] text-[var(--text-muted)] italic text-center py-2">No comments yet</p>
                     )}
                   </div>
                 </div>
 
                 {/* Audit Trail */}
-                <div className="border-t border-white/[0.04] pt-5 space-y-2.5">
-                  <label className="block text-[10px] font-bold text-[#5A6478] uppercase tracking-wider">Activity Log</label>
+                <div className="border-t border-[var(--border-primary)] pt-5 space-y-2.5">
+                  <label className="block text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Activity Log</label>
                   <div className="space-y-1.5 max-h-36 overflow-y-auto no-scrollbar">
                     {(() => {
                       let logs = [];
@@ -1392,17 +1392,17 @@ const CircleWorkspace = () => {
                       } catch (err) { console.error(err); }
                       
                       if (logs.length === 0) {
-                        return <p className="text-[11px] text-[#5A6478] italic text-center py-2">No activity logged yet</p>;
+                        return <p className="text-[11px] text-[var(--text-muted)] italic text-center py-2">No activity logged yet</p>;
                       }
 
                       return logs.slice().reverse().map((log, idx) => (
-                        <div key={idx} className="flex items-start gap-2 bg-[#181D2A]/60 p-2.5 rounded-lg border border-white/[0.03] text-[10px]">
-                          <Clock size={11} className="mt-0.5 text-[#5A6478] flex-shrink-0" />
+                        <div key={idx} className="flex items-start gap-2 bg-[var(--bg-surface-alt)]/60 p-2.5 rounded-lg border border-[var(--border-primary)] text-[10px]">
+                          <Clock size={11} className="mt-0.5 text-[var(--text-muted)] flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <p className="text-white font-medium">
+                            <p className="text-[var(--text-primary)] font-medium">
                               <span className="text-[#7B5CFA]">{log.user || 'Someone'}</span> {log.action}
                             </p>
-                            <p className="text-[9px] text-[#5A6478] mt-0.5">
+                            <p className="text-[9px] text-[var(--text-muted)] mt-0.5">
                               {new Date(log.timestamp).toLocaleString()}
                             </p>
                           </div>
@@ -1425,28 +1425,28 @@ const CircleWorkspace = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#181D2A] border border-white/[0.06] rounded-2xl w-full max-w-md shadow-2xl p-6"
+              className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl w-full max-w-md shadow-2xl p-6"
             >
               <div className="flex items-center gap-2.5 text-[#FF4757] mb-4">
                 <AlertTriangle size={22} />
                 <h3 className="text-lg font-bold">Return Task</h3>
               </div>
 
-              <p className="text-[12px] text-[#8B95A5] leading-relaxed mb-4">
-                You're moving <span className="font-bold text-white">{pendingRejectionTask.taskCode}</span> backwards. 
+              <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-4">
+                You're moving <span className="font-bold text-[var(--text-primary)]">{pendingRejectionTask.taskCode}</span> backwards. 
                 Please explain what changes are needed.
               </p>
 
               <textarea 
                 value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} required rows={4}
                 placeholder="Describe what needs to change..."
-                className="w-full bg-[#0F131E] border border-white/[0.06] rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-[#5A6478] outline-none focus:border-[#FF4757]/30 transition font-medium resize-none"
+                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] placeholder-[#5A6478] outline-none focus:border-[#FF4757]/30 transition font-medium resize-none"
               />
 
               <div className="flex gap-3 mt-5">
                 <button type="button"
                   onClick={() => { setIsRejectionModalOpen(false); setPendingRejectionTask(null); setPendingRejectionStatus(null); }}
-                  className="flex-1 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-xl text-[11px] font-bold text-[#8B95A5] hover:bg-white/[0.06] hover:text-white transition">
+                  className="flex-1 py-2.5 bg-white/[0.04] border border-[var(--border-primary)] rounded-xl text-[11px] font-bold text-[var(--text-secondary)] hover:bg-white/[0.06] hover:text-[var(--text-primary)] transition">
                   Cancel
                 </button>
                 <button type="button"
@@ -1457,7 +1457,7 @@ const CircleWorkspace = () => {
                     setPendingRejectionTask(null);
                     setPendingRejectionStatus(null);
                   }}
-                  className="flex-1 py-2.5 bg-[#FF4757] hover:bg-[#FF3344] text-white rounded-xl text-[11px] font-bold shadow-lg shadow-[#FF4757]/20 transition">
+                  className="flex-1 py-2.5 bg-[#FF4757] hover:bg-[#FF3344] text-[var(--text-primary)] rounded-xl text-[11px] font-bold shadow-lg shadow-[#FF4757]/20 transition">
                   Confirm Return
                 </button>
               </div>

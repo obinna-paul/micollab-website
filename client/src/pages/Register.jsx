@@ -157,7 +157,7 @@ const Register = () => {
   const primaryCategory = selectedCategories.length > 0 ? CATEGORIES.find(c => c.id === selectedCategories[0]) : null;
 
   return (
-    <div className="min-h-screen bg-[#0F131E] flex flex-col lg:flex-row relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[var(--bg-base)] flex flex-col lg:flex-row relative overflow-hidden font-sans">
       {/* Subtle Grid Background */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-40" 
@@ -171,27 +171,27 @@ const Register = () => {
       <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-20 relative z-10 min-h-[50vh] lg:min-h-screen">
         <Link to="/" className="flex items-center gap-3 mb-16 lg:mb-24 w-fit group">
           <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20 group-hover:bg-[#684CE0] transition-colors">M</div>
-          <h1 className="text-2xl font-black text-white tracking-tighter">Micollab</h1>
+          <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">Micollab</h1>
         </Link>
         
         <div className="max-w-xl">
           <AnimatePresence mode="wait">
             {step === 1 && (
               <motion.div key="m-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>
                 </h2>
-                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
                   Set up your account details to finalize your profile and enter the Micollab ecosystem.
                 </p>
                 
-                <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
+                <div className="flex items-center gap-4 bg-[var(--bg-surface-alt)] w-fit p-4 pr-8 rounded-2xl border border-[var(--border-primary)] shadow-xl">
                   <div className="w-10 h-10 rounded-full bg-[#10B981]/10 flex items-center justify-center">
                     <Lock size={20} className="text-[#10B981]" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-bold">Secure Profile</p>
-                    <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Your data is safe with us</p>
+                    <p className="text-[var(--text-primary)] text-sm font-bold">Secure Profile</p>
+                    <p className="text-[var(--text-secondary)] text-xs font-medium mt-0.5">Your data is safe with us</p>
                   </div>
                 </div>
               </motion.div>
@@ -199,20 +199,20 @@ const Register = () => {
 
             {step === 2 && (
               <motion.div key="m-step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Define Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Craft.</span>
                 </h2>
-                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
                   Tell us what you do so we can tailor your multiverse experience and connect you with the right collaborators.
                 </p>
                 
-                <div className="flex items-center gap-4 bg-[#181D2A] w-fit p-4 pr-8 rounded-2xl border border-white/5 shadow-xl">
+                <div className="flex items-center gap-4 bg-[var(--bg-surface-alt)] w-fit p-4 pr-8 rounded-2xl border border-[var(--border-primary)] shadow-xl">
                   <div className="w-10 h-10 rounded-full bg-[#7B5CFA]/10 flex items-center justify-center">
                     <Sparkles size={20} className="text-[#A37BFF]" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-bold">Personalized Feed</p>
-                    <p className="text-[#8B95A5] text-xs font-medium mt-0.5">Based on your selections</p>
+                    <p className="text-[var(--text-primary)] text-sm font-bold">Personalized Feed</p>
+                    <p className="text-[var(--text-secondary)] text-xs font-medium mt-0.5">Based on your selections</p>
                   </div>
                 </div>
               </motion.div>
@@ -220,22 +220,22 @@ const Register = () => {
 
             {step === 3 && (
               <motion.div key="m-step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Refine Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Focus.</span>
                 </h2>
-                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
                   Dive deeper into your expertise. This helps us suggest the perfect projects, briefs, and creative circles for you.
                 </p>
                 
-                <div className="flex flex-col gap-4 bg-[#181D2A] w-fit p-5 rounded-2xl border border-white/5 shadow-xl max-w-sm">
+                <div className="flex flex-col gap-4 bg-[var(--bg-surface-alt)] w-fit p-5 rounded-2xl border border-[var(--border-primary)] shadow-xl max-w-sm">
                   <div className="flex items-center gap-3">
                     <Target size={18} className="text-[#00B5D8]" />
-                    <p className="text-white text-sm font-bold">Match Accuracy</p>
+                    <p className="text-[var(--text-primary)] text-sm font-bold">Match Accuracy</p>
                   </div>
-                  <div className="w-full h-1.5 bg-[#0F131E] rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-[var(--bg-base)] rounded-full overflow-hidden">
                     <div className="w-1/2 h-full bg-gradient-to-r from-[#7B5CFA] to-[#00B5D8] rounded-full" />
                   </div>
-                  <p className="text-[#8B95A5] text-[11px] font-medium leading-relaxed">
+                  <p className="text-[var(--text-secondary)] text-[11px] font-medium leading-relaxed">
                     Adding specific tags increases your visibility to the right collaborators.
                   </p>
                 </div>
@@ -244,14 +244,14 @@ const Register = () => {
 
             {step === 4 && (
               <motion.div key="m-step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <h2 className="text-4xl lg:text-6xl font-black text-white mb-6 leading-[1.1] tracking-tight">
+                <h2 className="text-4xl lg:text-6xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   You're <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">All Set.</span>
                 </h2>
-                <p className="text-[#8B95A5] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
+                <p className="text-[var(--text-secondary)] text-lg lg:text-xl leading-relaxed mb-12 max-w-md font-medium">
                   Your creative profile is primed. Get ready to connect, collaborate, and bring your visionary projects to life.
                 </p>
                 
-                <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-6 shadow-xl w-fit min-w-[300px]">
+                <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-6 shadow-xl w-fit min-w-[300px]">
                   <div className="flex items-center gap-4 mb-4">
                     <img 
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(accountDetails.username || 'User')}&background=7B5CFA&color=fff`} 
@@ -259,7 +259,7 @@ const Register = () => {
                       alt="Avatar" 
                     />
                     <div>
-                      <h3 className="text-white font-bold text-lg">{accountDetails.username || 'Creator'}</h3>
+                      <h3 className="text-[var(--text-primary)] font-bold text-lg">{accountDetails.username || 'Creator'}</h3>
                       <p className="text-[#00B5D8] text-sm font-bold">{selectedSpecializations[0] || (primaryCategory ? primaryCategory.label : 'Creative')}</p>
                     </div>
                   </div>
@@ -270,7 +270,7 @@ const Register = () => {
                       </div>
                     ))}
                     {selectedSpecializations.length > 3 && (
-                      <div className="px-2.5 py-1 bg-white/5 rounded text-[#8B95A5] text-[10px] font-bold">
+                      <div className="px-2.5 py-1 bg-white/5 rounded text-[var(--text-secondary)] text-[10px] font-bold">
                         +{selectedSpecializations.length - 3}
                       </div>
                     )}
@@ -287,7 +287,7 @@ const Register = () => {
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-xl bg-[#181D2A] p-8 md:p-10 rounded-[2rem] border border-white/5 relative overflow-hidden"
+          className="w-full max-w-xl bg-[var(--bg-surface-alt)] p-8 md:p-10 rounded-[2rem] border border-[var(--border-primary)] relative overflow-hidden"
           style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
         >
           {/* Top colored indicator line */}
@@ -298,7 +298,7 @@ const Register = () => {
             {/* STEP 1: ACCOUNT DETAILS */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -309,8 +309,8 @@ const Register = () => {
                 </div>
 
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-white mb-2">Create your account</h2>
-                  <p className="text-[#8B95A5] font-medium text-sm">Let's get started.</p>
+                  <h2 className="text-3xl font-black text-[var(--text-primary)] mb-2">Create your account</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm">Let's get started.</p>
                 </div>
 
                 {error && (
@@ -322,51 +322,51 @@ const Register = () => {
 
                 <form onSubmit={handleStep1Submit} className="space-y-5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-white ml-1">Username</label>
+                    <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Username</label>
                     <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={18} />
                       <input 
                         type="text" 
                         required
                         value={accountDetails.username}
                         onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
                         placeholder="creative_soul"
-                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-white ml-1">Email Address</label>
+                    <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Email Address</label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={18} />
                       <input 
                         type="email" 
                         required
                         value={accountDetails.email}
                         onChange={(e) => setAccountDetails({...accountDetails, email: e.target.value})}
                         placeholder="you@example.com"
-                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-white ml-1">Password</label>
+                    <label className="text-xs font-bold text-[var(--text-primary)] ml-1">Password</label>
                     <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" size={18} />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={18} />
                       <input 
                         type={showPassword ? "text" : "password"} 
                         required
                         value={accountDetails.password}
                         onChange={(e) => setAccountDetails({...accountDetails, password: e.target.value})}
                         placeholder="••••••••"
-                        className="w-full bg-[#0F131E] border border-white/5 rounded-xl py-3 pl-12 pr-12 text-white outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 pl-12 pr-12 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium tracking-widest placeholder-[#8B95A5]/50"
                       />
                       <button 
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B95A5] hover:text-white transition"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
                       >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -383,9 +383,9 @@ const Register = () => {
                     )}
                   </button>
 
-                  <p className="pt-4 text-center text-[#8B95A5] text-xs font-bold">
+                  <p className="pt-4 text-center text-[var(--text-secondary)] text-xs font-bold">
                     Already have an account? {' '}
-                    <Link to="/login" className="text-[#00B5D8] hover:text-white transition">Log in</Link>
+                    <Link to="/login" className="text-[#00B5D8] hover:text-[var(--text-primary)] transition">Log in</Link>
                   </p>
                 </form>
               </motion.div>
@@ -394,7 +394,7 @@ const Register = () => {
             {/* STEP 2: CATEGORIES */}
             {step === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
@@ -404,13 +404,13 @@ const Register = () => {
                   <span>Step 2 of 4</span>
                 </div>
 
-                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
+                <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition mb-6 flex items-center gap-1">
                   <ArrowLeft size={14} /> Back
                 </button>
 
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-black text-white mb-2">What describes you best?</h2>
-                  <p className="text-[#8B95A5] font-medium text-sm">Select one or more broad categories.</p>
+                  <h2 className="text-3xl font-black text-[var(--text-primary)] mb-2">What describes you best?</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm">Select one or more broad categories.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
@@ -424,27 +424,27 @@ const Register = () => {
                         className={`relative flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
                           isSelected 
                             ? 'border-[#7B5CFA] bg-[#7B5CFA]/10 shadow-[0_0_15px_rgba(123,92,250,0.15)]' 
-                            : 'border-white/5 bg-[#181D2A] hover:border-white/10 hover:bg-white/5'
+                            : 'border-[var(--border-primary)] bg-[var(--bg-surface-alt)] hover:border-[var(--border-secondary)] hover:bg-white/5'
                         }`}
                       >
                         <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
                           isSelected ? 'bg-[#7B5CFA]' : 'bg-white/5 group-hover:bg-white/10'
                         }`}>
-                          <Icon size={18} className={isSelected ? 'text-white' : 'text-[#8B95A5] group-hover:text-white'} />
+                          <Icon size={18} className={isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]'} />
                         </div>
                         <div className="flex-1 pr-6">
                           <p className={`font-bold text-sm leading-tight mb-1 transition-colors ${
-                            isSelected ? 'text-white' : 'text-white/90 group-hover:text-white'
+                            isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)]/90 group-hover:text-[var(--text-primary)]'
                           }`}>
                             {category.label}
                           </p>
-                          <p className="text-[#8B95A5] text-[10px] leading-snug">
+                          <p className="text-[var(--text-secondary)] text-[10px] leading-snug">
                             {category.subtitle}
                           </p>
                         </div>
                         {isSelected && (
                           <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#7B5CFA] rounded-full p-0.5">
-                            <Check size={12} className="text-white" strokeWidth={4} />
+                            <Check size={12} className="text-[var(--text-primary)]" strokeWidth={4} />
                           </div>
                         )}
                       </button>
@@ -455,7 +455,7 @@ const Register = () => {
                 <button 
                   onClick={() => setStep(3)}
                   disabled={selectedCategories.length === 0}
-                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
                   Next Step <ChevronRight size={18} />
                 </button>
@@ -465,7 +465,7 @@ const Register = () => {
             {/* STEP 3: SPECIALIZATIONS */}
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -475,7 +475,7 @@ const Register = () => {
                   <span>STEP 3 OF 4</span>
                 </div>
 
-                <button onClick={() => setStep(2)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-4 flex items-center gap-1">
+                <button onClick={() => setStep(2)} className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition mb-4 flex items-center gap-1">
                   <ArrowLeft size={14} /> Back
                 </button>
 
@@ -496,24 +496,24 @@ const Register = () => {
                 )}
 
                 <div className="mb-6">
-                  <h2 className="text-2xl lg:text-3xl font-black text-white mb-2">What's your specialty?</h2>
-                  <p className="text-[#8B95A5] font-medium text-sm">Select tags that define your specific skills within your chosen categories.</p>
+                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2">What's your specialty?</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm">Select tags that define your specific skills within your chosen categories.</p>
                 </div>
 
                 <div className="relative mb-6">
-                  <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B95A5]" />
+                  <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
                   <input 
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search skills (e.g., Mixing, Beatmaking)..."
-                    className="w-full bg-[#181D2A] border border-white/5 rounded-xl py-3 pl-10 pr-4 text-white outline-none focus:border-[#7B5CFA]/50 transition font-medium placeholder-[#8B95A5] text-sm"
+                    className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-xl py-3 pl-10 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA]/50 transition font-medium placeholder-[#8B95A5] text-sm"
                   />
                 </div>
 
                 <div className="max-h-[35vh] overflow-y-auto pr-2 custom-scrollbar">
                    {availableSpecializations.length === 0 ? (
-                     <p className="py-8 text-center text-[#8B95A5] text-sm font-bold">Please go back and select a category.</p>
+                     <p className="py-8 text-center text-[var(--text-secondary)] text-sm font-bold">Please go back and select a category.</p>
                    ) : (
                      <div className="flex flex-wrap gap-2.5 pb-4">
                        {availableSpecializations.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase())).map(spec => {
@@ -525,7 +525,7 @@ const Register = () => {
                               className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all ${
                                 isSelected 
                                   ? 'bg-[#7B5CFA]/10 text-white border-[#7B5CFA] shadow-[0_0_10px_rgba(123,92,250,0.15)]' 
-                                  : 'bg-[#181D2A] text-[#8B95A5] border-white/5 hover:border-white/20 hover:text-white'
+                                  : 'bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] border-[var(--border-primary)] hover:border-white/20 hover:text-[var(--text-primary)]'
                               }`}
                             >
                               {spec}
@@ -539,7 +539,7 @@ const Register = () => {
                 <button 
                   onClick={() => setStep(4)}
                   disabled={selectedSpecializations.length === 0}
-                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[#0F131E] disabled:text-[#8B95A5] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
+                  className="w-full py-3.5 mt-4 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
                 >
                   Next Step <ChevronRight size={18} />
                 </button>
@@ -549,7 +549,7 @@ const Register = () => {
             {/* STEP 4: SUMMARY & SUBMIT */}
             {step === 4 && (
               <motion.div key="step4" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[#8B95A5] tracking-widest uppercase">
+                <div className="flex items-center justify-between mb-8 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
@@ -559,16 +559,16 @@ const Register = () => {
                   <span>STEP 4 OF 4</span>
                 </div>
 
-                <button onClick={() => setStep(3)} className="text-xs font-bold text-[#A37BFF] hover:text-white transition mb-6 flex items-center gap-1">
+                <button onClick={() => setStep(3)} className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition mb-6 flex items-center gap-1">
                   <ArrowLeft size={14} /> Back
                 </button>
 
                 <div className="text-center mb-8 flex flex-col items-center">
                   <div className="w-16 h-16 bg-[#7B5CFA] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(123,92,250,0.4)]">
-                    <Rocket size={32} className="text-white" />
+                    <Rocket size={32} className="text-[var(--text-primary)]" />
                   </div>
-                  <h2 className="text-2xl lg:text-3xl font-black text-white mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
-                  <p className="text-[#8B95A5] font-medium text-sm">Your workspace is ready. Discover briefs, connect with peers, and start creating.</p>
+                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm">Your workspace is ready. Discover briefs, connect with peers, and start creating.</p>
                 </div>
 
                 {error && (
@@ -579,25 +579,25 @@ const Register = () => {
                 )}
 
                 <div className="grid grid-cols-2 gap-3 mb-8">
-                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                  <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-4 hover:border-[var(--border-secondary)] transition-colors">
                     <Layers size={16} className="text-[#00B5D8] mb-2" />
-                    <p className="text-white text-xs font-bold mb-0.5">Category</p>
-                    <p className="text-[#8B95A5] text-[10px] truncate">{primaryCategory ? primaryCategory.label : 'None'}</p>
+                    <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Category</p>
+                    <p className="text-[var(--text-secondary)] text-[10px] truncate">{primaryCategory ? primaryCategory.label : 'None'}</p>
                   </div>
-                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                  <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-4 hover:border-[var(--border-secondary)] transition-colors">
                     <Tag size={16} className="text-[#A37BFF] mb-2" />
-                    <p className="text-white text-xs font-bold mb-0.5">Specialties</p>
-                    <p className="text-[#8B95A5] text-[10px] truncate">{selectedSpecializations.slice(0,3).join(', ')}</p>
+                    <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Specialties</p>
+                    <p className="text-[var(--text-secondary)] text-[10px] truncate">{selectedSpecializations.slice(0,3).join(', ')}</p>
                   </div>
-                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                  <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-4 hover:border-[var(--border-secondary)] transition-colors">
                     <User size={16} className="text-[#EC4899] mb-2" />
-                    <p className="text-white text-xs font-bold mb-0.5">Role</p>
-                    <p className="text-[#8B95A5] text-[10px] truncate">{selectedSpecializations[0] || 'Creator'}</p>
+                    <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Role</p>
+                    <p className="text-[var(--text-secondary)] text-[10px] truncate">{selectedSpecializations[0] || 'Creator'}</p>
                   </div>
-                  <div className="bg-[#181D2A] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-colors">
+                  <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-4 hover:border-[var(--border-secondary)] transition-colors">
                     <Handshake size={16} className="text-[#10B981] mb-2" />
-                    <p className="text-white text-xs font-bold mb-0.5">Open To</p>
-                    <p className="text-[#8B95A5] text-[10px] truncate">Remote Collabs</p>
+                    <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Open To</p>
+                    <p className="text-[var(--text-secondary)] text-[10px] truncate">Remote Collabs</p>
                   </div>
                 </div>
 

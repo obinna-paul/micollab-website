@@ -17,7 +17,7 @@ const FilterChip = ({ label, active, onClick }) => (
     className={`flex-shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
       active 
         ? 'bg-[#7B5CFA] text-white border-[#7B5CFA] shadow-lg shadow-[#7B5CFA]/20' 
-        : 'bg-[#181D2A] text-[#8B95A5] border-white/[0.06] hover:border-[#7B5CFA]/30 hover:text-white'
+        : 'bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] border-[var(--border-primary)] hover:border-[#7B5CFA]/30 hover:text-[var(--text-primary)]'
     }`}
   >
     {label}
@@ -108,14 +108,14 @@ const Collabs = () => {
       {/* Header */}
       <div className="mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 px-4 md:px-0">
         <div className="hidden md:block">
-          <h1 className="text-4xl font-black text-white tracking-tighter flex items-center gap-3">
+          <h1 className="text-4xl font-black text-[var(--text-primary)] tracking-tighter flex items-center gap-3">
             <Briefcase size={36} className="text-[#7B5CFA]" />
             Collabs Hub
           </h1>
-          <p className="text-[#8B95A5] mt-1 text-sm font-medium">Discover premium creative collabs and professional partnerships.</p>
+          <p className="text-[var(--text-secondary)] mt-1 text-sm font-medium">Discover premium creative collabs and professional partnerships.</p>
         </div>
         
-        <h1 className="md:hidden text-2xl font-black text-white tracking-tighter flex items-center gap-2">
+        <h1 className="md:hidden text-2xl font-black text-[var(--text-primary)] tracking-tighter flex items-center gap-2">
           <Briefcase size={24} className="text-[#7B5CFA]" />
           Collabs
         </h1>
@@ -128,22 +128,22 @@ const Collabs = () => {
         </button>
       </div>
 
-      <div className="flex border-b border-white/[0.04] mb-4 md:mb-10 overflow-x-auto no-scrollbar px-4 md:px-0 sticky top-[56px] md:top-0 bg-[#0F131E]/90 backdrop-blur-xl z-40 md:static md:bg-transparent md:backdrop-blur-none">
+      <div className="flex border-b border-[var(--border-primary)] mb-4 md:mb-10 overflow-x-auto no-scrollbar px-4 md:px-0 sticky top-[56px] md:top-0 bg-[var(--bg-base)]/90 backdrop-blur-xl z-40 md:static md:bg-transparent md:backdrop-blur-none">
         <button 
           onClick={() => setActiveView('EXPLORE')}
-          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'EXPLORE' ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[#5A6478] hover:text-[#8B95A5]'}`}
+          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'EXPLORE' ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
         >
           Explore
         </button>
         <button 
           onClick={() => setActiveView('POSTINGS')}
-          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'POSTINGS' ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[#5A6478] hover:text-[#8B95A5]'}`}
+          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'POSTINGS' ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
         >
           My Postings
         </button>
         <button 
           onClick={() => setActiveView('APPLICATIONS')}
-          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'APPLICATIONS' ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[#5A6478] hover:text-[#8B95A5]'}`}
+          className={`flex-shrink-0 px-6 md:px-8 py-4 md:py-5 text-[10px] font-black uppercase tracking-widest transition-all border-b-2 ${activeView === 'APPLICATIONS' ? 'border-[#7B5CFA] text-[#7B5CFA]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
         >
           My Proposals
         </button>
@@ -160,13 +160,13 @@ const Collabs = () => {
         <div className="lg:col-span-9 space-y-6 px-0 md:px-0">
           {activeView === 'EXPLORE' && (
             <>
-              <div className="sticky top-[100px] md:relative z-30 bg-[#0F131E]/90 backdrop-blur-xl pb-4 px-4 md:px-0 md:bg-transparent md:backdrop-blur-none">
+              <div className="relative z-30 mb-8 px-4 md:px-0">
                 <div className="relative mb-4 group">
-                  <Search className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-[#5A6478] group-focus-within:text-[#7B5CFA] transition-colors" size={20} />
+                  <Search className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--accent)] transition-colors" size={20} />
                   <input 
                     type="text" 
                     placeholder="Search collabs..."
-                    className="w-full bg-[#181D2A] border border-white/[0.06] rounded-2xl py-4 md:py-5 pl-12 md:pl-14 pr-6 text-sm md:text-base font-medium text-white placeholder-[#5A6478] focus:border-[#7B5CFA]/40 outline-none shadow-sm transition-all shadow-inner"
+                    className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl py-4 md:py-5 pl-12 md:pl-14 pr-6 text-sm md:text-base font-medium text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--accent)]/40 outline-none shadow-sm transition-all"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && fetchCollabs()}
@@ -177,7 +177,7 @@ const Collabs = () => {
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar md:hidden">
                    <button 
                      onClick={() => setIsFilterModalOpen(true)}
-                     className="flex-shrink-0 w-10 h-10 rounded-full border border-white/[0.06] flex items-center justify-center bg-[#181D2A] text-white"
+                     className="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--border-primary)] flex items-center justify-center bg-[var(--bg-surface-alt)] text-[var(--text-primary)]"
                    >
                      <Filter size={16} />
                    </button>
@@ -191,7 +191,7 @@ const Collabs = () => {
               {loading ? (
                 <div className="py-20 text-center flex flex-col items-center gap-6">
                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#7B5CFA]"></div>
-                   <p className="text-[#8B95A5] font-black uppercase text-[10px] tracking-widest">Scouting...</p>
+                   <p className="text-[var(--text-secondary)] font-black uppercase text-[10px] tracking-widest">Scouting...</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-5 px-4 md:px-0">
@@ -205,58 +205,48 @@ const Collabs = () => {
                           setSelectedCollabId(collab.id);
                           setIsDrawerOpen(true);
                         }}
-                        className="bg-[#181D2A] border border-white/[0.04] p-6 md:p-8 rounded-[2rem] cursor-pointer hover:border-[#7B5CFA]/40 hover:shadow-2xl hover:shadow-[#7B5CFA]/10 transition-all group relative overflow-hidden"
+                        className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] p-6 md:p-8 rounded-[2rem] cursor-pointer hover:border-[#7B5CFA]/40 hover:shadow-2xl hover:shadow-[#7B5CFA]/10 transition-all group relative overflow-hidden"
                       >
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex-1 min-w-0 pr-4">
-                             <h3 className="text-xl md:text-2xl font-black text-white group-hover:text-[#7B5CFA] transition-colors tracking-tight line-clamp-2">{collab.title}</h3>
-                             <p className="text-[11px] text-[#5A6478] font-black uppercase tracking-widest mt-2 flex items-center gap-2">
+                             <h3 className="text-xl md:text-2xl font-black text-[var(--text-primary)] group-hover:text-[#7B5CFA] transition-colors tracking-tight line-clamp-2">{collab.title}</h3>
+                             <p className="text-[11px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-2 flex items-center gap-2">
                                {collab.category} 
                                {collab.isVerified && <span className="text-[#34D399] flex items-center gap-1"><ShieldCheck size={12}/> Verified Client</span>}
                              </p>
                           </div>
                           <div className="text-right flex-shrink-0">
-                             <p className="text-lg md:text-xl font-black text-white">{collab.budget}</p>
-                             <p className="text-[9px] text-[#8B95A5] font-black uppercase tracking-widest mt-1">Budget</p>
+                             <p className="text-lg md:text-xl font-black text-[var(--text-primary)]">{collab.budget}</p>
+                             <p className="text-[9px] text-[var(--text-secondary)] font-black uppercase tracking-widest mt-1">Budget</p>
                           </div>
                         </div>
 
-                        <p className="text-sm text-[#8B95A5] line-clamp-2 mb-6 leading-relaxed font-medium">
+                        <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-6 leading-relaxed font-medium">
                           {collab.description}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-2 mb-6">
-                           <span className="bg-[#0F131E] border border-white/[0.04] text-[#8B95A5] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                           <span className="bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-secondary)] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                               <MapPin size={12} className="text-[#7B5CFA]" /> {collab.location || 'Remote'}
                            </span>
-                           <span className="bg-[#0F131E] border border-white/[0.04] text-[#8B95A5] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                           <span className="bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-secondary)] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                               <Briefcase size={12} className="text-[#7B5CFA]" /> {collab.experienceLevel?.toLowerCase() || 'Any'}
                            </span>
-                           <span className="bg-[#0F131E] border border-white/[0.04] text-[#8B95A5] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                           <span className="bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-secondary)] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                               <Users size={12} className="text-[#7B5CFA]" /> {collab._count?.proposals || 0} Proposals
                            </span>
                         </div>
 
-                        <div className="pt-5 border-t border-white/[0.04] flex items-center gap-4">
-                          <img 
-                            src={collab.poster?.profileImage || `https://ui-avatars.com/api/?name=${collab.poster?.username || 'C'}`} 
-                            className="w-8 h-8 md:w-10 md:h-10 rounded-xl border border-white/[0.06] object-cover bg-[#0F131E]" 
-                            alt="" 
-                          />
-                          <div>
-                            <p className="text-xs md:text-sm font-black text-white">@{collab.poster?.username || 'creator'}</p>
-                            <p className="text-[9px] text-[#5A6478] font-black uppercase tracking-widest">{collab.poster?.profileType}</p>
-                          </div>
-                        </div>
+
                       </motion.div>
                     ))
                   ) : (
-                    <div className="bg-[#181D2A] border-2 border-dashed border-white/[0.06] p-20 rounded-[3rem] text-center">
-                       <div className="w-20 h-20 bg-[#0F131E] rounded-full flex items-center justify-center text-[#5A6478] mx-auto mb-6">
+                    <div className="bg-[var(--bg-surface-alt)] border-2 border-dashed border-[var(--border-primary)] p-20 rounded-[3rem] text-center">
+                       <div className="w-20 h-20 bg-[var(--bg-base)] rounded-full flex items-center justify-center text-[var(--text-muted)] mx-auto mb-6">
                           <AlertCircle size={40} className="opacity-50" />
                        </div>
-                       <h3 className="text-2xl font-black text-white tracking-tighter">No collabs found</h3>
-                       <p className="text-[#8B95A5] mt-2 font-medium text-sm">Try refining your filters or check back later.</p>
+                       <h3 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">No collabs found</h3>
+                       <p className="text-[var(--text-secondary)] mt-2 font-medium text-sm">Try refining your filters or check back later.</p>
                        <button 
                          onClick={() => setFilters({ category: '', locationType: '', experienceLevel: '', budgetRange: 'ALL', verifiedOnly: false })}
                          className="text-[#7B5CFA] font-black uppercase text-[10px] tracking-widest hover:underline mt-6"
@@ -273,7 +263,7 @@ const Collabs = () => {
           {activeView === 'POSTINGS' && (
             <div className="space-y-6 px-4 md:px-0">
                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest">Active Postings</h2>
+                  <h2 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Active Postings</h2>
                </div>
                
                {loading ? (
@@ -283,14 +273,14 @@ const Collabs = () => {
                ) : (
                  <div className="space-y-5">
                    {collabs.map(collab => (
-                     <div key={collab.id} className="bg-[#181D2A] border border-white/[0.04] p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-[#7B5CFA]/30 transition-all">
+                     <div key={collab.id} className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-[#7B5CFA]/30 transition-all">
                         <div className="flex-1">
-                           <h3 className="font-black text-white text-xl tracking-tight">{collab.title}</h3>
+                           <h3 className="font-black text-[var(--text-primary)] text-xl tracking-tight">{collab.title}</h3>
                            <div className="flex flex-wrap gap-4 mt-3">
-                              <span className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest flex items-center gap-1.5">
+                              <span className="text-[10px] text-[var(--text-secondary)] font-black uppercase tracking-widest flex items-center gap-1.5">
                                 <Users size={14} className="text-[#7B5CFA]" /> {collab._count?.proposals || 0} applicants
                               </span>
-                              <span className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest flex items-center gap-1.5">
+                              <span className="text-[10px] text-[var(--text-secondary)] font-black uppercase tracking-widest flex items-center gap-1.5">
                                 <Clock size={14} className="text-[#7B5CFA]" /> {new Date(collab.createdAt).toLocaleDateString()}
                               </span>
                            </div>
@@ -305,8 +295,8 @@ const Collabs = () => {
                    ))}
                    
                    {collabs.length === 0 && (
-                     <div className="bg-[#181D2A] border-2 border-dashed border-white/[0.06] p-20 rounded-[3rem] text-center">
-                        <p className="text-[#8B95A5] font-black uppercase text-[10px] tracking-widest">You haven't posted any opportunities yet.</p>
+                     <div className="bg-[var(--bg-surface-alt)] border-2 border-dashed border-[var(--border-primary)] p-20 rounded-[3rem] text-center">
+                        <p className="text-[var(--text-secondary)] font-black uppercase text-[10px] tracking-widest">You haven't posted any opportunities yet.</p>
                         <button onClick={() => navigate('/collabs/new')} className="text-[#7B5CFA] font-black uppercase text-xs hover:underline mt-6">Create Your First Collab</button>
                      </div>
                    )}
@@ -318,7 +308,7 @@ const Collabs = () => {
           {activeView === 'APPLICATIONS' && (
             <div className="space-y-6 px-4 md:px-0">
                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-[10px] font-black text-[#8B95A5] uppercase tracking-widest">Active Proposal Tracking</h2>
+                  <h2 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Active Proposal Tracking</h2>
                </div>
                
                {loading ? (
@@ -337,16 +327,16 @@ const Collabs = () => {
                      const sColor = statusColors[proposal.status] || statusColors.PENDING;
 
                      return (
-                       <div key={proposal.id} className="bg-[#181D2A] border border-white/[0.04] p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-white/[0.1] transition-all">
+                       <div key={proposal.id} className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-white/[0.1] transition-all">
                           <div className="flex-1">
-                             <p className="text-[9px] font-black text-[#5A6478] uppercase tracking-widest mb-1.5">Proposal for:</p>
-                             <h3 className="font-black text-white text-xl tracking-tight leading-tight">{proposal.collab?.title}</h3>
+                             <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1.5">Proposal for:</p>
+                             <h3 className="font-black text-[var(--text-primary)] text-xl tracking-tight leading-tight">{proposal.collab?.title}</h3>
                              <div className="flex flex-wrap items-center gap-4 mt-4">
                                 <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-md border ${sColor}`}>
                                   {proposal.status}
                                 </span>
-                                <span className="text-[10px] text-[#8B95A5] font-black uppercase tracking-widest flex items-center gap-1.5">
-                                  <Clock size={14} className="text-[#5A6478]" /> Sent {new Date(proposal.createdAt).toLocaleDateString()}
+                                <span className="text-[10px] text-[var(--text-secondary)] font-black uppercase tracking-widest flex items-center gap-1.5">
+                                  <Clock size={14} className="text-[var(--text-muted)]" /> Sent {new Date(proposal.createdAt).toLocaleDateString()}
                                 </span>
                              </div>
                           </div>
@@ -355,7 +345,7 @@ const Collabs = () => {
                                setSelectedCollabId(proposal.collabId);
                                setIsDrawerOpen(true);
                             }} 
-                            className="bg-[#0F131E] border border-white/[0.06] text-[#8B95A5] hover:text-white text-[11px] font-black px-6 py-3 rounded-xl uppercase tracking-widest transition-all w-full md:w-auto text-center"
+                            className="bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[11px] font-black px-6 py-3 rounded-xl uppercase tracking-widest transition-all w-full md:w-auto text-center"
                           >
                             View Collab
                           </button>
@@ -364,8 +354,8 @@ const Collabs = () => {
                    })}
                    
                    {collabs.length === 0 && (
-                     <div className="bg-[#181D2A] border-2 border-dashed border-white/[0.06] p-20 rounded-[3rem] text-center">
-                        <p className="text-[#8B95A5] font-black uppercase text-[10px] tracking-widest">No active proposals sent yet.</p>
+                     <div className="bg-[var(--bg-surface-alt)] border-2 border-dashed border-[var(--border-primary)] p-20 rounded-[3rem] text-center">
+                        <p className="text-[var(--text-secondary)] font-black uppercase text-[10px] tracking-widest">No active proposals sent yet.</p>
                         <button onClick={() => setActiveView('EXPLORE')} className="text-[#7B5CFA] font-black uppercase text-xs hover:underline mt-6">Explore collabs</button>
                      </div>
                    )}
@@ -408,12 +398,12 @@ const Collabs = () => {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm bg-[#0F131E] rounded-[2.5rem] border border-white/[0.06] shadow-2xl overflow-hidden p-6"
+              className="relative w-full max-w-sm bg-[var(--bg-base)] rounded-[2.5rem] border border-[var(--border-primary)] shadow-2xl overflow-hidden p-6"
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-black text-white tracking-tight">Filters</h2>
+                <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tight">Filters</h2>
                 <button onClick={() => setIsFilterModalOpen(false)} className="p-2 hover:bg-white/[0.05] rounded-full transition">
-                  <X size={20} className="text-[#8B95A5]" />
+                  <X size={20} className="text-[var(--text-secondary)]" />
                 </button>
               </div>
               <FilterSidebar filters={filters} setFilters={setFilters} />

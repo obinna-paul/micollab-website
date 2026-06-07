@@ -13,7 +13,8 @@ const useChatStore = create((set, get) => ({
   initSocket: (token) => {
     if (get().socket) return;
 
-    const socket = io('', {
+    const socketUrl = import.meta.env.VITE_API_URL || '';
+    const socket = io(socketUrl, {
       auth: { token }
     });
 

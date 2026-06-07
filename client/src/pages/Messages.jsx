@@ -236,7 +236,7 @@ const Messages = () => {
                     <div className={`max-w-[75%] ${isMine ? 'order-2' : ''}`}>
                       <div className={`p-3 rounded-2xl text-sm ${
                         isMine 
-                          ? 'bg-primary text-white rounded-tr-none shadow-md' 
+                          ? 'bg-primary text-[var(--text-primary)] rounded-tr-none shadow-md' 
                           : 'bg-surface border border-divider text-textMain rounded-tl-none shadow-sm'
                       }`}>
                         {msg.content}
@@ -272,7 +272,7 @@ const Messages = () => {
                 <button 
                   type="submit"
                   disabled={!msgInput.trim()}
-                  className="p-2.5 bg-primary text-white rounded-xl hover:scale-105 transition disabled:opacity-50 disabled:scale-100 shadow-md"
+                  className="p-2.5 bg-primary text-[var(--text-primary)] rounded-xl hover:scale-105 transition disabled:opacity-50 disabled:scale-100 shadow-md"
                 >
                   <Send size={18} />
                 </button>
