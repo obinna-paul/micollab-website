@@ -147,14 +147,26 @@ const Register = () => {
     setError('');
     setUsernameSuggestions([]);
     
-    const result = await checkAvailability(accountDetails.username, accountDetails.email);
-    if (result.success && result.available) {
+    const availResult = await checkAvailability(accountDetails.username, accountDetails.email);
+    if (!availResult.success || !availResult.available) {
+      setError(availResult.error);
+      if (availResult.suggestions && availResult.suggestions.length > 0) {
+        setUsernameSuggestions(availResult.suggestions);
+      }
+      setLoading(false);
+      return;
+    }
+
+    const payload = { ...accountDetails };
+    const result = await register(payload);
+    
+    if (result.success && result.requiresOTP) {
+      setRequiresVerification(true);
+    } else if (result.success) {
+      setIsGoogleOnboarding(true);
       setStep(2);
     } else {
       setError(result.error);
-      if (result.suggestions && result.suggestions.length > 0) {
-        setUsernameSuggestions(result.suggestions);
-      }
     }
     setLoading(false);
   };
@@ -163,34 +175,15 @@ const Register = () => {
     setLoading(true);
     setError('');
     
-    // Google users are already logged in — just update their profile
-    if (isGoogleOnboarding) {
-      const result = await updateProfile({
-        profileType: selectedCategories.join(', '),
-        skills: selectedSpecializations.join(', ')
-      });
-      if (result.success) {
-        navigate('/');
-      } else {
-        setError(result.error || 'Failed to save profile');
-      }
-      setLoading(false);
-      return;
-    }
-
-    const payload = {
-      ...accountDetails,
+    const result = await updateProfile({
       profileType: selectedCategories.join(', '),
-      specializations: selectedSpecializations.join(', ')
-    };
-
-    const result = await register(payload);
-    if (result.success && result.requiresOTP) {
-      setRequiresVerification(true);
-    } else if (result.success) {
+      skills: selectedSpecializations.join(', ')
+    });
+    
+    if (result.success) {
       navigate('/');
     } else {
-      setError(result.error);
+      setError(result.error || 'Failed to save profile');
     }
     setLoading(false);
   };
@@ -202,7 +195,9 @@ const Register = () => {
     
     const result = await verifyOTP(accountDetails.email, otpCode);
     if (result.success) {
-      navigate('/');
+      setRequiresVerification(false);
+      setIsGoogleOnboarding(true); // Flags that we are now authenticated and just updating profile
+      setStep(2);
     } else {
       setError(result.error);
     }
@@ -292,61 +287,7 @@ const Register = () => {
         
         <div className="max-w-xl">
           <AnimatePresence mode="wait">
-            {requiresVerification ? (
-              <motion.div key="otp-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                <div className="text-center mb-6 mt-4">
-                  <div className="w-16 h-16 bg-[#7B5CFA]/10 text-[#7B5CFA] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#7B5CFA]/20">
-                    <Mail size={32} />
-                  </div>
-                  <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Verify your email</h3>
-                  <p className="text-[var(--text-secondary)] text-sm font-medium">
-                    Please check your email and enter the verification code.
-                  </p>
-                </div>
-
-                {error && (
-                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-xs font-bold">
-                    <AlertCircle size={16} />
-                    {error}
-                  </div>
-                )}
-
-                <form onSubmit={handleVerifyOTP} className="space-y-6">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[var(--text-primary)] ml-1 text-center block">Enter 6-digit Code</label>
-                    <input 
-                      type="text" 
-                      required
-                      maxLength={6}
-                      value={otpCode}
-                      onChange={(e) => setOtpCode(e.target.value)}
-                      placeholder="000000"
-                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 text-center text-3xl tracking-[1em] text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-black placeholder-[#8B95A5]/30"
-                    />
-                  </div>
-
-                  <button 
-                    type="submit"
-                    disabled={loading || otpCode.length !== 6}
-                    className="w-full py-2.5 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-[var(--bg-base)] disabled:text-[var(--text-secondary)] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(123,92,250,0.3)] disabled:shadow-none"
-                  >
-                    {loading ? <Loader2 className="animate-spin" size={20} /> : 'Verify Email'}
-                  </button>
-                </form>
-
-                <p className="text-center text-xs font-bold text-[var(--text-secondary)] pt-8">
-                  Didn't receive the code?{' '}
-                  <button 
-                    type="button"
-                    onClick={handleResendOTP}
-                    disabled={loading}
-                    className="text-[#A37BFF] hover:text-[var(--text-primary)] transition disabled:opacity-50 ml-1"
-                  >
-                    Resend
-                  </button>
-                </p>
-              </motion.div>
-            ) : step === 1 && (
+            {step === 1 && (
               <motion.div key="m-step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <h2 className="text-3xl lg:text-5xl font-black text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                   Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D0B3FF] to-[#A37BFF]">Identity.</span>
