@@ -76,7 +76,7 @@ const Notifications = () => {
       case 'COLLAB_PROPOSAL': return <Briefcase size={18} className="text-emerald-500" />;
       case 'CIRCLE': return <Shield size={18} className="text-amber-500" />;
       case 'SOCIAL': return <Heart size={18} className="text-pink-500" />;
-      default: return <Bell size={18} className="text-primary" />;
+      default: return <Bell size={18} className="text-[#7B5CFA]" />;
     }
   };
 
@@ -84,15 +84,15 @@ const Notifications = () => {
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="flex items-center justify-between gap-4 mb-8 md:mb-10">
         <div>
-           <div className="flex items-center gap-2 text-primary font-black uppercase text-[9px] tracking-widest mb-1">
+           <div className="flex items-center gap-2 text-[#7B5CFA] font-black uppercase text-[9px] tracking-widest mb-1">
               <Zap size={10} /> Live Activity
            </div>
-           <h1 className="text-3xl md:text-4xl font-black text-textMain tracking-tighter leading-none">Notifications</h1>
+           <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)] tracking-tighter leading-none">Notifications</h1>
         </div>
         
         <button 
           onClick={markAllAsRead}
-          className="p-3 md:px-6 md:py-3 bg-white border border-divider rounded-2xl text-[10px] font-black uppercase tracking-widest hover:text-primary transition-all shadow-sm flex items-center gap-2"
+          className="p-3 md:px-6 md:py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-[10px] font-black uppercase tracking-widest text-[var(--text-primary)] hover:text-[#7B5CFA] transition-all shadow-sm flex items-center gap-2"
         >
           <Check size={14} /> <span className="hidden md:inline">Mark all read</span>
         </button>
@@ -102,8 +102,8 @@ const Notifications = () => {
         {/* Filters - Sidebar on desktop, Chips on mobile */}
         <div className="col-span-12 md:col-span-3">
            {/* Desktop Sidebar */}
-           <div className="hidden md:block bg-white border border-divider rounded-[2rem] p-6 sticky top-24 shadow-sm">
-              <h3 className="text-xs font-black text-textMuted uppercase tracking-widest mb-6 flex items-center gap-2">
+           <div className="hidden md:block bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-[2rem] p-6 sticky top-24 shadow-sm">
+              <h3 className="text-xs font-black text-[var(--text-secondary)] uppercase tracking-widest mb-6 flex items-center gap-2">
                  <Filter size={12} /> Filter by
               </h3>
               <div className="space-y-2">
@@ -119,8 +119,8 @@ const Notifications = () => {
                      onClick={() => setFilter(item.id)}
                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black transition-all ${
                        filter === item.id 
-                       ? 'bg-primary text-[var(--text-primary)] shadow-lg shadow-primary/20' 
-                       : 'text-textMuted hover:bg-gray-50'
+                       ? 'bg-[#7B5CFA] text-white shadow-lg shadow-[#7B5CFA]/20' 
+                       : 'text-[var(--text-secondary)] hover:bg-[var(--bg-sunken)]'
                      }`}
                    >
                      <item.icon size={16} />
@@ -131,7 +131,7 @@ const Notifications = () => {
            </div>
 
            {/* Mobile Horizontal Chips */}
-           <div className="flex md:hidden items-center gap-2 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 sticky top-14 bg-background/80 backdrop-blur-xl z-20">
+           <div className="flex md:hidden items-center gap-2 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 sticky top-14 bg-[var(--bg-base)]/80 backdrop-blur-xl z-20">
               {[
                 { id: 'ALL', label: 'All', icon: Zap },
                 { id: 'COLLAB_PROPOSAL', label: 'Projects', icon: Briefcase },
@@ -144,8 +144,8 @@ const Notifications = () => {
                   onClick={() => setFilter(item.id)}
                   className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
                     filter === item.id 
-                    ? 'bg-primary text-[var(--text-primary)] border-primary shadow-lg shadow-primary/20' 
-                    : 'bg-white text-textMuted border-divider'
+                    ? 'bg-[#7B5CFA] text-white border-[#7B5CFA] shadow-lg shadow-[#7B5CFA]/20' 
+                    : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-primary)]'
                   }`}
                 >
                   <item.icon size={12} />
@@ -160,16 +160,16 @@ const Notifications = () => {
            <div className="space-y-4">
               {loading ? (
                 <div className="py-20 text-center">
-                   <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-primary mx-auto mb-4"></div>
-                   <p className="text-textMuted font-medium">Syncing your activity...</p>
+                   <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-[#7B5CFA] mx-auto mb-4"></div>
+                   <p className="text-[var(--text-secondary)] font-medium">Syncing your activity...</p>
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="bg-white border border-divider rounded-[2.5rem] p-16 text-center shadow-sm">
-                   <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-textMuted">
+                <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-[2.5rem] p-16 text-center shadow-sm">
+                   <div className="w-20 h-20 bg-[var(--bg-sunken)] rounded-full flex items-center justify-center mx-auto mb-6 text-[var(--text-muted)]">
                       <Bell size={40} />
                    </div>
-                   <h3 className="text-xl font-black text-textMain tracking-tight mb-2">Creative Pulse is Quiet</h3>
-                   <p className="text-sm text-textMuted font-medium">When people interact with your work or invite you to projects, you'll see it here.</p>
+                   <h3 className="text-xl font-black text-[var(--text-primary)] tracking-tight mb-2">Creative Pulse is Quiet</h3>
+                   <p className="text-sm text-[var(--text-secondary)] font-medium">When people interact with your work or invite you to projects, you'll see it here.</p>
                 </div>
               ) : (
                 <AnimatePresence>
@@ -179,34 +179,39 @@ const Notifications = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -50 }}
-                      className={`group relative bg-white border border-divider rounded-[2rem] p-6 shadow-sm transition-all hover:shadow-md ${
-                        !notification.isRead ? 'border-l-4 border-l-primary' : ''
+                      className={`group relative bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-[2rem] p-6 shadow-sm transition-all hover:shadow-md ${
+                        !notification.isRead ? 'border-l-4 border-l-[#7B5CFA]' : ''
                       }`}
                     >
                        <div className="flex items-start gap-4">
                           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-                            !notification.isRead ? 'bg-primary/10' : 'bg-gray-50'
+                            !notification.isRead ? 'bg-[#7B5CFA]/10' : 'bg-[var(--bg-sunken)]'
                           }`}>
                              {getIcon(notification.type)}
                           </div>
                           
                           <div className="flex-1 min-w-0 pr-10">
                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="text-sm font-black text-textMain tracking-tight truncate">{notification.title}</h4>
-                                {!notification.isRead && <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />}
+                                <h4 className="text-sm font-black text-[var(--text-primary)] tracking-tight truncate">{notification.title}</h4>
+                                {!notification.isRead && <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full animate-pulse" />}
                              </div>
-                             <p className="text-sm text-textMuted leading-relaxed">
-                                <span className="font-bold text-textMain">@{notification.sender?.username}</span> {notification.content}
+                             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                                {notification.sender?.username && (
+                                  <Link to={`/profile/${notification.sender.username}`} className="font-bold text-[var(--text-primary)] hover:underline">
+                                    @{notification.sender.username}
+                                  </Link>
+                                )}
+                                {' '}{notification.content}
                              </p>
                              <div className="flex items-center gap-3 mt-3">
-                                <span className="flex items-center gap-1.5 text-[10px] font-black text-textMuted uppercase tracking-widest">
+                                <span className="flex items-center gap-1.5 text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">
                                    <Clock size={10} /> {new Date(notification.createdAt).toLocaleDateString()}
                                 </span>
                                 {notification.link && (
                                   <Link 
                                     to={notification.link}
                                     onClick={() => markAsRead(notification.id)}
-                                    className="flex items-center gap-1 text-[10px] font-black text-primary uppercase tracking-widest hover:underline"
+                                    className="flex items-center gap-1 text-[10px] font-black text-[#7B5CFA] uppercase tracking-widest hover:underline"
                                   >
                                      View Details <ChevronRight size={10} />
                                   </Link>
@@ -219,7 +224,7 @@ const Notifications = () => {
                           {!notification.isRead && (
                             <button 
                               onClick={() => markAsRead(notification.id)}
-                              className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-xl transition"
+                              className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition"
                               title="Mark as read"
                             >
                                <Check size={16} />
@@ -227,7 +232,7 @@ const Notifications = () => {
                           )}
                           <button 
                             onClick={() => deleteNotification(notification.id)}
-                            className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition"
+                            className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition"
                             title="Delete"
                           >
                              <Trash2 size={16} />

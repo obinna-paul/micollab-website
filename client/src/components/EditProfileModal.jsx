@@ -12,8 +12,9 @@ const EditProfileModal = ({ isOpen, onClose, profile, onUpdate }) => {
     longAbout: profile?.longAbout || '',
     location: profile?.location || '',
     availabilityStatus: profile?.availabilityStatus || 'AVAILABLE',
+    profileType: profile?.profileType || '',
     skills: profile?.skills || '',
-    socialLinks: typeof profile?.socialLinks === 'string' 
+    socialLinks: typeof profile?.socialLinks === 'string'  
       ? JSON.parse(profile.socialLinks) 
       : profile?.socialLinks || { instagram: '', twitter: '', youtube: '', website: '' }
   });
@@ -92,6 +93,32 @@ const EditProfileModal = ({ isOpen, onClose, profile, onUpdate }) => {
             </div>
           </section>
 
+          {/* Role & Specializations */}
+          <section className="space-y-4">
+            <h3 className="text-[10px] font-black text-[#7B5CFA] uppercase tracking-widest">Role & Specializations</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase ml-2">Primary Role</label>
+                <input 
+                  type="text"
+                  value={formData.profileType}
+                  onChange={(e) => setFormData({...formData, profileType: e.target.value})}
+                  className="w-full px-4 py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-sm font-bold text-[var(--text-primary)] focus:border-[#7B5CFA] outline-none transition"
+                  placeholder="e.g. Sound Designer"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase ml-2">Specializations</label>
+                <input 
+                  type="text"
+                  value={formData.skills}
+                  onChange={(e) => setFormData({...formData, skills: e.target.value})}
+                  className="w-full px-4 py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-sm font-bold text-[var(--text-primary)] focus:border-[#7B5CFA] outline-none transition"
+                  placeholder="e.g. Mixing, Mastering, Scoring"
+                />
+              </div>
+            </div>
+          </section>
 
           {/* Availability & Location */}
           <section className="grid grid-cols-2 gap-6">
