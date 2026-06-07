@@ -121,6 +121,11 @@ const Register = () => {
       
       // Clean up state so refresh doesn't trigger it again
       window.history.replaceState({}, document.title);
+    } else if (location.state?.resumeOnboarding) {
+      setIsGoogleOnboarding(true);
+      setAccountDetails(prev => ({ ...prev, username: location.state.username }));
+      setStep(2);
+      window.history.replaceState({}, document.title);
     }
   }, [location]);
 
@@ -223,7 +228,13 @@ const Register = () => {
     const result = await loginWithGoogle(credentialResponse.credential);
     
     if (result.success) {
-      navigate('/');
+      if (!result.user?.skills) {
+        setIsGoogleOnboarding(true);
+        setAccountDetails(prev => ({ ...prev, username: result.user.username }));
+        setStep(2);
+      } else {
+        navigate('/');
+      }
     } else if (result.requireUsername) {
       setGoogleCredential(credentialResponse.credential);
       setShowUsernameModal(true);

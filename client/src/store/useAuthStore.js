@@ -17,7 +17,7 @@ const useAuthStore = create(
           set({ user, token, isAuthenticated: true });
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
-          return { success: true };
+          return { success: true, user };
         } catch (error) {
           return { 
             success: false, 
@@ -38,7 +38,7 @@ const useAuthStore = create(
           set({ user, token, isAuthenticated: true });
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
-          return { success: true };
+          return { success: true, user };
         } catch (error) {
           return {
             success: false,

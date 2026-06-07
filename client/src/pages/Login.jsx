@@ -36,7 +36,16 @@ const Login = () => {
     const result = await loginWithGoogle(credentialResponse.credential);
     
     if (result.success) {
-      navigate('/');
+      if (!result.user?.skills) {
+        navigate('/register', { 
+          state: { 
+            resumeOnboarding: true,
+            username: result.user.username
+          } 
+        });
+      } else {
+        navigate('/');
+      }
     } else if (result.requireUsername) {
       // New user logging in from the login page. Redirect to register to complete onboarding.
       navigate('/register', { 

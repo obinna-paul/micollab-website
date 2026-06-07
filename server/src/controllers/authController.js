@@ -54,7 +54,8 @@ exports.googleLogin = async (req, res) => {
           profileType: user.profileType,
           profileImage: user.profileImage,
           bio: user.bio,
-          location: user.location
+          location: user.location,
+          skills: user.skills
         }
       });
     }
@@ -284,6 +285,7 @@ exports.login = async (req, res) => {
         profileImage: user.profileImage,
         bio: user.bio,
         location: user.location,
+        skills: user.skills,
         isEmailVerified: user.isEmailVerified
       }
     });
