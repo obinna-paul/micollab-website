@@ -36,7 +36,14 @@ exports.getProfile = async (req, res) => {
         _count: {
           select: {
             sentRequests: { where: { status: 'ACCEPTED' } },
-            receivedRequests: { where: { status: 'ACCEPTED' } }
+            receivedRequests: { where: { status: 'ACCEPTED' } },
+            collabs: true
+          }
+        },
+        receivedTestimonials: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            fromUser: { select: { username: true, profileImage: true, profileType: true } }
           }
         }
       }
@@ -45,8 +52,9 @@ exports.getProfile = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const connectionsCount = (user._count?.sentRequests || 0) + (user._count?.receivedRequests || 0);
+    const collabsCount = user._count?.collabs || 0;
     const { password: _, _count, ...userData } = user;
-    res.json({ ...userData, connectionsCount });
+    res.json({ ...userData, connectionsCount, followersCount: connectionsCount, collabsCount, mutualConnections: [] });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch profile' });
@@ -84,6 +92,38 @@ exports.updateProfile = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to update profile' });
+  }
+};
+
+exports.createTestimonial = async (req, res) => {
+  try {
+    const fromUserId = req.user.id;
+    const { toUserId, content, rating } = req.body;
+
+    if (!toUserId || !content) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    if (fromUserId === toUserId) {
+      return res.status(400).json({ error: 'Cannot endorse yourself' });
+    }
+
+    const testimonial = await prisma.testimonial.create({
+      data: {
+        fromUserId,
+        toUserId,
+        content,
+        rating: rating || 5
+      },
+      include: {
+        fromUser: { select: { username: true, profileImage: true, profileType: true } }
+      }
+    });
+
+    res.status(201).json(testimonial);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create testimonial' });
   }
 };
 

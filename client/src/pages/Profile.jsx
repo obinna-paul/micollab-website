@@ -20,6 +20,7 @@ const Profile = () => {
   const { user: currentUser, token, updateProfile: updateAuthProfile } = useAuthStore();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [connectStatus, setConnectStatus] = useState(null);
   
   // Modals State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -109,6 +110,36 @@ const Profile = () => {
     }
   };
 
+  const handleConnect = async () => {
+    try {
+      setConnectStatus('loading');
+      await axios.post('/api/network/connect', { receiverId: profile.id }, {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      setConnectStatus('sent');
+      alert('Connection request sent!');
+    } catch (err) {
+      console.error(err);
+      setConnectStatus('error');
+      alert(err.response?.data?.error || 'Failed to send request');
+    }
+  };
+
+  const handleWriteTestimonial = async () => {
+    const text = window.prompt("Write a short endorsement for " + (profile.displayName || profile.username) + ":");
+    if (!text) return;
+    try {
+      await axios.post('/api/users/testimonial', { toUserId: profile.id, content: text, rating: 5 }, {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      alert('Endorsement added!');
+      fetchProfile();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to add endorsement');
+    }
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="w-12 h-12 border-4 border-[#7B5CFA] border-t-transparent rounded-full animate-spin"></div>
@@ -150,39 +181,35 @@ const Profile = () => {
         {/* Right sidebar — fixed width, starts at top next to cover */}
         <aside className="hidden xl:block w-[240px] flex-shrink-0 space-y-6 pt-0">
           {/* Open for Collaboration */}
-          <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5 relative overflow-hidden">
-            <div className="absolute -top-8 -right-8 w-32 h-32 bg-[#00D4FF]/8 blur-3xl rounded-full" />
-            <div className="flex items-center gap-2 mb-2.5">
-              <div className="w-2 h-2 rounded-full bg-[#FF8A00] animate-pulse" />
-              <h4 className="text-[13px] font-bold text-[var(--text-primary)]">Open for Collaboration</h4>
+          {profile.availabilityStatus === 'OPEN_TO_COLLAB' && (
+            <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5 relative overflow-hidden">
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-[#00D4FF]/8 blur-3xl rounded-full" />
+              <div className="flex items-center gap-2 mb-2.5">
+                <div className="w-2 h-2 rounded-full bg-[#FF8A00] animate-pulse" />
+                <h4 className="text-[13px] font-bold text-[var(--text-primary)]">Open for Collaboration</h4>
+              </div>
             </div>
-            <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
-              Currently accepting new projects for Q3. Special rates for indie game devs.
-            </p>
-          </div>
+          )}
 
           {/* Mutual Connections */}
-          <div>
-            <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
-              <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
-            </h4>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <img src={`https://ui-avatars.com/api/?name=Sarah+Jenkins&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover" />
-                <div>
-                  <p className="text-[13px] font-bold text-[var(--text-primary)]">Sarah Jenkins</p>
-                  <p className="text-[11px] text-[var(--text-secondary)]">3D Animator</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <img src={`https://ui-avatars.com/api/?name=David+Kim&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover" />
-                <div>
-                  <p className="text-[13px] font-bold text-[var(--text-primary)]">David Kim</p>
-                  <p className="text-[11px] text-[var(--text-secondary)]">UI/UX Designer</p>
-                </div>
+          {profile.mutualConnections && profile.mutualConnections.length > 0 && (
+            <div>
+              <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
+                <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
+              </h4>
+              <div className="space-y-4">
+                {profile.mutualConnections.map((conn, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover" />
+                    <div>
+                      <p className="text-[13px] font-bold text-[var(--text-primary)]">{conn.username}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)]">{conn.profileType}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
         </aside>
       </div>
 
@@ -227,8 +254,16 @@ const Profile = () => {
                     <button className="px-5 py-2.5 bg-[var(--bg-surface-alt)] border border-[var(--border-secondary)] text-[var(--text-primary)] font-bold text-sm rounded-xl hover:bg-white/5 transition flex items-center gap-2">
                       <Mail size={15} /> Message
                     </button>
-                    <button className="px-6 py-2.5 bg-[#7B5CFA] text-white font-bold text-sm rounded-xl hover:bg-[#684CE0] transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2">
-                      <Plus size={15} strokeWidth={3} /> Follow
+                    <button onClick={handleWriteTestimonial} className="px-5 py-2.5 bg-[#FF8A00]/10 text-[#FF8A00] font-bold text-sm rounded-xl hover:bg-[#FF8A00]/20 transition flex items-center gap-2">
+                      <Star size={15} /> Endorse
+                    </button>
+                    <button 
+                      onClick={handleConnect} 
+                      disabled={connectStatus === 'sent' || connectStatus === 'loading'}
+                      className="px-6 py-2.5 bg-[#7B5CFA] text-white font-bold text-sm rounded-xl hover:bg-[#684CE0] disabled:opacity-50 transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2"
+                    >
+                      {connectStatus === 'sent' ? <CheckCircle size={15} /> : <UserPlus size={15} strokeWidth={3} />} 
+                      {connectStatus === 'sent' ? 'Requested' : 'Connect'}
                     </button>
                   </>
                 )}
@@ -250,28 +285,28 @@ const Profile = () => {
           <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
             <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4">YOUR TAGS</h4>
             <div className="flex flex-wrap gap-2 mb-5">
-              {(profile.skills ? profile.skills.split(',') : ['MusicProduction', 'EDM', 'Ableton', 'SoundDesign']).map(skill => (
-                <span key={skill} className="px-2.5 py-1 bg-[#252C3A] rounded text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition cursor-pointer">
-                  #{skill.trim().replace(/\s+/g, '')}
+              {profile.profileType && profile.profileType.split(',').map(cat => (
+                <span key={cat} className="px-2.5 py-1 bg-[#252C3A] rounded text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition cursor-pointer">
+                  #{cat.trim().replace(/\s+/g, '')}
                 </span>
               ))}
             </div>
             
             <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-6">
-              {profile.bio || "Crafting immersive auditory experiences for games, films, and interactive media. Obsessed with granular synthesis and analog warmth. Currently open for freelance collaborations."}
+              {profile.bio || "No bio added yet."}
             </p>
             
             <div className="flex justify-between items-center pt-4 border-t border-[var(--border-primary)]">
               <div className="text-center">
-                <p className="text-lg font-black text-[var(--text-primary)]">{profile.portfolioItems?.length || 42}</p>
+                <p className="text-lg font-black text-[var(--text-primary)]">{profile.portfolioItems?.length || 0}</p>
                 <p className="text-[8px] text-[var(--text-secondary)] font-black uppercase tracking-widest mt-0.5">PROJECTS</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-black text-[var(--text-primary)]">12.5k</p>
+                <p className="text-lg font-black text-[var(--text-primary)]">{profile.followersCount || 0}</p>
                 <p className="text-[8px] text-[var(--text-secondary)] font-black uppercase tracking-widest mt-0.5">FOLLOWERS</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-black text-[var(--text-primary)]">18</p>
+                <p className="text-lg font-black text-[var(--text-primary)]">{profile.collabsCount || 0}</p>
                 <p className="text-[8px] text-[var(--text-secondary)] font-black uppercase tracking-widest mt-0.5">COLLABS</p>
               </div>
             </div>
@@ -281,41 +316,40 @@ const Profile = () => {
           <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
             <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-widest mb-4">SPECIALIZATIONS</h4>
             <div className="flex flex-wrap gap-2">
-              <span className="px-3 py-1.5 bg-[#7B5CFA]/10 text-[#7B5CFA] rounded-lg text-[11px] font-bold">Sound Design</span>
-              <span className="px-3 py-1.5 bg-[#00D4FF]/10 text-[#00D4FF] rounded-lg text-[11px] font-bold">Foley</span>
-              <span className="px-3 py-1.5 bg-[#FF2E93]/10 text-[#FF2E93] rounded-lg text-[11px] font-bold">Mixing & Mastering</span>
-              <span className="px-3 py-1.5 bg-[#FF8A00]/10 text-[#FF8A00] rounded-lg text-[11px] font-bold">Game Audio</span>
-              <span className="px-3 py-1.5 bg-[#252C3A] text-[var(--text-secondary)] rounded-lg text-[11px] font-bold">Ableton Live</span>
-              <span className="px-3 py-1.5 bg-[#252C3A] text-[var(--text-secondary)] rounded-lg text-[11px] font-bold">Wwise</span>
+              {profile.skills ? profile.skills.split(',').map((spec, i) => {
+                const colors = ['#7B5CFA', '#00D4FF', '#FF2E93', '#FF8A00'];
+                const color = colors[i % colors.length];
+                return (
+                  <span key={spec} className="px-3 py-1.5 rounded-lg text-[11px] font-bold" style={{ backgroundColor: `${color}1A`, color: color }}>
+                    {spec.trim()}
+                  </span>
+                )
+              }) : (
+                <p className="text-[11px] text-[var(--text-secondary)] italic">No specializations listed.</p>
+              )}
             </div>
           </div>
 
           {/* TOP ENDORSEMENTS */}
-          <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
-            <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-widest mb-5">TOP ENDORSEMENTS</h4>
-            <div className="space-y-6">
-              <div className="flex gap-3">
-                <img src={`https://ui-avatars.com/api/?name=Elena+Rostova&background=252C3A&color=fff`} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-[13px] font-bold text-[var(--text-primary)]">Elena Rostova</p>
-                    <span className="text-[8px] bg-[#00D4FF]/10 text-[#00D4FF] px-1.5 py-0.5 rounded font-bold">Collab Partner</span>
+          {profile.receivedTestimonials && profile.receivedTestimonials.length > 0 && (
+            <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
+              <h4 className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-widest mb-5">TOP ENDORSEMENTS</h4>
+              <div className="space-y-6">
+                {profile.receivedTestimonials.slice(0, 2).map((test) => (
+                  <div key={test.id} className="flex gap-3">
+                    <img src={test.fromUser?.profileImage || `https://ui-avatars.com/api/?name=${test.fromUser?.username}`} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-[13px] font-bold text-[var(--text-primary)]">{test.fromUser?.username}</p>
+                        <span className="text-[8px] bg-[#00D4FF]/10 text-[#00D4FF] px-1.5 py-0.5 rounded font-bold">{test.rating} Stars</span>
+                      </div>
+                      <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">"{test.content}"</p>
+                    </div>
                   </div>
-                  <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">"Alex brought our sci-fi short to life. The attention to detail in the ambient soundscapes was mind-blowing."</p>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <img src={`https://ui-avatars.com/api/?name=Marcus+Chen&background=252C3A&color=fff`} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-[13px] font-bold text-[var(--text-primary)]">Marcus Chen</p>
-                    <span className="text-[8px] bg-[#FF2E93]/10 text-[#FF2E93] px-1.5 py-0.5 rounded font-bold">Director</span>
-                  </div>
-                  <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">"Incredible turnaround time and perfectly nailed the cyberpunk aesthetic we needed."</p>
-                </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
         </aside>
 
         {/* MIDDLE CONTENT COLUMN — flexible width */}
@@ -332,23 +366,14 @@ const Profile = () => {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {(!profile.portfolioItems || profile.portfolioItems.filter(p => p.featured).length === 0) ? (
-                 <>
-                   <div className="group relative h-[200px] bg-[var(--bg-surface-alt)] rounded-2xl overflow-hidden cursor-pointer">
-                     <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d" className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" />
-                     <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/30 to-transparent p-5 flex flex-col justify-end">
-                       <span className="px-2 py-0.5 bg-[#7B5CFA] text-white text-[9px] font-black uppercase tracking-wider rounded w-max mb-2">FEATURED PROJECT</span>
-                       <h4 className="text-lg font-black text-[var(--text-primary)] leading-tight mb-1">Neon Shadows OST</h4>
-                       <p className="text-[var(--text-secondary)] text-xs line-clamp-1">Full original score and sound design...</p>
-                     </div>
-                   </div>
-                   <div className="group relative h-[200px] bg-[var(--bg-surface-alt)] rounded-2xl overflow-hidden cursor-pointer">
-                     <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04" className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" />
-                     <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/30 to-transparent p-5 flex flex-col justify-end">
-                       <h4 className="text-lg font-black text-[var(--text-primary)] leading-tight mb-1">Analog Synth Pack Vol 1</h4>
-                       <p className="text-[var(--text-secondary)] text-xs line-clamp-1">100+ royalty-free patches for Serum...</p>
-                     </div>
-                   </div>
-                 </>
+                 <div className="col-span-1 sm:col-span-2 py-8 flex flex-col items-center justify-center border border-dashed border-[var(--border-primary)] rounded-2xl bg-[var(--bg-surface-alt)]/50">
+                   <p className="text-[var(--text-secondary)] text-sm font-medium mb-3">No featured projects yet.</p>
+                   {isOwner && (
+                     <button onClick={() => setIsAddProjectOpen(true)} className="px-4 py-2 bg-[#7B5CFA] text-white rounded-lg text-xs font-bold shadow-lg shadow-[#7B5CFA]/20">
+                       Pin a Project
+                     </button>
+                   )}
+                 </div>
               ) : (
                 profile.portfolioItems.filter(p => p.featured).slice(0, 2).map((project) => (
                   <div 
@@ -382,42 +407,15 @@ const Profile = () => {
 
             <div className="space-y-4">
               {(!profile.portfolioItems || profile.portfolioItems.filter(p => !p.featured).length === 0) ? (
-                <>
-                  <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-4 flex flex-col sm:flex-row gap-5 cursor-pointer hover:bg-[#1A202F] transition">
-                    <div className="flex gap-1.5 w-full sm:w-[220px] h-[120px] flex-shrink-0">
-                      <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f" className="w-1/3 h-full object-cover rounded-xl" />
-                      <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04" className="w-1/3 h-full object-cover rounded-xl" />
-                      <div className="w-1/3 h-full bg-[#0B0F19] rounded-xl flex items-center justify-center relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d" className="absolute inset-0 w-full h-full object-cover opacity-30" />
-                        <span className="text-[var(--text-primary)] font-bold text-sm z-10">+4</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center">
-                      <h4 className="text-[16px] font-bold text-[var(--text-primary)] mb-1.5">Cyberpunk Game Audio Assets</h4>
-                      <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-3 line-clamp-2">Complete UI and environmental sound package for an upcoming indie RPG.</p>
-                      <div className="flex items-center gap-5 text-[var(--text-secondary)] text-xs">
-                        <span className="flex items-center gap-1.5"><Heart size={13} /> 124</span>
-                        <span className="flex items-center gap-1.5"><MessageCircle size={13} /> 12</span>
-                        <span className="ml-auto text-[var(--text-secondary)]">Game Audio</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-4 flex flex-col sm:flex-row gap-5 cursor-pointer hover:bg-[#1A202F] transition">
-                    <div className="w-full sm:w-[220px] h-[120px] flex-shrink-0">
-                      <img src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41" className="w-full h-full object-cover rounded-xl" />
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center">
-                      <h4 className="text-[16px] font-bold text-[var(--text-primary)] mb-1.5">"Ethereal" - Short Film Score</h4>
-                      <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-3 line-clamp-2">Orchestral arrangement mixed with heavy electronic elements.</p>
-                      <div className="flex items-center gap-5 text-[var(--text-secondary)] text-xs">
-                        <span className="flex items-center gap-1.5"><Heart size={13} /> 89</span>
-                        <span className="flex items-center gap-1.5"><MessageCircle size={13} /> 5</span>
-                        <span className="ml-auto text-[var(--text-secondary)]">Film Score</span>
-                      </div>
-                    </div>
-                  </div>
-                </>
+                 <div className="py-12 flex flex-col items-center justify-center border border-dashed border-[var(--border-primary)] rounded-2xl bg-[var(--bg-surface-alt)]/50">
+                   <Layers size={32} className="text-[var(--text-muted)] mb-4 opacity-50" />
+                   <p className="text-[var(--text-secondary)] text-sm font-medium mb-4">Portfolio is empty.</p>
+                   {isOwner && (
+                     <button onClick={() => setIsAddProjectOpen(true)} className="px-5 py-2.5 bg-transparent border border-[var(--border-secondary)] text-[var(--text-primary)] rounded-xl text-xs font-bold hover:bg-white/5 transition">
+                       Upload First Project
+                     </button>
+                   )}
+                 </div>
               ) : (
                 profile.portfolioItems.filter(p => !p.featured).slice(0, 4).map((item) => (
                   <div 

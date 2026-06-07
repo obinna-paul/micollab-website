@@ -43,6 +43,7 @@ router.get('/users/trending', userController.getTrendingCreators);
 router.get('/users/profile/:username', userController.getProfile);
 router.put('/users/profile', authMiddleware, userController.updateProfile);
 router.post('/users/portfolio', authMiddleware, userController.createPortfolioItem);
+router.post('/users/testimonial', authMiddleware, userController.createTestimonial);
 router.post('/users/experience', authMiddleware, userController.createExperience);
 
 // Message Routes
