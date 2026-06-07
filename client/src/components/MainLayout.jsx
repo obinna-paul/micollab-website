@@ -150,7 +150,7 @@ const MainLayout = ({ children }) => {
       </header>
 
       {/* Main Grid */}
-      <div className="flex flex-1 max-w-[1440px] mx-auto w-full px-4 gap-8 pt-8">
+      <div className="flex flex-1 max-w-[1440px] mx-auto w-full px-4 gap-8 pt-4 md:pt-8">
         
         {/* Left Sidebar */}
         <aside className="hidden md:flex flex-col w-[220px] lg:w-[240px] flex-shrink-0 sticky top-24 h-[calc(100vh-96px)] overflow-y-auto custom-scrollbar">

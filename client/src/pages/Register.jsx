@@ -273,7 +273,7 @@ const Register = () => {
       />
 
       {/* Left Marketing Section */}
-      <div className="w-full lg:w-[55%] flex flex-col justify-center p-8 lg:p-12 relative z-10 min-h-[50vh] lg:min-h-screen">
+      <div className="hidden lg:flex w-[55%] flex-col justify-center p-12 relative z-10 min-h-screen">
         <Link to="/" className="flex items-center gap-3 mb-6 lg:mb-6 w-fit group">
           <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20 group-hover:bg-[#684CE0] transition-colors">M</div>
           <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">Micollab</h1>
@@ -442,7 +442,13 @@ const Register = () => {
       </div>
 
       {/* Right Form Section */}
-      <div className="w-full lg:w-[45%] flex items-center justify-center p-4 lg:p-12 relative z-10">
+      <div className="w-full lg:w-[45%] flex flex-col items-center justify-center p-4 lg:p-12 relative z-10 min-h-screen lg:min-h-0">
+        
+        {/* Mobile Logo */}
+        <div className="lg:hidden flex items-center gap-3 mb-8 w-fit group">
+          <div className="w-10 h-10 bg-[#7B5CFA] rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-[#7B5CFA]/20">M</div>
+          <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tighter">Micollab</h1>
+        </div>
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}

@@ -84,7 +84,7 @@ const Messages = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-140px)] bg-surface rounded-2xl border border-divider overflow-hidden shadow-sm">
+    <div className="flex h-[calc(100dvh-145px)] md:h-[calc(100vh-140px)] bg-surface md:rounded-2xl border-y md:border border-divider overflow-hidden md:shadow-sm -mx-4 -mt-8 md:mx-0 md:mt-0">
       
       {/* Left Sidebar: Conversation List */}
       <div className={`w-full md:w-80 flex-shrink-0 border-r border-divider flex flex-col ${activeConversation ? 'hidden md:flex' : 'flex'}`}>

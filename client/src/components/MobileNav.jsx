@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Users, Briefcase, Bell, Plus, Circle } from 'lucide-react';
+import { Home, Users, Briefcase, Bell, Plus, Circle, MessageSquare } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 
 const MobileNav = ({ onCreateClick }) => {
@@ -20,10 +20,10 @@ const MobileNav = ({ onCreateClick }) => {
         </button>
       </div>
 
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-divider px-1 py-2 flex items-center justify-between z-[100] safe-area-bottom">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--bg-base)]/80 backdrop-blur-xl border-t border-[var(--border-primary)] px-1 py-2 flex items-center justify-between z-[100] pb-safe">
         <NavLink 
           to="/" 
-          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-primary' : 'text-textMuted'}`}
+          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`}
         >
           <Home size={22} />
           <span className="text-[8px] font-black uppercase tracking-wider">Home</span>
@@ -31,7 +31,7 @@ const MobileNav = ({ onCreateClick }) => {
 
         <NavLink 
           to="/network" 
-          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-primary' : 'text-textMuted'}`}
+          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`}
         >
           <Users size={22} />
           <span className="text-[8px] font-black uppercase tracking-wider">Network</span>
@@ -39,7 +39,7 @@ const MobileNav = ({ onCreateClick }) => {
 
         <NavLink 
           to="/circles" 
-          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-primary' : 'text-textMuted'}`}
+          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`}
         >
           <Circle size={22} />
           <span className="text-[8px] font-black uppercase tracking-wider">Circle</span>
@@ -50,18 +50,18 @@ const MobileNav = ({ onCreateClick }) => {
 
         <NavLink 
           to="/collabs" 
-          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-primary' : 'text-textMuted'}`}
+          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`}
         >
           <Briefcase size={22} />
           <span className="text-[8px] font-black uppercase tracking-wider">Collabs</span>
         </NavLink>
 
         <NavLink 
-          to="/notifications" 
-          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-primary' : 'text-textMuted'}`}
+          to="/messages" 
+          className={({ isActive }) => `flex flex-col items-center gap-1 min-w-[50px] flex-1 ${isActive ? 'text-[#7B5CFA]' : 'text-[var(--text-secondary)]'}`}
         >
-          <Bell size={22} />
-          <span className="text-[8px] font-black uppercase tracking-wider">Alerts</span>
+          <MessageSquare size={22} />
+          <span className="text-[8px] font-black uppercase tracking-wider">Messages</span>
         </NavLink>
       </nav>
     </>

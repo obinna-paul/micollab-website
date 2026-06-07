@@ -32,6 +32,14 @@ const CircleWorkspace = () => {
   const pollRef   = useRef(null);
   const fileInputRef = useRef(null);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const [tasksLayout, setTasksLayout]         = useState('board');
   const [taskSearchQuery, setTaskSearchQuery] = useState('');
   const [taskAssigneeFilter, setTaskAssigneeFilter] = useState('ALL');
@@ -571,7 +579,7 @@ const CircleWorkspace = () => {
                 />
               </div>
               
-              <div className="flex bg-[var(--bg-base)] p-0.5 rounded-lg border border-[var(--border-primary)]">
+              <div className="hidden lg:flex bg-[var(--bg-base)] p-0.5 rounded-lg border border-[var(--border-primary)]">
                 <button 
                   onClick={() => setTasksLayout('board')}
                   className={`p-1.5 rounded-md transition-all ${tasksLayout === 'board' ? 'bg-[#7B5CFA]/15 text-[#7B5CFA]' : 'text-[var(--text-muted)] hover:text-white'}`}
@@ -632,8 +640,89 @@ const CircleWorkspace = () => {
           </div>
         </div>
 
-        {/* BOARD VIEW */}
-        {tasksLayout === 'board' ? (
+        </div>
+
+        {/* TASK VIEWS */}
+        {isMobile ? (
+          /* MOBILE VIEW: Vertical List with Status Dropdowns */
+          <div className="space-y-3">
+            {getSortedTasks().length === 0 && (
+              <div className="py-12 flex flex-col items-center justify-center border border-dashed border-[var(--border-primary)] rounded-xl">
+                <ListTodo size={24} className="text-[var(--text-muted)] mb-3" />
+                <p className="text-sm font-medium text-[var(--text-secondary)]">No tasks found</p>
+              </div>
+            )}
+            {getSortedTasks().map(task => {
+              const isOverdue = task.deadline && new Date(task.deadline) < new Date() && task.status !== 'APPROVED';
+              const pStyle = getPriorityStyle(task.priority);
+              const tagsList = task.labels ? task.labels.split(',').map(t => t.trim()).filter(t => t.length > 0) : [];
+              
+              return (
+                <div 
+                  key={task.id}
+                  className={`bg-[var(--bg-surface-alt)] rounded-xl border p-4 flex flex-col gap-3 transition-all ${isOverdue ? 'border-[#FF6B6B]/30' : 'border-[var(--border-primary)]'}`}
+                  style={{ borderLeftWidth: '4px', borderLeftColor: pStyle.strip }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0 cursor-pointer" onClick={() => {
+                        setSelectedTask(task);
+                        setDetailTitle(task.title);
+                        setDetailDesc(task.description || '');
+                        setIsDetailPanelOpen(true);
+                      }}>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-[10px] font-bold text-[#7B5CFA]/70">{task.taskCode || 'TASK'}</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold border ${pStyle.badge}`}>{pStyle.label}</span>
+                      </div>
+                      <h4 className="font-bold text-[var(--text-primary)] text-sm leading-snug truncate">{task.title}</h4>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-[var(--border-primary)]">
+                    {/* Status Dropdown */}
+                    <select
+                      value={task.status}
+                      onChange={(e) => {
+                        const newStatus = e.target.value;
+                        const isRegression = (task.status === 'REVIEW' && (newStatus === 'IN_PROGRESS' || newStatus === 'TODO')) ||
+                                             (task.status === 'APPROVED' && newStatus !== 'APPROVED');
+                        if (isRegression) {
+                          setPendingRejectionTask(task);
+                          setPendingRejectionStatus(newStatus);
+                          setRejectionReason('');
+                          setIsRejectionModalOpen(true);
+                        } else {
+                          updateTaskStatus(task.id, newStatus);
+                        }
+                      }}
+                      className="bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-primary)] text-[11px] font-bold rounded-lg px-2.5 py-1.5 outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="TODO">To Do</option>
+                      <option value="IN_PROGRESS">In Progress</option>
+                      <option value="REVIEW">Review</option>
+                      <option value="APPROVED">Done</option>
+                    </select>
+
+                    <div className="flex items-center gap-2">
+                      {task.deadline && (
+                        <span className={`flex items-center gap-1 text-[10px] font-medium ${isOverdue ? 'text-[#FF6B6B]' : 'text-[var(--text-muted)]'}`}>
+                          <Calendar size={12} /> {new Date(task.deadline).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                      {task.assignee ? (
+                        <img src={task.assignee.profileImage || `https://ui-avatars.com/api/?name=${task.assignee.username}&background=181D2A&color=8B95A5`} className="w-6 h-6 rounded-md object-cover border border-[var(--border-primary)]" alt="Assignee" />
+                      ) : (
+                        <div className="w-6 h-6 rounded-md bg-[var(--bg-base)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)]">
+                          <User size={10} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : tasksLayout === 'board' ? (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {columns.map(col => {
               const colTasks = filteredTasks.filter(t => {
