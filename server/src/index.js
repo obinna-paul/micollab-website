@@ -51,6 +51,19 @@ app.use('/api', apiRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-httpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on http://10.59.144.84:${PORT}`);
-});
+(async () => {
+  try {
+    // Temporary DB cleanup for user micollab
+    const user = await prisma.user.findFirst({ where: { username: 'micollab' } });
+    if (user) {
+      await prisma.portfolioItem.deleteMany({ where: { userId: user.id } });
+      console.log("Deleted mock portfolio items for micollab");
+    }
+
+    httpServer.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server is running on http://10.59.144.84:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Error during startup cleanup:", error);
+  }
+})();
