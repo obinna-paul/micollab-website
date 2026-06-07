@@ -8,7 +8,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
+import useChatStore from '../store/useChatStore';
 import EditProfileModal from '../components/EditProfileModal';
 import PhotoActionModal from '../components/PhotoActionModal';
 import PhotoViewerModal from '../components/PhotoViewerModal';
@@ -17,7 +19,9 @@ import ProjectDetailsModal from '../components/ProjectDetailsModal';
 
 const Profile = () => {
   const { username } = useParams();
+  const navigate = useNavigate();
   const { user: currentUser, token, updateProfile: updateAuthProfile } = useAuthStore();
+  const { startConversation } = useChatStore();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connectStatus, setConnectStatus] = useState(null);
@@ -174,6 +178,16 @@ const Profile = () => {
     }
   };
 
+  const handleMessage = async () => {
+    if (!token) return navigate('/login');
+    try {
+      await startConversation(token, profile.id);
+      navigate('/messages');
+    } catch (err) {
+      console.error('Failed to start chat', err);
+    }
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="w-12 h-12 border-4 border-[#7B5CFA] border-t-transparent rounded-full animate-spin"></div>
@@ -241,7 +255,7 @@ const Profile = () => {
                   </button>
                 ) : (
                   <>
-                    <button className="px-5 py-2.5 bg-[#1A1F2E]/80 backdrop-blur-md border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-[#1A1F2E] transition flex items-center gap-2 shadow-lg">
+                    <button onClick={handleMessage} className="px-5 py-2.5 bg-[#1A1F2E]/80 backdrop-blur-md border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-[#1A1F2E] transition flex items-center gap-2 shadow-lg">
                       <Mail size={15} /> Message
                     </button>
                     <button onClick={handleWriteTestimonial} className="px-5 py-2.5 bg-[#FF8A00]/10 backdrop-blur-md border border-[#FF8A00]/30 text-[#FF8A00] font-bold text-sm rounded-xl hover:bg-[#FF8A00]/20 transition flex items-center gap-2 shadow-lg">

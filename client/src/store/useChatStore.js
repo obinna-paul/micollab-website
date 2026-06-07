@@ -121,16 +121,29 @@ const useChatStore = create((set, get) => ({
       });
       
       const conversation = res.data;
-      // Fetch full conversation details to match the structure
-      const fullRes = await axios.get(`/api/messages/conversations?tab=PRIMARY`, {
+      
+      // Fetch from PRIMARY
+      let fullRes = await axios.get('/api/messages/conversations?tab=PRIMARY', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const fullConv = fullRes.data.find(c => c.id === conversation.id);
+      let fullConv = fullRes.data.find(c => c.id === conversation.id);
+      
+      // If not in PRIMARY, it might be in REQUESTS
+      if (!fullConv) {
+        const reqRes = await axios.get('/api/messages/conversations?tab=REQUESTS', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        fullConv = reqRes.data.find(c => c.id === conversation.id);
+        if (fullConv) {
+          // Temporarily add it to conversations array so UI works seamlessly
+          set({ conversations: reqRes.data });
+        }
+      } else {
+        set({ conversations: fullRes.data });
+      }
       
       if (fullConv) {
         get().setActiveConversation(token, fullConv);
-        // Refresh conversations list
-        set({ conversations: fullRes.data });
       }
       return conversation;
     } catch (err) {
