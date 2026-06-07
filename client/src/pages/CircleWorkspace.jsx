@@ -640,8 +640,6 @@ const CircleWorkspace = () => {
           </div>
         </div>
 
-        </div>
-
         {/* TASK VIEWS */}
         {isMobile ? (
           /* MOBILE VIEW: Vertical List with Status Dropdowns */
