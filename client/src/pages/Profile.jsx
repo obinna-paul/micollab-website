@@ -24,6 +24,9 @@ const Profile = () => {
   
   // Modals State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEndorseModalOpen, setIsEndorseModalOpen] = useState(false);
+  const [endorsementText, setEndorsementText] = useState('');
+  const [isEndorsing, setIsEndorsing] = useState(false);
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(false);
@@ -120,7 +123,7 @@ const Profile = () => {
     try {
       setConnectStatus('loading');
       await axios.post('/api/network/connect', { receiverId: profile.id }, {
-        headers: { Authorization: 'Bearer ' + token }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setConnectStatus('REQUESTED');
     } catch (err) {
@@ -138,7 +141,7 @@ const Profile = () => {
       try {
         setConnectStatus('loading');
         await axios.delete(`/api/network/connections/${profile.id}`, {
-          headers: { Authorization: 'Bearer ' + token }
+          headers: { Authorization: `Bearer ${token}` }
         });
         setConnectStatus('NONE');
       } catch (err) {
@@ -149,18 +152,25 @@ const Profile = () => {
     }
   };
 
-  const handleWriteTestimonial = async () => {
-    const text = window.prompt("Write a short endorsement for " + (profile.displayName || profile.username) + ":");
-    if (!text) return;
+  const handleWriteTestimonial = () => {
+    setIsEndorseModalOpen(true);
+    setEndorsementText('');
+  };
+
+  const submitEndorsement = async () => {
+    if (!endorsementText.trim()) return;
+    setIsEndorsing(true);
     try {
-      await axios.post('/api/users/testimonial', { toUserId: profile.id, content: text, rating: 5 }, {
-        headers: { Authorization: 'Bearer ' + token }
+      await axios.post('/api/users/testimonial', { toUserId: profile.id, content: endorsementText, rating: 5 }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Endorsement added!');
+      setIsEndorseModalOpen(false);
+      setEndorsementText('');
       fetchProfile();
     } catch (err) {
       console.error(err);
-      alert('Failed to add endorsement');
+    } finally {
+      setIsEndorsing(false);
     }
   };
 
@@ -511,6 +521,53 @@ const Profile = () => {
       <PhotoActionModal isOpen={avatarMenuOpen} onClose={() => setAvatarMenuOpen(false)} onAction={(id) => handleAction(id, 'avatar')} title="Avatar Settings" type="avatar" hasPhoto={!!profile.profileImage} />
       <PhotoActionModal isOpen={coverMenuOpen} onClose={() => setCoverMenuOpen(false)} onAction={(id) => handleAction(id, 'cover')} title="Cover Settings" type="cover" hasPhoto={!!profile.coverImage} />
       <PhotoViewerModal isOpen={viewerOpen} onClose={() => setViewerOpen(false)} photoUrl={viewerUrl} title={profile.displayName || profile.username} />
+
+      {/* Custom Endorse Modal */}
+      {isEndorseModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !isEndorsing && setIsEndorseModalOpen(false)}></div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#131720] border border-[var(--border-primary)] rounded-2xl p-6 w-full max-w-md relative z-10 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="text-xl font-black text-white tracking-tight">Endorse {profile.displayName || profile.username}</h3>
+              <button onClick={() => !isEndorsing && setIsEndorseModalOpen(false)} className="text-gray-400 hover:text-white transition">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <p className="text-sm text-gray-400 mb-4 font-medium">Write a short and meaningful endorsement for their skills and professional character.</p>
+            
+            <textarea
+              value={endorsementText}
+              onChange={(e) => setEndorsementText(e.target.value)}
+              placeholder="e.g. Obinna is an incredibly talented writer who always delivers top-notch content..."
+              className="w-full h-32 bg-[#0B0F19] border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 outline-none focus:border-[#7B5CFA] focus:ring-1 focus:ring-[#7B5CFA] transition resize-none mb-6"
+              maxLength={300}
+              disabled={isEndorsing}
+            ></textarea>
+            
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setIsEndorseModalOpen(false)} 
+                disabled={isEndorsing}
+                className="px-5 py-2.5 rounded-xl font-bold text-sm text-gray-400 hover:text-white hover:bg-white/5 transition disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={submitEndorsement}
+                disabled={!endorsementText.trim() || isEndorsing}
+                className="px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#7B5CFA] to-[#00D4FF] text-white hover:opacity-90 transition shadow-[0_0_15px_rgba(123,92,250,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isEndorsing ? 'Submitting...' : 'Endorse'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <input type="file" ref={avatarInputRef} className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'avatar')} />
       <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'cover')} />
