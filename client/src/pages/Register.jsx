@@ -643,6 +643,7 @@ const Register = () => {
                     <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Specialties</p>
                     <p className="text-[var(--text-secondary)] text-[10px] truncate">{selectedSpecializations.slice(0,3).join(', ')}</p>
                   </div>
+
                   <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-4 hover:border-[var(--border-secondary)] transition-colors">
                     <User size={16} className="text-[#EC4899] mb-2" />
                     <p className="text-[var(--text-primary)] text-xs font-bold mb-0.5">Role</p>
@@ -655,13 +656,6 @@ const Register = () => {
                   </div>
                 </div>
 
-                <button 
-                  onClick={handleRegisterSubmit}
-                  disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
-                >
-                  {loading ? <Loader2 className="animate-spin" size={20} /> : (
-                    <>Enter Micollab <ArrowRight size={18} /></>
                 <button 
                   onClick={handleRegisterSubmit}
                   disabled={loading}
