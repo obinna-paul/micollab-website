@@ -773,6 +773,66 @@ const Register = () => {
         </motion.div>
       </div>
 
+      {/* OTP Verification Modal */}
+      {requiresVerification && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm bg-[var(--bg-surface-alt)] p-8 rounded-3xl border border-[var(--border-primary)] shadow-2xl relative"
+          >
+            <div className="w-12 h-12 bg-[#7B5CFA]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="text-[#7B5CFA]" size={24} />
+            </div>
+            <h3 className="text-2xl font-black text-[var(--text-primary)] text-center mb-2">Check your email</h3>
+            <p className="text-[var(--text-secondary)] text-sm text-center mb-6">
+              We've sent a verification code to <strong className="text-[var(--text-primary)]">{accountDetails.email}</strong>.
+            </p>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-400 text-xs font-bold">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleVerifyOTP} className="space-y-4">
+              <div>
+                <input 
+                  type="text" 
+                  required
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="000000"
+                  className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-4 px-4 text-center text-2xl tracking-[0.5em] text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-black"
+                />
+              </div>
+              <button 
+                type="submit"
+                disabled={loading || otpCode.length < 6}
+                className="w-full py-3 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="animate-spin" size={20} /> : 'Verify Account'}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-[var(--text-secondary)] text-xs font-medium">
+                Didn't receive the code?{' '}
+                <button onClick={async () => {
+                  const res = await resendOTP(accountDetails.email);
+                  if(!res.success) setError(res.error);
+                  else alert("Code resent!");
+                }} className="text-[#7B5CFA] hover:underline font-bold">
+                  Resend it
+                </button>
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {/* Username Picker Modal for New Google Users */}
       {showUsernameModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
