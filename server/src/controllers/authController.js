@@ -1,8 +1,114 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 
 const prisma = new PrismaClient();
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+exports.googleLogin = async (req, res) => {
+  try {
+    const { credential, username } = req.body;
+    
+    // Verify the Google token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    // Check if user already exists (by googleId or email)
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { googleId },
+          { email }
+        ]
+      }
+    });
+
+    if (user) {
+      // If user exists but doesn't have googleId linked, link it now
+      if (!user.googleId) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: { googleId, profileImage: user.profileImage === 'https://via.placeholder.com/150' ? picture : undefined }
+        });
+      }
+
+      // Generate JWT
+      const token = jwt.sign(
+        { id: user.id, username: user.username, profileType: user.profileType },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      return res.json({
+        message: 'Login successful',
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          profileType: user.profileType,
+          profileImage: user.profileImage,
+          bio: user.bio,
+          location: user.location
+        }
+      });
+    }
+
+    // USER DOES NOT EXIST - NEW REGISTRATION
+    // If frontend didn't provide a username yet, tell frontend to prompt for one
+    if (!username) {
+      return res.status(202).json({ 
+        requireUsername: true, 
+        message: 'Please choose a username to complete registration',
+        suggestedName: name 
+      });
+    }
+
+    // Frontend provided a username, create the account
+    const existingUsername = await prisma.user.findUnique({ where: { username } });
+    if (existingUsername) {
+      return res.status(400).json({ error: 'Username is already taken' });
+    }
+
+    user = await prisma.user.create({
+      data: {
+        username,
+        email,
+        googleId,
+        displayName: name,
+        profileImage: picture,
+        profileType: 'CREATIVE',
+      }
+    });
+
+    const token = jwt.sign(
+      { id: user.id, username: user.username, profileType: user.profileType },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(201).json({
+      message: 'Registration successful',
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        profileType: user.profileType,
+        profileImage: user.profileImage
+      }
+    });
+
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(500).json({ error: 'Google authentication failed' });
+  }
+};
 
 // Helper to generate a 6-digit OTP
 const generateOTP = () => {

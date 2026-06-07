@@ -26,6 +26,27 @@ const useAuthStore = create(
         }
       },
 
+      loginWithGoogle: async (credential, username = null) => {
+        try {
+          const res = await axios.post('/api/auth/google', { credential, username });
+          
+          if (res.status === 202) {
+            return { requireUsername: true, suggestedName: res.data.suggestedName };
+          }
+
+          const { user, token } = res.data;
+          set({ user, token, isAuthenticated: true });
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          
+          return { success: true };
+        } catch (error) {
+          return {
+            success: false,
+            error: error.response?.data?.error || 'Google login failed'
+          };
+        }
+      },
+
       register: async (userData) => {
         try {
           const res = await axios.post('/api/auth/register', userData);

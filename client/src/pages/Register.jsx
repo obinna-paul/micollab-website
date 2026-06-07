@@ -7,6 +7,7 @@ import {
   Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles, Target, Search,
   Layers, Tag, Handshake, Rocket, ArrowRight
 } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import useAuthStore from '../store/useAuthStore';
 
 // Exhaustive Categories Data
@@ -139,6 +140,42 @@ const Register = () => {
 
     const result = await register(payload);
     if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
+
+  const { loginWithGoogle } = useAuthStore();
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [googleCredential, setGoogleCredential] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    const result = await loginWithGoogle(credentialResponse.credential);
+    
+    if (result.success) {
+      navigate('/');
+    } else if (result.requireUsername) {
+      setGoogleCredential(credentialResponse.credential);
+      setShowUsernameModal(true);
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleUsernameSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    const result = await loginWithGoogle(googleCredential, newUsername);
+    if (result.success) {
+      setShowUsernameModal(false);
       navigate('/');
     } else {
       setError(result.error);
@@ -383,6 +420,23 @@ const Register = () => {
                     )}
                   </button>
 
+                  <div className="flex items-center gap-4 my-8">
+                    <div className="h-px bg-white/5 flex-1" />
+                    <span className="text-xs font-bold text-[var(--text-secondary)]">Or continue with</span>
+                    <div className="h-px bg-white/5 flex-1" />
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center w-full">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => setError('Google sign-up failed')}
+                      theme="filled_black"
+                      shape="pill"
+                      width="100%"
+                      text="continue_with"
+                    />
+                  </div>
+
                   <p className="pt-4 text-center text-[var(--text-secondary)] text-xs font-bold">
                     Already have an account? {' '}
                     <Link to="/login" className="text-[#00B5D8] hover:text-[var(--text-primary)] transition">Log in</Link>
@@ -608,6 +662,13 @@ const Register = () => {
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : (
                     <>Enter Micollab <ArrowRight size={18} /></>
+                <button 
+                  onClick={handleRegisterSubmit}
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="animate-spin" size={20} /> : (
+                    <>Enter Micollab <ArrowRight size={18} /></>
                   )}
                 </button>
               </motion.div>
@@ -616,6 +677,59 @@ const Register = () => {
           </AnimatePresence>
         </motion.div>
       </div>
+
+      {/* Username Picker Modal for New Google Users */}
+      {showUsernameModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm bg-[var(--bg-surface-alt)] p-8 rounded-3xl border border-[var(--border-primary)] shadow-2xl relative"
+          >
+            <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Pick a Username</h3>
+            <p className="text-[var(--text-secondary)] text-sm mb-6">
+              You're almost in! Choose a unique username for your Micollab profile.
+            </p>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-400 text-xs font-bold">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleGoogleUsernameSubmit} className="space-y-4">
+              <input 
+                type="text" 
+                required
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                placeholder="creative_genius"
+                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
+              />
+              <button 
+                type="submit"
+                disabled={loading || !newUsername}
+                className="w-full py-3 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="animate-spin" size={20} /> : 'Complete Sign Up'}
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowUsernameModal(false);
+                  setGoogleCredential('');
+                  setNewUsername('');
+                }}
+                className="w-full py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold transition"
+              >
+                Cancel
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
     </div>
   );
 };

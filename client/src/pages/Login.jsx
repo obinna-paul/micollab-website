@@ -2,16 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import useAuthStore from '../store/useAuthStore';
-
-const GoogleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-  </svg>
-);
 
 const AppleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -30,8 +22,44 @@ const Login = () => {
   const [requiresVerification, setRequiresVerification] = useState(false);
   const [otpCode, setOtpCode] = useState('');
 
+  // Google Auth State
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [googleCredential, setGoogleCredential] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+
   const navigate = useNavigate();
-  const { login, verifyOTP, resendOTP } = useAuthStore();
+  const { login, verifyOTP, resendOTP, loginWithGoogle } = useAuthStore();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    const result = await loginWithGoogle(credentialResponse.credential);
+    
+    if (result.success) {
+      navigate('/');
+    } else if (result.requireUsername) {
+      setGoogleCredential(credentialResponse.credential);
+      setShowUsernameModal(true);
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleUsernameSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    const result = await loginWithGoogle(googleCredential, newUsername);
+    if (result.success) {
+      setShowUsernameModal(false);
+      navigate('/');
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -210,13 +238,15 @@ const Login = () => {
                 <div className="h-px bg-white/5 flex-1" />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button type="button" className="flex items-center justify-center gap-2 py-3 bg-[var(--bg-base)] hover:bg-white/5 border border-[var(--border-primary)] rounded-xl transition text-[var(--text-primary)] text-xs font-bold">
-                  <GoogleIcon /> Google
-                </button>
-                <button type="button" className="flex items-center justify-center gap-2 py-3 bg-[var(--bg-base)] hover:bg-white/5 border border-[var(--border-primary)] rounded-xl transition text-[var(--text-primary)] text-xs font-bold">
-                  <AppleIcon /> Apple
-                </button>
+              <div className="flex flex-col items-center justify-center w-full">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setError('Google sign-in failed')}
+                  theme="filled_black"
+                  shape="pill"
+                  width="100%"
+                  text="continue_with"
+                />
               </div>
 
               <p className="mt-8 text-center text-[var(--text-secondary)] text-xs font-bold">
@@ -276,6 +306,57 @@ const Login = () => {
           )}
         </motion.div>
       </div>
+      {/* Username Picker Modal for New Google Users */}
+      {showUsernameModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm bg-[var(--bg-surface-alt)] p-8 rounded-3xl border border-[var(--border-primary)] shadow-2xl relative"
+          >
+            <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Pick a Username</h3>
+            <p className="text-[var(--text-secondary)] text-sm mb-6">
+              You're almost in! Choose a unique username for your Micollab profile.
+            </p>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-400 text-xs font-bold">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleGoogleUsernameSubmit} className="space-y-4">
+              <input 
+                type="text" 
+                required
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                placeholder="creative_genius"
+                className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-3 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
+              />
+              <button 
+                type="submit"
+                disabled={loading || !newUsername}
+                className="w-full py-3 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="animate-spin" size={20} /> : 'Complete Sign Up'}
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowUsernameModal(false);
+                  setGoogleCredential('');
+                  setNewUsername('');
+                }}
+                className="w-full py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold transition"
+              >
+                Cancel
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

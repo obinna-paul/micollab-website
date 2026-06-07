@@ -18,6 +18,7 @@ router.get('/health', (req, res) => {
 // Auth Routes
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
+router.post('/auth/google', authController.googleLogin);
 router.post('/auth/check-availability', authController.checkAvailability);
 router.get('/auth/me', authMiddleware, authController.getMe);
 
