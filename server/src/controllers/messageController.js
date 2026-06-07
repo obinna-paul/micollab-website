@@ -11,17 +11,6 @@ exports.getConversations = async (req, res) => {
       participants: { some: { userId } }
     };
 
-    // Tab-specific filtering logic
-    if (tab === 'PROPOSALS') {
-      whereClause.type = 'PROPOSAL';
-    } else if (tab === 'REQUESTS') {
-      // In a more complex system, we'd check for connection status here
-      // For now, let's assume 'DIRECT' covers both, and we'll refine later
-      whereClause.type = 'DIRECT';
-    } else {
-      whereClause.type = 'DIRECT';
-    }
-
     const conversations = await prisma.conversation.findMany({
       where: whereClause,
       include: {
@@ -40,15 +29,41 @@ exports.getConversations = async (req, res) => {
         messages: {
           take: 1,
           orderBy: { createdAt: 'desc' }
-        },
-        proposalThread: {
-          include: { collab: true }
         }
       },
       orderBy: { updatedAt: 'desc' }
     });
 
-    res.json(conversations);
+    // In-memory filter for DIRECT vs REQUESTS
+    // We check the Connection table for each conversation
+    const connectedUsersQuery = await prisma.connection.findMany({
+      where: {
+        OR: [
+          { userId },
+          { connectedId: userId }
+        ],
+        status: 'ACCEPTED'
+      }
+    });
+
+    const connectedUserIds = new Set();
+    connectedUsersQuery.forEach(c => {
+      connectedUserIds.add(c.userId === userId ? c.connectedId : c.userId);
+    });
+
+    const filteredConversations = conversations.filter(conv => {
+      const partner = conv.participants.find(p => p.userId !== userId);
+      if (!partner) return false;
+      const isConnected = connectedUserIds.has(partner.userId);
+      
+      if (tab === 'REQUESTS') {
+        return !isConnected;
+      } else {
+        return isConnected;
+      }
+    });
+
+    res.json(filteredConversations);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch conversations' });
@@ -69,21 +84,7 @@ exports.getMessages = async (req, res) => {
 
     const messages = await prisma.message.findMany({
       where: { conversationId },
-      include: {
-        sender: {
-          select: { id: true, username: true, profileImage: true }
-        },
-        reactions: true,
-        attachments: true,
-        replyTo: true
-      },
       orderBy: { createdAt: 'asc' }
-    });
-
-    // Mark as read
-    await prisma.conversationParticipant.update({
-      where: { conversationId_userId: { conversationId, userId } },
-      data: { lastReadAt: new Date() }
     });
 
     res.json(messages);
@@ -96,22 +97,23 @@ exports.getMessages = async (req, res) => {
 exports.sendMessage = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { conversationId, content, messageType, replyToId } = req.body;
+    const { conversationId, content } = req.body;
 
     const message = await prisma.message.create({
       data: {
         conversationId,
         senderId: userId,
-        content,
-        messageType: messageType || 'TEXT',
-        replyToId
-      },
-      include: {
-        sender: {
-          select: { id: true, username: true, profileImage: true }
-        }
+        content
       }
     });
+
+    // Fetch sender info manually to mimic include
+    const sender = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true, profileImage: true }
+    });
+    
+    const messageWithSender = { ...message, sender };
 
     // Update conversation timestamp
     await prisma.conversation.update({
@@ -121,7 +123,7 @@ exports.sendMessage = async (req, res) => {
 
     // Emit to socket room
     const io = getIO();
-    io.to(conversationId).emit('new_message', message);
+    io.to(conversationId).emit('new_message', messageWithSender);
     
     // Also notify individuals in case they aren't in the conversation room
     const participants = await prisma.conversationParticipant.findMany({
@@ -132,14 +134,14 @@ exports.sendMessage = async (req, res) => {
         io.to(p.userId).emit('message_notification', {
           conversationId,
           message: {
-            ...message,
-            content: message.content.substring(0, 50)
+            ...messageWithSender,
+            content: messageWithSender.content.substring(0, 50)
           }
         });
       }
     });
 
-    res.status(201).json(message);
+    res.status(201).json(messageWithSender);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to send message' });
@@ -149,29 +151,24 @@ exports.sendMessage = async (req, res) => {
 exports.getOrCreateConversation = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { targetUserId, type } = req.body;
+    const { targetUserId } = req.body;
 
-    // For DIRECT messages, check if exists
-    if (type === 'DIRECT' || !type) {
-      const existing = await prisma.conversation.findFirst({
-        where: {
-          type: 'DIRECT',
-          participants: { every: { userId: { in: [userId, targetUserId] } } },
-          AND: [
-            { participants: { some: { userId } } },
-            { participants: { some: { userId: targetUserId } } }
-          ]
-        },
-        include: { id: true }
-      });
+    const existing = await prisma.conversation.findFirst({
+      where: {
+        participants: { every: { userId: { in: [userId, targetUserId] } } },
+        AND: [
+          { participants: { some: { userId } } },
+          { participants: { some: { userId: targetUserId } } }
+        ]
+      },
+      include: { id: true }
+    });
 
-      if (existing) return res.json(existing);
-    }
+    if (existing) return res.json(existing);
 
     // Create new
     const conversation = await prisma.conversation.create({
       data: {
-        type: type || 'DIRECT',
         participants: {
           create: [
             { userId },

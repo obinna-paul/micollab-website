@@ -38,7 +38,9 @@ const TrendingSidebar = () => {
       setRequestedIds(prev => new Set(prev).add(creatorId));
     } catch (error) {
       console.error('Failed to send connection request:', error);
-      alert(error.response?.data?.error || 'Failed to send request');
+      if (error.response?.data?.error === 'Connection request already exists' || error.response?.data?.error === 'Already connected') {
+        setRequestedIds(prev => new Set(prev).add(creatorId));
+      }
     }
   };
 

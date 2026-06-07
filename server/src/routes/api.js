@@ -73,6 +73,8 @@ const networkController = require('../controllers/networkController');
 router.get('/network/discover', authMiddleware, networkController.discoverUsers);
 router.get('/network/connections', authMiddleware, networkController.getConnections);
 router.get('/network/requests', authMiddleware, networkController.getRequests);
+router.get('/network/status/:targetId', authMiddleware, networkController.getConnectionStatus);
+router.delete('/network/connections/:targetId', authMiddleware, networkController.removeConnection);
 router.post('/network/connect', authMiddleware, networkController.sendConnectionRequest);
 router.patch('/network/requests/:requestId', authMiddleware, networkController.handleConnectionRequest);
 router.get('/network/feed', authMiddleware, networkController.getNetworkFeed);

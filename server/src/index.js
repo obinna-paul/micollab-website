@@ -81,10 +81,11 @@ const PORT = process.env.PORT || 5000;
       console.log("Successfully wiped all mock data for micollab");
     }
 
-    httpServer.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server is running on http://10.59.144.84:${PORT}`);
-    });
   } catch (error) {
     console.error("Error during startup cleanup:", error);
   }
+
+  httpServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on http://10.59.144.84:${PORT}`);
+  });
 })();

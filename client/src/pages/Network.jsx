@@ -89,12 +89,22 @@ const Network = () => {
     } catch (err) { console.error(err); }
   };
 
+  const handleUnfollow = async (targetId) => {
+    if (window.confirm("Unfollow this user?")) {
+      try {
+        await axios.delete(`/api/network/connections/${targetId}`, { headers: { Authorization: `Bearer ${token}` } });
+        setUsers(users.map(u => u.id === targetId ? { ...u, connectionStatus: 'NONE', requested: false } : u));
+        setConnections(connections.filter(u => u.id !== targetId));
+      } catch (err) { console.error(err); }
+    }
+  };
+
   const toggleFollow = (userId) => setLocalFollows(p => ({ ...p, [userId]: !p[userId] }));
   const toggleLike  = (userId) => setLocalLikes(p  => ({ ...p, [userId]: !p[userId] }));
 
   /* ── Profile Card — compact square ── */
   const ProfileCard = ({ user, idx }) => {
-    const isFollowed = localFollows[user.id] || false;
+    const status = user.requested ? 'REQUESTED' : (user.connectionStatus || 'NONE');
     const skills = user.skills ? user.skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 3) : [];
 
     return (
@@ -143,14 +153,30 @@ const Network = () => {
             Profile
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); toggleFollow(user.id); }}
+            disabled={status === 'REQUESTED'}
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              if (status === 'CONNECTED') {
+                handleUnfollow(user.id);
+              } else {
+                handleConnect(user.id); 
+              }
+            }}
             className={`flex-1 text-[10px] font-semibold py-[7px] rounded-lg transition-all ${
-              isFollowed
+              status === 'CONNECTED'
                 ? 'bg-transparent text-cyan-400 border border-cyan-400/30'
+                : status === 'REQUESTED'
+                ? 'bg-transparent text-gray-400 border border-gray-400/30'
                 : 'bg-[#7B5CFA] hover:bg-[#6A4DE8] text-white'
             }`}
           >
-            {isFollowed ? <span className="flex items-center justify-center gap-1"><Check size={8} strokeWidth={3} />Following</span> : 'Follow'}
+            {status === 'CONNECTED' ? (
+              <span className="flex items-center justify-center gap-1"><Check size={8} strokeWidth={3} />Following</span>
+            ) : status === 'REQUESTED' ? (
+              <span className="flex items-center justify-center gap-1">Request Sent</span>
+            ) : (
+              'Connect'
+            )}
           </button>
         </div>
       </motion.div>

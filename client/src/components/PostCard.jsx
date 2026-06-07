@@ -30,6 +30,7 @@ const PostCard = ({ post }) => {
   const [loading, setLoading]       = useState(false);
   const [showShare, setShowShare]   = useState(false);
   const [copied, setCopied]         = useState(false);
+  const [hasRequested, setHasRequested] = useState(false);
   
   // Comment & Repost State
   const [showComments, setShowComments] = useState(false);
@@ -178,8 +179,27 @@ const PostCard = ({ post }) => {
 
           <div className="flex items-center gap-1 flex-shrink-0 relative">
             {!isOwnPost && (
-              <button className="flex items-center gap-1 text-primary hover:bg-primary/5 px-3 py-1 rounded-full transition font-bold text-xs">
-                <UserPlus size={13} /> Connect
+              <button 
+                onClick={async () => {
+                  if (loading || hasRequested) return;
+                  try {
+                    setLoading(true);
+                    await axios.post('/api/network/connect', { receiverId: originalPost ? originalPost.creator.id : creator.id }, { headers: { Authorization: `Bearer ${token}` } });
+                    setHasRequested(true);
+                  } catch (err) {
+                    console.error(err);
+                    if (err.response?.data?.error === 'Connection request already exists' || err.response?.data?.error === 'Already connected') {
+                      setHasRequested(true);
+                    }
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={loading || hasRequested}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full transition font-bold text-xs disabled:opacity-50 ${hasRequested ? 'bg-transparent text-gray-400 border border-gray-400/30' : 'text-primary hover:bg-primary/5'}`}
+              >
+                {hasRequested ? <Check size={13} /> : <UserPlus size={13} />}
+                {hasRequested ? 'Request Sent' : 'Connect'}
               </button>
             )}
             {isOwnPost && (

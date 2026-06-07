@@ -42,6 +42,12 @@ const Profile = () => {
     try {
       const res = await axios.get('/api/users/profile/' + username);
       setProfile(res.data);
+      if (token && currentUser?.id !== res.data.id) {
+        const statusRes = await axios.get(`/api/network/status/${res.data.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setConnectStatus(statusRes.data.status); // CONNECTED, REQUESTED, RECEIVED_REQUEST, NONE
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -116,12 +122,30 @@ const Profile = () => {
       await axios.post('/api/network/connect', { receiverId: profile.id }, {
         headers: { Authorization: 'Bearer ' + token }
       });
-      setConnectStatus('sent');
-      alert('Connection request sent!');
+      setConnectStatus('REQUESTED');
     } catch (err) {
       console.error(err);
-      setConnectStatus('error');
-      alert(err.response?.data?.error || 'Failed to send request');
+      if (err.response?.data?.error === 'Connection request already exists' || err.response?.data?.error === 'Already connected') {
+        setConnectStatus(err.response?.data?.error === 'Already connected' ? 'CONNECTED' : 'REQUESTED');
+      } else {
+        setConnectStatus('NONE');
+      }
+    }
+  };
+
+  const handleUnfollow = async () => {
+    if (window.confirm("Unfollow this user?")) {
+      try {
+        setConnectStatus('loading');
+        await axios.delete(`/api/network/connections/${profile.id}`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        setConnectStatus('NONE');
+      } catch (err) {
+        console.error(err);
+        setConnectStatus('CONNECTED');
+        alert('Failed to unfollow user');
+      }
     }
   };
 
@@ -159,28 +183,101 @@ const Profile = () => {
   return (
     <div className="pb-20">
 
-      {/* ============ TOP ROW: Cover (left+mid) | Right sidebar (start) ============ */}
-      <div className="flex gap-7">
+      {/* ============ TOP ROW: Cover & Header Info ============ */}
+      <div className="flex gap-7 mb-8">
 
-        {/* Cover image area — takes all space except the right sidebar */}
+        {/* Cover & Profile Info Area */}
         <div className="flex-1 min-w-0">
-          <div className="h-[240px] lg:h-[280px] w-full rounded-t-[1.5rem] overflow-hidden relative group">
+          
+          {/* Cover Image */}
+          <div className="h-[280px] lg:h-[320px] w-full rounded-[1.5rem] overflow-hidden relative group">
             {profile.coverImage ? (
               <img src={profile.coverImage} alt="Cover" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#7B2FF2] via-[#B23AEE] to-[#E94057]"></div>
+              <div className="w-full h-full bg-gradient-to-br from-[#0B0F19] via-[#1A1F2E] to-[#7B5CFA]"></div>
             )}
+            
+            {/* Dark gradient at bottom to make text readable */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/40 to-transparent"></div>
+
             {isOwner && (
-              <button onClick={() => setCoverMenuOpen(true)} className="absolute top-5 right-5 bg-black/40 backdrop-blur-md text-[var(--text-primary)] px-4 py-2 rounded-xl text-xs font-bold hover:bg-black/60 transition border border-[var(--border-secondary)] z-10">
+              <button onClick={() => setCoverMenuOpen(true)} className="absolute top-5 right-5 bg-black/40 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black/60 transition border border-white/10 z-10">
                 Change Cover
               </button>
             )}
+
+            {/* Content overlaid on cover (Name & Title) */}
+            <div className="absolute bottom-6 left-0 w-full px-6 lg:px-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              
+              {/* Left Side: Empty space for Avatar + Name/Title */}
+              <div className="flex items-end gap-6">
+                {/* Spacer for absolute Avatar */}
+                <div className="w-[120px] lg:w-[140px] flex-shrink-0"></div>
+                
+                <div className="mb-2">
+                  <h1 className="text-[32px] lg:text-[40px] font-black text-white tracking-tight leading-none mb-2 drop-shadow-lg">{profile.displayName || profile.username}</h1>
+                  <div className="flex items-center gap-2 drop-shadow-md">
+                    <Headphones size={16} className="text-[#00D4FF]" />
+                    <span className="text-[#00D4FF] font-bold text-[14px]">{profile.profileType || 'Creative Professional'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side: Buttons on Cover */}
+              <div className="flex flex-wrap items-center gap-3 mb-2 z-10">
+                {isOwner ? (
+                  <button onClick={() => setIsEditModalOpen(true)} className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm rounded-xl hover:bg-white/20 transition shadow-lg">
+                    Edit Profile
+                  </button>
+                ) : (
+                  <>
+                    <button className="px-5 py-2.5 bg-[#1A1F2E]/80 backdrop-blur-md border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-[#1A1F2E] transition flex items-center gap-2 shadow-lg">
+                      <Mail size={15} /> Message
+                    </button>
+                    <button onClick={handleWriteTestimonial} className="px-5 py-2.5 bg-[#FF8A00]/10 backdrop-blur-md border border-[#FF8A00]/30 text-[#FF8A00] font-bold text-sm rounded-xl hover:bg-[#FF8A00]/20 transition flex items-center gap-2 shadow-lg">
+                      <Star size={15} /> Endorse
+                    </button>
+                    <button 
+                      onClick={() => connectStatus === 'CONNECTED' ? handleUnfollow() : handleConnect()} 
+                      disabled={connectStatus === 'loading' || connectStatus === 'REQUESTED'}
+                      className={`px-6 py-2.5 font-bold text-sm rounded-xl transition shadow-lg flex items-center gap-2 ${
+                        connectStatus === 'CONNECTED'
+                          ? 'bg-transparent text-cyan-400 border border-cyan-400/30 hover:bg-cyan-400/10'
+                          : connectStatus === 'REQUESTED'
+                          ? 'bg-transparent text-gray-400 border border-gray-400/30'
+                          : 'bg-[#7B5CFA] text-white hover:bg-[#684CE0] shadow-[0_0_15px_rgba(123,92,250,0.3)]'
+                      }`}
+                    >
+                      {connectStatus === 'CONNECTED' ? <CheckCircle size={15} /> : connectStatus === 'REQUESTED' ? <CheckCircle size={15} /> : <UserPlus size={15} strokeWidth={3} />} 
+                      {connectStatus === 'CONNECTED' ? 'Following' : connectStatus === 'REQUESTED' ? 'Request Sent' : 'Connect'}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
+
+          {/* Absolute Avatar positioning (overlaps cover bottom edge) */}
+          <div className="relative -mt-[60px] lg:-mt-[70px] ml-6 lg:ml-8 z-20">
+            <div className="w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] rounded-2xl border-[6px] border-[#0B0F19] shadow-2xl overflow-hidden bg-[var(--bg-surface-alt)] relative group/avatar">
+              <img src={profile.profileImage || fallbackAvatar} className="w-full h-full object-cover" alt="Avatar" />
+              {isOwner && (
+                <div onClick={() => setAvatarMenuOpen(true)} className="absolute inset-0 bg-black/50 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition cursor-pointer">
+                  <Camera size={24} className="text-white" />
+                </div>
+              )}
+              {profile.isVerified === 'YES' && (
+                <div className="absolute -bottom-1 -right-1 bg-[#00D4FF] text-[#0B0F19] p-1 rounded-full border-[3px] border-[#0B0F19] z-20">
+                  <CheckCircle size={16} fill="currentColor" strokeWidth={2} />
+                </div>
+              )}
+            </div>
+          </div>
+          
         </div>
 
-        {/* Right sidebar — fixed width, starts at top next to cover */}
+        {/* Right sidebar space */}
         <aside className="hidden xl:block w-[240px] flex-shrink-0 space-y-6 pt-0">
-          {/* Open for Collaboration */}
           {profile.availabilityStatus === 'OPEN_TO_COLLAB' && (
             <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5 relative overflow-hidden">
               <div className="absolute -top-8 -right-8 w-32 h-32 bg-[#00D4FF]/8 blur-3xl rounded-full" />
@@ -191,7 +288,6 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Mutual Connections */}
           <div>
             <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
               <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
@@ -217,68 +313,6 @@ const Profile = () => {
             )}
           </div>
         </aside>
-      </div>
-
-      {/* ============ AVATAR + NAME ROW ============ */}
-      <div className="flex gap-7">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-end gap-5 px-4 lg:px-6 -mt-[60px] relative z-10 mb-6">
-            {/* Avatar */}
-            <div className="relative group flex-shrink-0">
-              <div className="w-[120px] h-[120px] lg:w-[130px] lg:h-[130px] rounded-2xl border-[5px] border-[#0F131E] shadow-2xl overflow-hidden bg-[var(--bg-surface-alt)]">
-                <img src={profile.profileImage || fallbackAvatar} className="w-full h-full object-cover" alt="Avatar" />
-                {isOwner && (
-                  <div onClick={() => setAvatarMenuOpen(true)} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition cursor-pointer rounded-2xl">
-                    <Camera size={20} className="text-[var(--text-primary)]" />
-                  </div>
-                )}
-              </div>
-              {profile.isVerified === 'YES' && (
-                <div className="absolute -bottom-1 -right-1 bg-[#00D4FF] text-[#0B0F19] p-1 rounded-full border-[3px] border-[#0F131E] z-20">
-                  <CheckCircle size={14} fill="currentColor" strokeWidth={2} />
-                </div>
-              )}
-            </div>
-
-            {/* Name + buttons */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-1 pb-1">
-              <div>
-                <h1 className="text-[28px] lg:text-[32px] font-black text-[var(--text-primary)] tracking-tight leading-none mb-1">{profile.displayName || profile.username}</h1>
-                <div className="flex items-center gap-2">
-                  <Headphones size={15} className="text-[#00D4FF]" />
-                  <span className="text-[#00D4FF] font-bold text-[13px]">{profile.profileType || 'Sound Designer & Producer'}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                {isOwner ? (
-                  <button onClick={() => setIsEditModalOpen(true)} className="px-5 py-2.5 bg-[var(--bg-surface-alt)] border border-[var(--border-secondary)] text-[var(--text-primary)] font-bold text-sm rounded-xl hover:bg-white/5 transition">
-                    Edit Profile
-                  </button>
-                ) : (
-                  <>
-                    <button className="px-5 py-2.5 bg-[var(--bg-surface-alt)] border border-[var(--border-secondary)] text-[var(--text-primary)] font-bold text-sm rounded-xl hover:bg-white/5 transition flex items-center gap-2">
-                      <Mail size={15} /> Message
-                    </button>
-                    <button onClick={handleWriteTestimonial} className="px-5 py-2.5 bg-[#FF8A00]/10 text-[#FF8A00] font-bold text-sm rounded-xl hover:bg-[#FF8A00]/20 transition flex items-center gap-2">
-                      <Star size={15} /> Endorse
-                    </button>
-                    <button 
-                      onClick={handleConnect} 
-                      disabled={connectStatus === 'sent' || connectStatus === 'loading'}
-                      className="px-6 py-2.5 bg-[#7B5CFA] text-white font-bold text-sm rounded-xl hover:bg-[#684CE0] disabled:opacity-50 transition shadow-[0_0_15px_rgba(123,92,250,0.3)] flex items-center gap-2"
-                    >
-                      {connectStatus === 'sent' ? <CheckCircle size={15} /> : <UserPlus size={15} strokeWidth={3} />} 
-                      {connectStatus === 'sent' ? 'Requested' : 'Connect'}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Spacer to keep right sidebar alignment */}
-        <div className="hidden xl:block w-[240px] flex-shrink-0"></div>
       </div>
 
       {/* ============ BOTTOM ROW: Left info | Middle content | Right sidebar continues ============ */}

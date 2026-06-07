@@ -8,6 +8,24 @@ exports.discoverUsers = async (req, res) => {
     const { search, profileType } = req.query;
     const currentUserId = req.user.id;
 
+    // Get my sent requests
+    const sentRequests = await prisma.connectionRequest.findMany({
+      where: { fromUserId: currentUserId, status: 'PENDING' },
+      select: { toUserId: true }
+    });
+    const requestedUserIds = new Set(sentRequests.map(r => r.toUserId));
+
+    // Get my active connections
+    const myConnections = await prisma.connection.findMany({
+      where: {
+        OR: [
+          { userId: currentUserId, status: 'ACCEPTED' },
+          { connectedId: currentUserId, status: 'ACCEPTED' }
+        ]
+      }
+    });
+    const connectedUserIds = new Set(myConnections.map(c => c.userId === currentUserId ? c.connectedId : c.userId));
+
     const users = await prisma.user.findMany({
       where: {
         id: { not: currentUserId },
@@ -33,7 +51,13 @@ exports.discoverUsers = async (req, res) => {
       take: 20
     });
 
-    res.json(users);
+    // Add status property to each user
+    const usersWithStatus = users.map(u => ({
+      ...u,
+      connectionStatus: connectedUserIds.has(u.id) ? 'CONNECTED' : (requestedUserIds.has(u.id) ? 'REQUESTED' : 'NONE')
+    }));
+
+    res.json(usersWithStatus);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to discover users' });
@@ -52,6 +76,7 @@ exports.sendConnectionRequest = async (req, res) => {
 
     const existingRequest = await prisma.connectionRequest.findFirst({
       where: {
+        status: 'PENDING',
         OR: [
           { fromUserId: requesterId, toUserId: receiverId },
           { fromUserId: receiverId, toUserId: requesterId }
@@ -95,8 +120,8 @@ exports.sendConnectionRequest = async (req, res) => {
 
     res.json(request);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to send request' });
+    console.error("FATAL ERROR IN sendConnectionRequest:", error);
+    res.status(500).json({ error: 'Failed to send request', details: error.message });
   }
 };
 
@@ -221,13 +246,13 @@ exports.getNetworkFeed = async (req, res) => {
     const connections = await prisma.connection.findMany({
       where: {
         OR: [
-          { requesterId: userId, status: 'ACCEPTED' },
-          { receiverId: userId, status: 'ACCEPTED' }
+          { userId: userId, status: 'ACCEPTED' },
+          { connectedId: userId, status: 'ACCEPTED' }
         ]
       }
     });
 
-    const friendIds = connections.map(c => c.requesterId === userId ? c.receiverId : c.requesterId);
+    const friendIds = connections.map(c => c.userId === userId ? c.connectedId : c.userId);
     
     // Include the user's own posts too
     const targetIds = [...friendIds, userId];
@@ -257,5 +282,85 @@ exports.getNetworkFeed = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch network feed' });
+  }
+};
+
+// GET /api/network/status/:targetId - Get connection status with another user
+exports.getConnectionStatus = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { targetId } = req.params;
+
+    if (userId === targetId) return res.json({ status: 'SELF' });
+
+    const connection = await prisma.connection.findFirst({
+      where: {
+        OR: [
+          { userId: userId, connectedId: targetId },
+          { userId: targetId, connectedId: userId }
+        ],
+        status: 'ACCEPTED'
+      }
+    });
+
+    if (connection) {
+      return res.json({ status: 'CONNECTED' });
+    }
+
+    const request = await prisma.connectionRequest.findFirst({
+      where: {
+        OR: [
+          { fromUserId: userId, toUserId: targetId },
+          { fromUserId: targetId, toUserId: userId }
+        ],
+        status: 'PENDING'
+      }
+    });
+
+    if (request) {
+      if (request.fromUserId === userId) {
+        return res.json({ status: 'REQUESTED' });
+      } else {
+        return res.json({ status: 'RECEIVED_REQUEST' });
+      }
+    }
+
+    res.json({ status: 'NONE' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch connection status' });
+  }
+};
+
+// DELETE /api/network/connections/:targetId - Unfollow/Disconnect
+exports.removeConnection = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { targetId } = req.params;
+
+    // Delete connection
+    await prisma.connection.deleteMany({
+      where: {
+        OR: [
+          { userId: userId, connectedId: targetId },
+          { userId: targetId, connectedId: userId }
+        ]
+      }
+    });
+
+    // Also delete any existing requests between them to completely reset state
+    await prisma.connectionRequest.deleteMany({
+      where: {
+        OR: [
+          { fromUserId: userId, toUserId: targetId },
+          { fromUserId: targetId, toUserId: userId }
+        ]
+      }
+    });
+
+    res.json({ message: 'Disconnected successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to disconnect' });
   }
 };

@@ -192,16 +192,23 @@ const Notifications = () => {
                           
                           <div className="flex-1 min-w-0 pr-10">
                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="text-sm font-black text-[var(--text-primary)] tracking-tight truncate">{notification.title}</h4>
+                                <h4 className="text-sm font-black text-[var(--text-primary)] tracking-tight truncate">
+                                  {notification.title || (notification.type === 'CONNECTION' ? 'Network Update' : notification.type.replace('_', ' '))}
+                                </h4>
                                 {!notification.isRead && <div className="w-1.5 h-1.5 bg-[#7B5CFA] rounded-full animate-pulse" />}
                              </div>
                              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                {notification.sender?.username && (
-                                  <Link to={`/profile/${notification.sender.username}`} className="font-bold text-[var(--text-primary)] hover:underline">
-                                    @{notification.sender.username}
+                                {notification.triggeredBy?.username && (
+                                  <Link to={`/profile/${notification.triggeredBy.username}`} className="font-bold text-[var(--text-primary)] hover:underline">
+                                    @{notification.triggeredBy.username}
                                   </Link>
                                 )}
-                                {' '}{notification.content}
+                                {' '}
+                                {notification.content === 'Connection Accepted' 
+                                  ? 'accepted your connection request' 
+                                  : notification.content === 'New Connection Request'
+                                  ? 'wants to connect with you'
+                                  : notification.content}
                              </p>
                              <div className="flex items-center gap-3 mt-3">
                                 <span className="flex items-center gap-1.5 text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">
