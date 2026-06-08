@@ -8,25 +8,27 @@ generator client {
 }
 
 model User {
-  id                 String    @id @default(cuid())
-  username           String    @unique
-  email              String    @unique
-  password           String?
-  googleId           String?   @unique
-  displayName        String?
-  profileImage       String?   @default("https://via.placeholder.com/150")
-  coverImage         String?   @default("https://images.unsplash.com/photo-1579546929518-9e396f3cc809")
-  profileType        String    @default("CREATIVE") // CREATIVE, SCOUT
-  bio                String?   @default("Creative explorer on Micollab.")
-  longAbout          String?
-  isVerified         String?   @default("NO") // NO, PENDING, YES
-  isEmailVerified    Boolean   @default(false)
-  verificationOTP    String?
-  otpExpiresAt       DateTime?
-  location           String?   @default("Lagos, Nigeria")
-  skills             String? // comma-separated
-  availabilityStatus String?   @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB
-  website            String?
+  id                   String    @id @default(cuid())
+  username             String    @unique
+  email                String    @unique
+  password             String?
+  googleId             String?   @unique
+  displayName          String?
+  profileImage         String?   @default("https://via.placeholder.com/150")
+  coverImage           String?   @default("https://images.unsplash.com/photo-1579546929518-9e396f3cc809")
+  profileType          String    @default("CREATIVE") // CREATIVE, SCOUT
+  bio                  String?   @default("Creative explorer on Micollab.")
+  longAbout            String?
+  isVerified           String?   @default("NO") // NO, PENDING, YES
+  isEmailVerified      Boolean   @default(false)
+  verificationOTP      String?
+  otpExpiresAt         DateTime?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  location             String?   @default("Lagos, Nigeria")
+  skills               String? // comma-separated
+  availabilityStatus   String?   @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB
+  website              String?
 
   // Reputation Metrics
   reputationScore Int @default(0)
@@ -66,12 +68,18 @@ model User {
   projectCredits          ProjectCredit[]
   taskComments            TaskComment[]
   ConversationParticipant ConversationParticipant[]
+
+  // Trust & Safety Relations
+  blockedUsers   Block[]  @relation("Blocker")
+  blockedBy      Block[]  @relation("Blocked")
+  reportsMade    Report[] @relation("Reporter")
+  reportsReceived Report[] @relation("Reported")
 }
 
 model PortfolioItem {
   id          String    @id @default(cuid())
   userId      String
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String?
   category    String // Video, Photography, Music, Writing, etc.
@@ -109,16 +117,16 @@ model PortfolioCredit {
   portfolioItemId String
   portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
   creditedUserId  String
-  user            User          @relation("UserCredits", fields: [creditedUserId], references: [id])
+  user            User          @relation("UserCredits", fields: [creditedUserId], references: [id], onDelete: Cascade)
   role            String // Director, Producer, Editor, etc.
 }
 
 model Testimonial {
   id         String   @id @default(cuid())
   fromUserId String
-  fromUser   User     @relation("GivenTestimonials", fields: [fromUserId], references: [id])
+  fromUser   User     @relation("GivenTestimonials", fields: [fromUserId], references: [id], onDelete: Cascade)
   toUserId   String
-  toUser     User     @relation("ReceivedTestimonials", fields: [toUserId], references: [id])
+  toUser     User     @relation("ReceivedTestimonials", fields: [toUserId], references: [id], onDelete: Cascade)
   content    String
   rating     Int      @default(5)
   createdAt  DateTime @default(now())
@@ -127,7 +135,7 @@ model Testimonial {
 model UserAnalytics {
   id                String @id @default(cuid())
   userId            String @unique
-  user              User   @relation(fields: [userId], references: [id])
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   profileViews      Int    @default(0)
   portfolioViews    Int    @default(0)
   searchAppearances Int    @default(0)
@@ -144,7 +152,7 @@ model Post {
   collabId     String?
 
   createdAt DateTime @default(now())
-  creator   User     @relation(fields: [creatorId], references: [id])
+  creator   User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId String
 
   // Repost logic
@@ -203,7 +211,7 @@ model Collab {
   crossPostToFeed Boolean   @default(false)
   isVerified      Boolean   @default(false)
 
-  poster    User     @relation(fields: [posterId], references: [id])
+  poster    User     @relation(fields: [posterId], references: [id], onDelete: Cascade)
   posterId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -237,7 +245,7 @@ model Proposal {
   status         String  @default("PENDING") // PENDING, ACCEPTED, REJECTED
   portfolioLinks String? // JSON string
 
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   collab      Collab       @relation(fields: [collabId], references: [id])
   collabId    String
@@ -253,8 +261,8 @@ model Connection {
   status      String   @default("ACCEPTED")
   createdAt   DateTime @default(now())
 
-  user        User @relation("UserConnections", fields: [userId], references: [id])
-  connectedTo User @relation("ConnectedTo", fields: [connectedId], references: [id])
+  user        User @relation("UserConnections", fields: [userId], references: [id], onDelete: Cascade)
+  connectedTo User @relation("ConnectedTo", fields: [connectedId], references: [id], onDelete: Cascade)
 
   @@unique([userId, connectedId])
 }
@@ -266,14 +274,14 @@ model ConnectionRequest {
   status     String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
   createdAt  DateTime @default(now())
 
-  fromUser User @relation("SentRequests", fields: [fromUserId], references: [id])
-  toUser   User @relation("ReceivedRequests", fields: [toUserId], references: [id])
+  fromUser User @relation("SentRequests", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser   User @relation("ReceivedRequests", fields: [toUserId], references: [id], onDelete: Cascade)
 }
 
 model Circle {
   id               String  @id @default(cuid())
   ownerId          String
-  owner            User    @relation("CircleOwner", fields: [ownerId], references: [id])
+  owner            User    @relation("CircleOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   title            String
   slug             String  @unique
   description      String?
@@ -330,9 +338,9 @@ model CircleTask {
   priority    String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
   deadline    DateTime?
   assignedTo  String? // userId
-  assignee    User?     @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  assignee    User?     @relation("AssignedTasks", fields: [assignedTo], references: [id], onDelete: Cascade)
   createdBy   String
-  reporter    User      @relation("ReportedTasks", fields: [createdBy], references: [id])
+  reporter    User      @relation("ReportedTasks", fields: [createdBy], references: [id], onDelete: Cascade)
 
   taskCode         String?
   estimatedEffort  Int?
@@ -376,7 +384,7 @@ model CircleMessage {
   circleId  String
   circle    Circle  @relation(fields: [circleId], references: [id], onDelete: Cascade)
   senderId  String
-  sender    User    @relation(fields: [senderId], references: [id])
+  sender    User    @relation(fields: [senderId], references: [id], onDelete: Cascade)
   content   String
   type      String  @default("TEXT") // TEXT, MEDIA, SYSTEM
   replyToId String?
@@ -448,7 +456,7 @@ model ProjectCredit {
   circleId   String
   circle     Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
   userId     String
-  user       User   @relation(fields: [userId], references: [id])
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   creditRole String
 }
 
@@ -475,8 +483,8 @@ model ConversationParticipant {
   id             String       @id @default(cuid())
   conversationId String
   userId         String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
-  user           User         @relation(fields: [userId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
 }
@@ -489,7 +497,7 @@ model Message {
   senderId       String
   conversationId String
   createdAt      DateTime     @default(now())
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -501,7 +509,29 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  user          User    @relation("UserNotifications", fields: [userId], references: [id])
-  triggeredBy   User?   @relation("TriggeredBy", fields: [triggeredById], references: [id])
+  user          User    @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  triggeredBy   User?   @relation("TriggeredBy", fields: [triggeredById], references: [id], onDelete: Cascade)
   triggeredById String?
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockedId String
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  reporterId String
+  reporter   User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedId String
+  reported   User     @relation("Reported", fields: [reportedId], references: [id], onDelete: Cascade)
+  reason     String
+  status     String   @default("PENDING") // PENDING, REVIEWED, RESOLVED
+  createdAt  DateTime @default(now())
 }

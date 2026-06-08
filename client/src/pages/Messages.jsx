@@ -22,7 +22,8 @@ const Messages = () => {
   const { user, token } = useAuthStore();
   const { 
     conversations, activeConversation, messages, loading,
-    initSocket, fetchConversations, setActiveConversation, sendMessage, setTyping, startConversation 
+    initSocket, fetchConversations, setActiveConversation, sendMessage, setTyping, startConversation,
+    blockUser, reportUser
   } = useChatStore();
 
   const [activeTab, setActiveTab] = useState('PRIMARY');
@@ -111,11 +112,40 @@ const Messages = () => {
     }
   };
 
-  const handleStartChat = async (targetUserId) => {
-    await startConversation(token, targetUserId);
-    setShowNewMsgModal(false);
-    setUserSearch('');
-    setSearchResults([]);
+  const handleStartChat = async (targetId) => {
+    const conv = await startConversation(token, targetId);
+    if (conv) {
+      setShowNewMsgModal(false);
+      setUserSearch('');
+      setSearchResults([]);
+    }
+  };
+
+  const handleBlock = async () => {
+    const partner = getPartner(activeConversation);
+    if (!partner) return;
+    if (window.confirm(`Are you sure you want to block @${partner.username}? You will no longer receive messages from them.`)) {
+      const success = await blockUser(token, partner.userId);
+      if (success) {
+        alert(`@${partner.username} has been blocked.`);
+      } else {
+        alert('Failed to block user.');
+      }
+    }
+  };
+
+  const handleReport = async () => {
+    const partner = getPartner(activeConversation);
+    if (!partner) return;
+    const reason = window.prompt(`Why are you reporting @${partner.username}?`);
+    if (reason && reason.trim()) {
+      const success = await reportUser(token, partner.userId, reason.trim());
+      if (success) {
+        alert(`@${partner.username} has been reported to moderation.`);
+      } else {
+        alert('Failed to submit report.');
+      }
+    }
   };
 
   const getPartner = (conversation) => {
@@ -388,8 +418,8 @@ const Messages = () => {
                        Mute Notifications
                        <div className="w-8 h-4 bg-divider rounded-full relative"><div className="absolute left-1 top-1 w-2 h-2 bg-white rounded-full"></div></div>
                     </button>
-                    <button className="w-full text-left text-xs font-bold text-red-500 hover:underline">Block @{getPartner(activeConversation)?.username}</button>
-                    <button className="w-full text-left text-xs font-bold text-red-500 hover:underline">Report Conversation</button>
+                    <button onClick={handleBlock} className="w-full text-left text-xs font-bold text-red-500 hover:underline">Block @{getPartner(activeConversation)?.username}</button>
+                    <button onClick={handleReport} className="w-full text-left text-xs font-bold text-red-500 hover:underline">Report Conversation</button>
                  </div>
               </div>
            </div>

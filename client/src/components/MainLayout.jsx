@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Compass, User, Users, Briefcase, MessageSquare, Bell, LogOut, X, Circle, Search, ChevronDown, Flame, CheckCircle, Moon, Sun } from 'lucide-react';
+import { Compass, User, Users, Briefcase, MessageSquare, Bell, LogOut, X, Circle, Search, ChevronDown, Flame, CheckCircle, Moon, Sun, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
@@ -38,6 +38,7 @@ const MainLayout = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     initTheme();
@@ -116,6 +117,13 @@ const MainLayout = ({ children }) => {
             <input 
               type="text" 
               placeholder="Search creatives, projects, or tags..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                }
+              }}
               className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-full py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] placeholder-[#8B95A5] outline-none focus:border-[#7B5CFA]/50 transition" 
             />
           </div>
@@ -131,15 +139,36 @@ const MainLayout = ({ children }) => {
                    <MessageSquare size={16} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
                  </Link>
                  
-                 <div className="hidden md:flex items-center gap-2 ml-2 cursor-pointer group">
-                    <div className="w-8 h-8 rounded-full overflow-hidden border border-[var(--border-secondary)]">
-                      <img 
-                        src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=7B5CFA&color=fff`} 
-                        className="w-full h-full object-cover" 
-                        alt="" 
-                      />
-                    </div>
-                    <ChevronDown size={14} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
+                 <div className="hidden md:block relative ml-2 group">
+                   <button className="flex items-center gap-2 cursor-pointer focus:outline-none py-1">
+                      <div className="w-8 h-8 rounded-full overflow-hidden border border-[var(--border-secondary)]">
+                        <img 
+                          src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username}&background=7B5CFA&color=fff`} 
+                          className="w-full h-full object-cover" 
+                          alt="" 
+                        />
+                      </div>
+                      <ChevronDown size={14} className="text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition" />
+                   </button>
+                   
+                   {/* Dropdown Menu */}
+                   <div className="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 z-50">
+                     <div className="p-2 space-y-1">
+                       <Link to={`/profile/${user?.username}`} className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] rounded-xl transition-colors">
+                         <User size={16} /> Profile
+                       </Link>
+                       <Link to="/wallet" className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] rounded-xl transition-colors">
+                         <Briefcase size={16} /> Wallet
+                       </Link>
+                       <Link to="/settings" className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] rounded-xl transition-colors">
+                         <Settings size={16} /> Settings
+                       </Link>
+                       <div className="h-px bg-[var(--border-primary)] my-1" />
+                       <button onClick={() => { logout(); navigate('/login'); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-colors">
+                         <LogOut size={16} /> Logout
+                       </button>
+                     </div>
+                   </div>
                  </div>
                </div>
              ) : (

@@ -140,6 +140,53 @@ const useAuthStore = create(
             get().logout();
           }
         }
+      },
+
+      forgotPassword: async (email) => {
+        try {
+          const res = await axios.post('/api/auth/forgot-password', { email });
+          return { success: true, message: res.data.message };
+        } catch (error) {
+          return { success: false, error: error.response?.data?.error || 'Failed to send reset link' };
+        }
+      },
+
+      resetPassword: async (token, newPassword) => {
+        try {
+          const res = await axios.post('/api/auth/reset-password', { token, newPassword });
+          return { success: true, message: res.data.message };
+        } catch (error) {
+          return { success: false, error: error.response?.data?.error || 'Failed to reset password' };
+        }
+      },
+
+      changePassword: async (currentPassword, newPassword) => {
+        try {
+          const res = await axios.put('/api/users/settings/password', { currentPassword, newPassword });
+          return { success: true, message: res.data.message };
+        } catch (error) {
+          return { success: false, error: error.response?.data?.error || 'Failed to change password' };
+        }
+      },
+
+      updateEmail: async (newEmail) => {
+        try {
+          const res = await axios.put('/api/users/settings/email', { newEmail });
+          set({ user: { ...get().user, email: res.data.email } });
+          return { success: true, message: res.data.message };
+        } catch (error) {
+          return { success: false, error: error.response?.data?.error || 'Failed to update email' };
+        }
+      },
+
+      deleteAccount: async () => {
+        try {
+          await axios.delete('/api/users/settings/account');
+          get().logout();
+          return { success: true };
+        } catch (error) {
+          return { success: false, error: error.response?.data?.error || 'Failed to delete account' };
+        }
       }
     }),
     {

@@ -225,7 +225,7 @@ const Login = () => {
                     </button>
                   </div>
                   <div className="flex justify-end pt-1.5">
-                    <button type="button" className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition">Forgot password?</button>
+                    <Link to="/forgot-password" className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition">Forgot password?</Link>
                   </div>
                 </div>
 

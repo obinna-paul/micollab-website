@@ -87,4 +87,10 @@ const getIO = () => {
   return io;
 };
 
-module.exports = { initSocket, getIO };
+const isUserOnline = async (userId) => {
+  if (!io) return false;
+  const sockets = await io.in(userId).fetchSockets();
+  return sockets.length > 0;
+};
+
+module.exports = { initSocket, getIO, isUserOnline };

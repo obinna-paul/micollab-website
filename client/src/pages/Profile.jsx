@@ -21,7 +21,7 @@ const Profile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
   const { user: currentUser, token, updateProfile: updateAuthProfile } = useAuthStore();
-  const { startConversation } = useChatStore();
+  const { startConversation, socket } = useChatStore();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connectStatus, setConnectStatus] = useState(null);
@@ -65,6 +65,27 @@ const Profile = () => {
   useEffect(() => {
     fetchProfile();
   }, [username]);
+
+  useEffect(() => {
+    if (!socket || !profile) return;
+
+    const handleNotification = (notification) => {
+      // If someone accepts our connection request, they trigger this
+      if (
+        notification.type === 'CONNECTION' &&
+        notification.content === 'Connection Accepted' &&
+        notification.triggeredBy?.id === profile.id
+      ) {
+        setConnectStatus('CONNECTED');
+      }
+    };
+
+    socket.on('new_notification', handleNotification);
+
+    return () => {
+      socket.off('new_notification', handleNotification);
+    };
+  }, [socket, profile]);
 
   const handleFileUpload = async (e, type) => {
     const file = e.target.files[0];
@@ -126,16 +147,21 @@ const Profile = () => {
   const handleConnect = async () => {
     try {
       setConnectStatus('loading');
-      await axios.post('/api/network/connect', { receiverId: profile.id }, {
+      const res = await axios.post('/api/network/connect', { receiverId: profile.id }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setConnectStatus('REQUESTED');
+      if (res.data.status === 'CONNECTED') {
+        setConnectStatus('CONNECTED');
+      } else {
+        setConnectStatus('REQUESTED');
+      }
     } catch (err) {
       console.error(err);
       if (err.response?.data?.error === 'Connection request already exists' || err.response?.data?.error === 'Already connected') {
         setConnectStatus(err.response?.data?.error === 'Already connected' ? 'CONNECTED' : 'REQUESTED');
       } else {
         setConnectStatus('NONE');
+        alert('Connection failed: ' + (err.response?.data?.error || err.message));
       }
     }
   };
@@ -262,18 +288,26 @@ const Profile = () => {
                       <Star size={15} /> Endorse
                     </button>
                     <button 
-                      onClick={() => connectStatus === 'CONNECTED' ? handleUnfollow() : handleConnect()} 
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (connectStatus === 'CONNECTED') handleUnfollow();
+                        else handleConnect();
+                      }} 
                       disabled={connectStatus === 'loading' || connectStatus === 'REQUESTED'}
-                      className={`px-6 py-2.5 font-bold text-sm rounded-xl transition shadow-lg flex items-center gap-2 ${
+                      className={`relative z-50 pointer-events-auto px-6 py-2.5 font-bold text-sm rounded-xl transition shadow-lg flex items-center gap-2 ${
                         connectStatus === 'CONNECTED'
                           ? 'bg-transparent text-cyan-400 border border-cyan-400/30 hover:bg-cyan-400/10'
                           : connectStatus === 'REQUESTED'
                           ? 'bg-transparent text-gray-400 border border-gray-400/30'
+                          : connectStatus === 'loading'
+                          ? 'bg-gray-600 text-white opacity-70 cursor-not-allowed'
                           : 'bg-[#7B5CFA] text-white hover:bg-[#684CE0] shadow-[0_0_15px_rgba(123,92,250,0.3)]'
                       }`}
                     >
-                      {connectStatus === 'CONNECTED' ? <CheckCircle size={15} /> : connectStatus === 'REQUESTED' ? <CheckCircle size={15} /> : <UserPlus size={15} strokeWidth={3} />} 
-                      {connectStatus === 'CONNECTED' ? 'Following' : connectStatus === 'REQUESTED' ? 'Request Sent' : 'Connect'}
+                      {connectStatus === 'CONNECTED' ? <CheckCircle size={15} /> : connectStatus === 'REQUESTED' ? <CheckCircle size={15} /> : connectStatus === 'loading' ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <UserPlus size={15} strokeWidth={3} />} 
+                      {connectStatus === 'CONNECTED' ? 'Following' : connectStatus === 'REQUESTED' ? 'Request Sent' : connectStatus === 'loading' ? 'Sending...' : 'Connect'}
                     </button>
                   </>
                 )}

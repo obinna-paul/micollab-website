@@ -15,6 +15,10 @@ router.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Micollab API is running' });
 });
 
+// Global Search
+const searchController = require('../controllers/searchController');
+router.get('/search', searchController.globalSearch);
+
 // Auth Routes
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
@@ -22,6 +26,8 @@ router.post('/auth/google', authController.googleLogin);
 router.post('/auth/check-availability', authController.checkAvailability);
 router.post('/auth/verify-otp', authController.verifyOTP);
 router.post('/auth/resend-otp', authController.resendOTP);
+router.post('/auth/forgot-password', authController.forgotPassword);
+router.post('/auth/reset-password', authController.resetPassword);
 router.get('/auth/me', authMiddleware, authController.getMe);
 
 // Post Routes
@@ -45,12 +51,21 @@ router.put('/users/profile', authMiddleware, userController.updateProfile);
 router.post('/users/portfolio', authMiddleware, userController.createPortfolioItem);
 router.post('/users/testimonial', authMiddleware, userController.createTestimonial);
 router.post('/users/experience', authMiddleware, userController.createExperience);
+router.put('/users/settings/password', authMiddleware, userController.changePassword);
+router.put('/users/settings/email', authMiddleware, userController.updateEmail);
+router.delete('/users/settings/account', authMiddleware, userController.deleteAccount);
 
 // Message Routes
 router.get('/messages/conversations', authMiddleware, messageController.getConversations);
 router.get('/messages/history/:conversationId', authMiddleware, messageController.getMessages);
 router.post('/messages/send', authMiddleware, messageController.sendMessage);
 router.post('/messages/conversation', authMiddleware, messageController.getOrCreateConversation);
+
+// Trust & Safety Routes
+const trustController = require('../controllers/trustController');
+router.post('/trust/block', authMiddleware, trustController.blockUser);
+router.post('/trust/unblock', authMiddleware, trustController.unblockUser);
+router.post('/trust/report', authMiddleware, trustController.reportUser);
 
 // Monetization Routes
 const stripeController = require('../controllers/stripeController');

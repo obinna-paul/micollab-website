@@ -17,6 +17,10 @@ import CircleWorkspace from './pages/CircleWorkspace';
 import Notifications from './pages/Notifications';
 import FilesHub from './pages/FilesHub';
 import PublicSharePage from './pages/PublicSharePage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Settings from './pages/Settings';
+import SearchResults from './pages/SearchResults';
 import useAuthStore from './store/useAuthStore';
 
 function App() {
@@ -40,6 +44,8 @@ function App() {
     <Routes>
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
       <Route path="/register" element={!isAuthenticated || !isOnboarded ? <Register /> : <Navigate to="/" />} />
+      <Route path="/forgot-password" element={!isAuthenticated ? <ForgotPassword /> : <Navigate to="/" />} />
+      <Route path="/reset-password" element={!isAuthenticated ? <ResetPassword /> : <Navigate to="/" />} />
       
       <Route path="/" element={requireAuth(<MainLayout><Feed /></MainLayout>)} />
       <Route path="/profile/:username" element={requireAuth(<MainLayout><Profile /></MainLayout>)} />
@@ -54,6 +60,8 @@ function App() {
       <Route path="/wallet" element={requireAuth(<MainLayout><Wallet /></MainLayout>)} />
       <Route path="/notifications" element={requireAuth(<MainLayout><Notifications /></MainLayout>)} />
       <Route path="/files" element={requireAuth(<MainLayout><FilesHub /></MainLayout>)} />
+      <Route path="/settings" element={requireAuth(<MainLayout><Settings /></MainLayout>)} />
+      <Route path="/search" element={requireAuth(<MainLayout><SearchResults /></MainLayout>)} />
 
       <Route path="/share/:linkId" element={<PublicSharePage />} />
 

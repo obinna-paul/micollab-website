@@ -1,5 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { isUserOnline } = require('../services/socketService');
+const { sendNotificationEmail } = require('../utils/emailService');
 
 exports.getNotifications = async (req, res) => {
   try {
@@ -69,7 +71,7 @@ exports.deleteNotification = async (req, res) => {
 // Helper for internal use to create notifications
 exports.createNotification = async (userId, triggeredById, type, content, relatedId) => {
   try {
-    return await prisma.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         userId,
         triggeredById,
@@ -78,6 +80,36 @@ exports.createNotification = async (userId, triggeredById, type, content, relate
         relatedId
       }
     });
+
+    // Send offline email if user is not connected
+    const isOnline = await isUserOnline(userId);
+    if (!isOnline) {
+      const targetUser = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true }
+      });
+      if (targetUser && targetUser.email) {
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        
+        let title = 'New Notification';
+        let link = `${clientUrl}/notifications`;
+        
+        if (type === 'CONNECTION_REQUEST') {
+          title = 'New Connection Request';
+          link = `${clientUrl}/network`;
+        } else if (type === 'PROPOSAL_RECEIVED' || type === 'PROPOSAL_STATUS_CHANGED') {
+          title = 'Update on Collab Proposal';
+          link = `${clientUrl}/collabs`;
+        } else if (type === 'CIRCLE_INVITE') {
+          title = 'New Circle Invitation';
+          link = `${clientUrl}/circles`;
+        }
+        
+        sendNotificationEmail(targetUser.email, title, content, link);
+      }
+    }
+
+    return notification;
   } catch (error) {
     console.error('Failed to create notification:', error);
   }

@@ -133,6 +133,39 @@ const useChatStore = create((set, get) => ({
     } catch (err) {
       console.error('Failed to start conversation', err);
     }
+  },
+
+  blockUser: async (token, userIdToBlock) => {
+    try {
+      await axios.post('/api/trust/block', { userIdToBlock }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Filter out the blocked user from conversations list
+      set((state) => ({
+        conversations: state.conversations.filter(c => 
+          !c.participants.some(p => p.userId === userIdToBlock)
+        ),
+        activeConversation: state.activeConversation?.participants.some(p => p.userId === userIdToBlock) 
+          ? null 
+          : state.activeConversation
+      }));
+      return true;
+    } catch (err) {
+      console.error('Failed to block user', err);
+      return false;
+    }
+  },
+
+  reportUser: async (token, reportedId, reason) => {
+    try {
+      await axios.post('/api/trust/report', { reportedId, reason }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return true;
+    } catch (err) {
+      console.error('Failed to report user', err);
+      return false;
+    }
   }
 }));
 

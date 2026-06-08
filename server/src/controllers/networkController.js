@@ -85,6 +85,31 @@ exports.sendConnectionRequest = async (req, res) => {
     });
 
     if (existingRequest) {
+      if (existingRequest.fromUserId === receiverId) {
+        // They already sent us a request, so accept it!
+        await prisma.connectionRequest.update({
+          where: { id: existingRequest.id },
+          data: { status: 'ACCEPTED' }
+        });
+        
+        await prisma.connection.create({
+          data: {
+            userId: requesterId,
+            connectedId: receiverId,
+            status: 'ACCEPTED'
+          }
+        });
+
+        await notificationController.createNotification(
+          receiverId,
+          requesterId,
+          'CONNECTION',
+          'Connection Accepted',
+          existingRequest.id
+        );
+
+        return res.json({ message: 'Request accepted', status: 'CONNECTED' });
+      }
       return res.status(400).json({ error: 'Connection request already exists' });
     }
     
