@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import EmojiPicker from 'emoji-picker-react';
 import useAuthStore from '../store/useAuthStore';
 import useChatStore from '../store/useChatStore';
 
@@ -31,7 +32,10 @@ const Messages = () => {
   const [userSearch, setUserSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const scrollRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (token) {
@@ -52,6 +56,40 @@ const Messages = () => {
     sendMessage(token, msgInput.trim());
     setMsgInput('');
     setTyping(false);
+    setShowEmojiPicker(false);
+  };
+
+  const onEmojiClick = (emojiObject) => {
+    setMsgInput(prev => prev + emojiObject.emoji);
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('media', file);
+
+    try {
+      const res = await axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const mediaUrl = res.data.urls[0];
+      const mediaType = file.type.startsWith('video') ? 'video' : 'image';
+      
+      await sendMessage(token, msgInput.trim() || '', mediaUrl, mediaType);
+      setMsgInput('');
+    } catch (err) {
+      console.error('Upload failed', err);
+      alert('Failed to upload file');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const searchUsers = async (q) => {
@@ -240,6 +278,14 @@ const Messages = () => {
                           ? 'bg-primary text-[var(--text-primary)] rounded-tr-none shadow-md' 
                           : 'bg-surface border border-divider text-textMain rounded-tl-none shadow-sm'
                       }`}>
+                        {msg.mediaUrl && msg.mediaType === 'image' && (
+                           <a href={msg.mediaUrl} target="_blank" rel="noopener noreferrer">
+                             <img src={msg.mediaUrl} alt="attachment" className="max-w-full sm:max-w-[200px] rounded-lg mb-2 object-cover" />
+                           </a>
+                        )}
+                        {msg.mediaUrl && msg.mediaType === 'video' && (
+                           <video src={msg.mediaUrl} controls className="max-w-full sm:max-w-[200px] rounded-lg mb-2" />
+                        )}
                         {msg.content}
                       </div>
                       <div className={`flex items-center gap-1 mt-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
@@ -255,9 +301,24 @@ const Messages = () => {
             </div>
 
             {/* Footer Input */}
-            <div className="p-4 bg-surface border-t border-divider">
+            <div className="p-4 bg-surface border-t border-divider relative">
+              <AnimatePresence>
+                {showEmojiPicker && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }} 
+                    animate={{ opacity: 1, y: 0, scale: 1 }} 
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute bottom-20 right-4 z-50 shadow-2xl rounded-2xl overflow-hidden border border-divider"
+                  >
+                    <EmojiPicker onEmojiClick={onEmojiClick} theme="auto" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <form onSubmit={handleSend} className="relative flex items-end gap-2 bg-background border border-divider rounded-2xl p-2 focus-within:border-primary transition-all shadow-sm">
-                <button type="button" className="p-2 text-textMuted hover:text-primary transition"><Paperclip size={20} /></button>
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={uploading} />
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="p-2 text-textMuted hover:text-primary transition disabled:opacity-50">
+                  {uploading ? <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div> : <Paperclip size={20} />}
+                </button>
                 <textarea 
                   value={msgInput}
                   onChange={(e) => {
@@ -269,7 +330,9 @@ const Messages = () => {
                   className="flex-1 bg-transparent border-none outline-none text-sm py-2 px-1 max-h-32 resize-none font-medium"
                   rows={1}
                 />
-                <button type="button" className="p-2 text-textMuted hover:text-primary transition"><Smile size={20} /></button>
+                <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="p-2 text-textMuted hover:text-primary transition">
+                  <Smile size={20} className={showEmojiPicker ? 'text-primary' : ''} />
+                </button>
                 <button 
                   type="submit"
                   disabled={!msgInput.trim()}

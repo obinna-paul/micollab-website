@@ -483,7 +483,9 @@ model ConversationParticipant {
 
 model Message {
   id             String       @id @default(cuid())
-  content        String
+  content        String?
+  mediaUrl       String?
+  mediaType      String? // 'image', 'video', etc.
   senderId       String
   conversationId String
   createdAt      DateTime     @default(now())

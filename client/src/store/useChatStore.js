@@ -86,15 +86,16 @@ const useChatStore = create((set, get) => ({
     }
   },
 
-  sendMessage: async (token, content, messageType = 'TEXT') => {
+  sendMessage: async (token, content, mediaUrl = null, mediaType = null) => {
     const { activeConversation } = get();
     if (!activeConversation) return;
 
     try {
-      await axios.post('/api/messages/send', {
+      const res = await axios.post('/api/messages/send', {
         conversationId: activeConversation.id,
         content,
-        messageType
+        mediaUrl,
+        mediaType
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });

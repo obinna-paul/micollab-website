@@ -97,13 +97,15 @@ exports.getMessages = async (req, res) => {
 exports.sendMessage = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { conversationId, content } = req.body;
+    const { conversationId, content, mediaUrl, mediaType } = req.body;
 
     const message = await prisma.message.create({
       data: {
         conversationId,
         senderId: userId,
-        content
+        content: content || '',
+        mediaUrl,
+        mediaType
       }
     });
 
