@@ -160,8 +160,7 @@ const Profile = () => {
       if (err.response?.data?.error === 'Connection request already exists' || err.response?.data?.error === 'Already connected') {
         setConnectStatus(err.response?.data?.error === 'Already connected' ? 'CONNECTED' : 'REQUESTED');
       } else {
-        setConnectStatus('NONE');
-        alert('Connection failed: ' + (err.response?.data?.error || err.message));
+        setConnectStatus('ERROR: ' + (err.response?.data?.error || err.message));
       }
     }
   };
@@ -306,8 +305,8 @@ const Profile = () => {
                           : 'bg-[#7B5CFA] text-white hover:bg-[#684CE0] shadow-[0_0_15px_rgba(123,92,250,0.3)]'
                       }`}
                     >
-                      {connectStatus === 'CONNECTED' ? <CheckCircle size={15} /> : connectStatus === 'REQUESTED' ? <CheckCircle size={15} /> : connectStatus === 'loading' ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <UserPlus size={15} strokeWidth={3} />} 
-                      {connectStatus === 'CONNECTED' ? 'Following' : connectStatus === 'REQUESTED' ? 'Request Sent' : connectStatus === 'loading' ? 'Sending...' : 'Connect'}
+                      {connectStatus?.startsWith('ERROR:') ? <X size={15} /> : connectStatus === 'CONNECTED' ? <CheckCircle size={15} /> : connectStatus === 'REQUESTED' ? <CheckCircle size={15} /> : connectStatus === 'loading' ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <UserPlus size={15} strokeWidth={3} />} 
+                      {connectStatus?.startsWith('ERROR:') ? connectStatus : connectStatus === 'CONNECTED' ? 'Following' : connectStatus === 'REQUESTED' ? 'Request Sent' : connectStatus === 'loading' ? 'Sending...' : 'Connect'}
                     </button>
                   </>
                 )}
