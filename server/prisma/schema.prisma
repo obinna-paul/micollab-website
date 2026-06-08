@@ -8,181 +8,182 @@ generator client {
 }
 
 model User {
-  id                String    @id @default(cuid())
-  username          String    @unique
-  email             String    @unique
-  password          String?
-  googleId          String?   @unique
-  displayName       String?   
-  profileImage      String?   @default("https://via.placeholder.com/150")
-  coverImage        String?   @default("https://images.unsplash.com/photo-1579546929518-9e396f3cc809")
-  profileType       String    @default("CREATIVE") // CREATIVE, SCOUT
-  bio               String?   @default("Creative explorer on Micollab.")
-  longAbout         String?   
-  isVerified        String?   @default("NO") // NO, PENDING, YES
-  isEmailVerified   Boolean   @default(false)
-  verificationOTP   String?
-  otpExpiresAt      DateTime?
-  location          String?   @default("Lagos, Nigeria")
-  skills            String?   // comma-separated
-  availabilityStatus String?  @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB
+  id                 String    @id @default(cuid())
+  username           String    @unique
+  email              String    @unique
+  password           String?
+  googleId           String?   @unique
+  displayName        String?
+  profileImage       String?   @default("https://via.placeholder.com/150")
+  coverImage         String?   @default("https://images.unsplash.com/photo-1579546929518-9e396f3cc809")
+  profileType        String    @default("CREATIVE") // CREATIVE, SCOUT
+  bio                String?   @default("Creative explorer on Micollab.")
+  longAbout          String?
+  isVerified         String?   @default("NO") // NO, PENDING, YES
+  isEmailVerified    Boolean   @default(false)
+  verificationOTP    String?
+  otpExpiresAt       DateTime?
+  location           String?   @default("Lagos, Nigeria")
+  skills             String? // comma-separated
+  availabilityStatus String?   @default("AVAILABLE") // AVAILABLE, BUSY, OPEN_TO_COLLAB
   website            String?
-  
+
   // Reputation Metrics
-  reputationScore   Int       @default(0)
-  completionRate    Int       @default(100)
-  responseRate      Int       @default(100)
-  
-  socialLinks       String?     // Stored as JSON string in SQLite
-  
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  reputationScore Int @default(0)
+  completionRate  Int @default(100)
+  responseRate    Int @default(100)
+
+  socialLinks String? // Stored as JSON string in SQLite
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   posts             Post[]
   collabs           Collab[]
   proposals         Proposal[]
-  connections       Connection[] @relation("UserConnections")
-  connectedTo       Connection[] @relation("ConnectedTo")
+  connections       Connection[]        @relation("UserConnections")
+  connectedTo       Connection[]        @relation("ConnectedTo")
   sentRequests      ConnectionRequest[] @relation("SentRequests")
   receivedRequests  ConnectionRequest[] @relation("ReceivedRequests")
   circleMemberships CircleMember[]
-  notifications     Notification[] @relation("UserNotifications")
-  triggeredAlerts   Notification[] @relation("TriggeredBy")
-  
+  notifications     Notification[]      @relation("UserNotifications")
+  triggeredAlerts   Notification[]      @relation("TriggeredBy")
+
   portfolioItems    PortfolioItem[]
-  testimonials      Testimonial[] @relation("ReceivedTestimonials")
-  givenTestimonials Testimonial[] @relation("GivenTestimonials")
+  testimonials      Testimonial[]     @relation("ReceivedTestimonials")
+  givenTestimonials Testimonial[]     @relation("GivenTestimonials")
   analytics         UserAnalytics?
   credits           PortfolioCredit[] @relation("UserCredits")
   comments          Comment[]
   postLikes         PostLike[]
 
   // New Circle Relations
-  ownedCircles      Circle[]         @relation("CircleOwner")
-  circleTasks       CircleTask[]     @relation("AssignedTasks")
-  reportedTasks     CircleTask[]     @relation("ReportedTasks")
-  circleMessages    CircleMessage[]
-  projectCredits    ProjectCredit[]
-  taskComments      TaskComment[]
+  ownedCircles            Circle[]                  @relation("CircleOwner")
+  circleTasks             CircleTask[]              @relation("AssignedTasks")
+  reportedTasks           CircleTask[]              @relation("ReportedTasks")
+  circleMessages          CircleMessage[]
+  projectCredits          ProjectCredit[]
+  taskComments            TaskComment[]
+  ConversationParticipant ConversationParticipant[]
 }
 
 model PortfolioItem {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  title         String
-  description   String?   
-  category      String    // Video, Photography, Music, Writing, etc.
-  projectType   String?   @default("PERSONAL") // CLIENT, PERSONAL, COMMERCIAL
-  date          DateTime? 
-  featured      Boolean   @default(false)
-  viewCount     Int       @default(0)
-  
-  media         PortfolioMedia[]
-  tags          PortfolioTag[]
-  credits       PortfolioCredit[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  category    String // Video, Photography, Music, Writing, etc.
+  projectType String?   @default("PERSONAL") // CLIENT, PERSONAL, COMMERCIAL
+  date        DateTime?
+  featured    Boolean   @default(false)
+  viewCount   Int       @default(0)
+
+  media   PortfolioMedia[]
+  tags    PortfolioTag[]
+  credits PortfolioCredit[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PortfolioMedia {
-  id              String    @id @default(cuid())
+  id              String        @id @default(cuid())
   portfolioItemId String
   portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
   url             String
-  type            String    @default("IMAGE") // IMAGE, VIDEO, AUDIO
-  order           Int       @default(0)
+  type            String        @default("IMAGE") // IMAGE, VIDEO, AUDIO
+  order           Int           @default(0)
 }
 
 model PortfolioTag {
-  id              String    @id @default(cuid())
+  id              String        @id @default(cuid())
   portfolioItemId String
   portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
   name            String
 }
 
 model PortfolioCredit {
-  id              String    @id @default(cuid())
+  id              String        @id @default(cuid())
   portfolioItemId String
   portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id])
   creditedUserId  String
-  user            User      @relation("UserCredits", fields: [creditedUserId], references: [id])
-  role            String    // Director, Producer, Editor, etc.
+  user            User          @relation("UserCredits", fields: [creditedUserId], references: [id])
+  role            String // Director, Producer, Editor, etc.
 }
 
 model Testimonial {
-  id          String    @id @default(cuid())
-  fromUserId  String
-  fromUser    User      @relation("GivenTestimonials", fields: [fromUserId], references: [id])
-  toUserId    String
-  toUser      User      @relation("ReceivedTestimonials", fields: [toUserId], references: [id])
-  content     String    
-  rating      Int       @default(5)
-  createdAt   DateTime  @default(now())
+  id         String   @id @default(cuid())
+  fromUserId String
+  fromUser   User     @relation("GivenTestimonials", fields: [fromUserId], references: [id])
+  toUserId   String
+  toUser     User     @relation("ReceivedTestimonials", fields: [toUserId], references: [id])
+  content    String
+  rating     Int      @default(5)
+  createdAt  DateTime @default(now())
 }
 
 model UserAnalytics {
-  id                String    @id @default(cuid())
-  userId            String    @unique
-  user              User      @relation(fields: [userId], references: [id])
-  profileViews      Int       @default(0)
-  portfolioViews    Int       @default(0)
-  searchAppearances Int       @default(0)
+  id                String @id @default(cuid())
+  userId            String @unique
+  user              User   @relation(fields: [userId], references: [id])
+  profileViews      Int    @default(0)
+  portfolioViews    Int    @default(0)
+  searchAppearances Int    @default(0)
 }
 
 model Post {
-  id            String    @id @default(cuid())
-  content       String?
-  contentType   String    @default("TEXT") // TEXT, IMAGE, VIDEO
-  mediaUrl      String?
-  caption       String?
-  postCategory  String    @default("GENERAL") // UPDATE, SHOWCASE, QUESTION
-  isCollabCard  Boolean   @default(false)
-  collabId      String?   
-  
-  createdAt     DateTime  @default(now())
-  creator       User      @relation(fields: [creatorId], references: [id])
-  creatorId     String
+  id           String  @id @default(cuid())
+  content      String?
+  contentType  String  @default("TEXT") // TEXT, IMAGE, VIDEO
+  mediaUrl     String?
+  caption      String?
+  postCategory String  @default("GENERAL") // UPDATE, SHOWCASE, QUESTION
+  isCollabCard Boolean @default(false)
+  collabId     String?
+
+  createdAt DateTime @default(now())
+  creator   User     @relation(fields: [creatorId], references: [id])
+  creatorId String
 
   // Repost logic
   originalPostId String?
-  originalPost   Post?    @relation("Reposts", fields: [originalPostId], references: [id])
-  reposts        Post[]   @relation("Reposts")
+  originalPost   Post?   @relation("Reposts", fields: [originalPostId], references: [id])
+  reposts        Post[]  @relation("Reposts")
 
   // Social interactions
-  likes         Int       @default(0)
-  commentsCount Int       @default(0)
-  
-  postComments  Comment[]
-  postLikes     PostLike[]
+  likes         Int @default(0)
+  commentsCount Int @default(0)
 
-  isEdited      Boolean   @default(false)
-  isArchived    Boolean   @default(false)
+  postComments Comment[]
+  postLikes    PostLike[]
+
+  isEdited   Boolean @default(false)
+  isArchived Boolean @default(false)
 }
 
 model Comment {
   id        String   @id @default(cuid())
   content   String
   createdAt DateTime @default(now())
-  
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
 
 model PostLike {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   @@unique([postId, userId])
 }
@@ -201,48 +202,48 @@ model Collab {
   status          String    @default("OPEN") // OPEN, CLOSED, COMPLETED
   crossPostToFeed Boolean   @default(false)
   isVerified      Boolean   @default(false)
-  
-  poster          User      @relation(fields: [posterId], references: [id])
-  posterId        String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
 
-  requirements    Requirement[]
-  attachments     Attachment[]
-  proposals       Proposal[]
+  poster    User     @relation(fields: [posterId], references: [id])
+  posterId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  requirements Requirement[]
+  attachments  Attachment[]
+  proposals    Proposal[]
 }
 
 model Requirement {
-  id        String   @id @default(cuid())
-  skill     String
-  collab    Collab   @relation(fields: [collabId], references: [id])
-  collabId  String
+  id       String @id @default(cuid())
+  skill    String
+  collab   Collab @relation(fields: [collabId], references: [id])
+  collabId String
 }
 
 model Attachment {
-  id        String   @id @default(cuid())
-  url       String
-  name      String
-  collabId  String?
-  collab    Collab?  @relation(fields: [collabId], references: [id])
+  id         String    @id @default(cuid())
+  url        String
+  name       String
+  collabId   String?
+  collab     Collab?   @relation(fields: [collabId], references: [id])
   proposalId String?
-  proposal  Proposal? @relation(fields: [proposalId], references: [id])
+  proposal   Proposal? @relation(fields: [proposalId], references: [id])
 }
 
 model Proposal {
-  id              String    @id @default(cuid())
-  coverLetter     String
-  bidAmount       String?
-  status          String    @default("PENDING") // PENDING, ACCEPTED, REJECTED
-  portfolioLinks  String?   // JSON string
-  
-  user            User      @relation(fields: [userId], references: [id])
-  userId          String
-  collab          Collab    @relation(fields: [collabId], references: [id])
-  collabId        String
-  attachments     Attachment[]
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String  @id @default(cuid())
+  coverLetter    String
+  bidAmount      String?
+  status         String  @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  portfolioLinks String? // JSON string
+
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  collab      Collab       @relation(fields: [collabId], references: [id])
+  collabId    String
+  attachments Attachment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Connection {
@@ -252,167 +253,167 @@ model Connection {
   status      String   @default("ACCEPTED")
   createdAt   DateTime @default(now())
 
-  user        User     @relation("UserConnections", fields: [userId], references: [id])
-  connectedTo User     @relation("ConnectedTo", fields: [connectedId], references: [id])
+  user        User @relation("UserConnections", fields: [userId], references: [id])
+  connectedTo User @relation("ConnectedTo", fields: [connectedId], references: [id])
 
   @@unique([userId, connectedId])
 }
 
 model ConnectionRequest {
-  id          String   @id @default(cuid())
-  fromUserId  String
-  toUserId    String
-  status      String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  status     String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt  DateTime @default(now())
 
-  fromUser    User     @relation("SentRequests", fields: [fromUserId], references: [id])
-  toUser      User     @relation("ReceivedRequests", fields: [toUserId], references: [id])
+  fromUser User @relation("SentRequests", fields: [fromUserId], references: [id])
+  toUser   User @relation("ReceivedRequests", fields: [toUserId], references: [id])
 }
 
 model Circle {
-  id                String    @id @default(cuid())
-  ownerId           String
-  owner             User      @relation("CircleOwner", fields: [ownerId], references: [id])
-  title             String
-  slug              String    @unique
-  description       String?
-  category          String
-  coverImage        String?
-  visibility        String    @default("PRIVATE") // PUBLIC, PRIVATE, HIDDEN
-  compensationType  String    @default("NONE") // PAID, REVENUE_SHARE, NONE
-  status            String    @default("ACTIVE") // ACTIVE, COMPLETED, ARCHIVED
-  collabId          String?   @unique
-  
-  members           CircleMember[]
-  roles             CircleRole[]
-  tasks             CircleTask[]
-  messages          CircleMessage[]
-  files             CircleFile[]
-  folders           CircleFolder[]
-  milestones        CircleMilestone[]
-  credits           ProjectCredit[]
-  invitations       CircleInvitation[]
+  id               String  @id @default(cuid())
+  ownerId          String
+  owner            User    @relation("CircleOwner", fields: [ownerId], references: [id])
+  title            String
+  slug             String  @unique
+  description      String?
+  category         String
+  coverImage       String?
+  visibility       String  @default("PRIVATE") // PUBLIC, PRIVATE, HIDDEN
+  compensationType String  @default("NONE") // PAID, REVENUE_SHARE, NONE
+  status           String  @default("ACTIVE") // ACTIVE, COMPLETED, ARCHIVED
+  collabId         String? @unique
 
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  members     CircleMember[]
+  roles       CircleRole[]
+  tasks       CircleTask[]
+  messages    CircleMessage[]
+  files       CircleFile[]
+  folders     CircleFolder[]
+  milestones  CircleMilestone[]
+  credits     ProjectCredit[]
+  invitations CircleInvitation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CircleMember {
-  id        String   @id @default(cuid())
-  circleId  String
-  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      String   @default("CONTRIBUTOR") // OWNER, ADMIN, CONTRIBUTOR, REVIEWER
-  joinedAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  circleId String
+  circle   Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     String   @default("CONTRIBUTOR") // OWNER, ADMIN, CONTRIBUTOR, REVIEWER
+  joinedAt DateTime @default(now())
 
   @@unique([circleId, userId])
 }
 
 model CircleRole {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   circleId    String
-  circle      Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  circle      Circle  @relation(fields: [circleId], references: [id], onDelete: Cascade)
   title       String
   description String?
-  isOpen      Boolean  @default(true)
+  isOpen      Boolean @default(true)
   assignedTo  String? // userId
 }
 
 model CircleTask {
-  id              String   @id @default(cuid())
-  circleId        String
-  circle          Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  title           String
-  description     String?
-  status          String   @default("TODO") // TODO, IN_PROGRESS, REVIEW, APPROVED, COMPLETED
-  priority        String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
-  deadline        DateTime?
-  assignedTo      String? // userId
-  assignee        User?    @relation("AssignedTasks", fields: [assignedTo], references: [id])
-  createdBy       String
-  reporter        User     @relation("ReportedTasks", fields: [createdBy], references: [id])
-  
-  taskCode        String?
-  estimatedEffort Int?
-  labels          String?  // comma-separated tags
+  id          String    @id @default(cuid())
+  circleId    String
+  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      String    @default("TODO") // TODO, IN_PROGRESS, REVIEW, APPROVED, COMPLETED
+  priority    String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  deadline    DateTime?
+  assignedTo  String? // userId
+  assignee    User?     @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  createdBy   String
+  reporter    User      @relation("ReportedTasks", fields: [createdBy], references: [id])
+
+  taskCode         String?
+  estimatedEffort  Int?
+  labels           String? // comma-separated tags
   rejectionComment String?
-  activityLog     String?  // JSON stringified history log
-  dependencies    String?  // JSON array of task IDs
-  linkedTasks     String?  // JSON array of task IDs
+  activityLog      String? // JSON stringified history log
+  dependencies     String? // JSON array of task IDs
+  linkedTasks      String? // JSON array of task IDs
 
-  parentId        String?
-  parent          CircleTask?   @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: Cascade)
-  subtasks        CircleTask[]  @relation("TaskSubtasks")
+  parentId String?
+  parent   CircleTask?  @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  subtasks CircleTask[] @relation("TaskSubtasks")
 
-  comments        TaskComment[]
-  attachments     TaskAttachment[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  comments    TaskComment[]
+  attachments TaskAttachment[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 model TaskComment {
-  id          String   @id @default(cuid())
-  taskId      String
-  task        CircleTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  content     String
-  createdAt   DateTime @default(now())
+  id        String     @id @default(cuid())
+  taskId    String
+  task      CircleTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime   @default(now())
 }
 
 model TaskAttachment {
-  id          String   @id @default(cuid())
-  taskId      String
-  task        CircleTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  fileUrl     String
-  type        String
-  createdAt   DateTime @default(now())
+  id        String     @id @default(cuid())
+  taskId    String
+  task      CircleTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  fileUrl   String
+  type      String
+  createdAt DateTime   @default(now())
 }
 
 model CircleMessage {
-  id          String   @id @default(cuid())
-  circleId    String
-  circle      Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  senderId    String
-  sender      User     @relation(fields: [senderId], references: [id])
-  content     String
-  type        String   @default("TEXT") // TEXT, MEDIA, SYSTEM
-  replyToId   String?
-  
-  reactions   MessageReaction[]
-  createdAt   DateTime @default(now())
+  id        String  @id @default(cuid())
+  circleId  String
+  circle    Circle  @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User    @relation(fields: [senderId], references: [id])
+  content   String
+  type      String  @default("TEXT") // TEXT, MEDIA, SYSTEM
+  replyToId String?
+
+  reactions MessageReaction[]
+  createdAt DateTime          @default(now())
 }
 
 model MessageReaction {
-  id          String   @id @default(cuid())
-  messageId   String
-  message     CircleMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  userId      String
-  emoji       String
+  id        String        @id @default(cuid())
+  messageId String
+  message   CircleMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    String
+  emoji     String
 }
 
 model CircleFile {
-  id              String        @id @default(cuid())
-  circleId        String
-  circle          Circle        @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  uploadedBy      String
-  fileUrl         String
-  type            String
-  version         Int           @default(1)
-  folderId        String?
-  folder          CircleFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  originalName    String?
-  size            Int?
-  sourceTaskId    String?
-  versionHistory  String?       // JSON string
-  accessList      String?       // JSON string
-  publicLinks     String?       // JSON string
-  activityLog     String?       // JSON string
-  comments        String?       // JSON string
-  isDeleted       Boolean       @default(false)
-  deletedAt       DateTime?
-  createdAt       DateTime      @default(now())
+  id             String        @id @default(cuid())
+  circleId       String
+  circle         Circle        @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  uploadedBy     String
+  fileUrl        String
+  type           String
+  version        Int           @default(1)
+  folderId       String?
+  folder         CircleFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  originalName   String?
+  size           Int?
+  sourceTaskId   String?
+  versionHistory String? // JSON string
+  accessList     String? // JSON string
+  publicLinks    String? // JSON string
+  activityLog    String? // JSON string
+  comments       String? // JSON string
+  isDeleted      Boolean       @default(false)
+  deletedAt      DateTime?
+  createdAt      DateTime      @default(now())
 }
 
 model CircleFolder {
@@ -426,10 +427,10 @@ model CircleFolder {
   color        String?        @default("#3b82f6")
   icon         String?        @default("folder")
   files        CircleFile[]
-  folderAccess String?        // JSON String for folder-level access list
+  folderAccess String? // JSON String for folder-level access list
 
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CircleMilestone {
@@ -443,29 +444,29 @@ model CircleMilestone {
 }
 
 model ProjectCredit {
-  id          String    @id @default(cuid())
-  circleId    String
-  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  creditRole  String
+  id         String @id @default(cuid())
+  circleId   String
+  circle     Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User   @relation(fields: [userId], references: [id])
+  creditRole String
 }
 
 model CircleInvitation {
-  id          String    @id @default(cuid())
-  circleId    String
-  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  inviterId   String
-  inviteeId   String
-  status      String    @default("PENDING") // PENDING, ACCEPTED, REJECTED
-  createdAt   DateTime  @default(now())
+  id        String   @id @default(cuid())
+  circleId  String
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  inviterId String
+  inviteeId String
+  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt DateTime @default(now())
 }
 
 model Conversation {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   participants ConversationParticipant[]
   messages     Message[]
 }
@@ -475,7 +476,8 @@ model ConversationParticipant {
   conversationId String
   userId         String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
-  
+  user           User         @relation(fields: [userId], references: [id])
+
   @@unique([conversationId, userId])
 }
 
@@ -489,15 +491,15 @@ model Message {
 }
 
 model Notification {
-  id          String   @id @default(cuid())
-  userId      String
-  type        String   // CONNECTION_REQUEST, PROPOSAL_RECEIVED, COLLAB_ACCEPTED, MESSAGE_RECEIVED
-  content     String
-  relatedId   String?  // ID of the related object (collab, user, etc.)
-  isRead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  type      String // CONNECTION_REQUEST, PROPOSAL_RECEIVED, COLLAB_ACCEPTED, MESSAGE_RECEIVED
+  content   String
+  relatedId String? // ID of the related object (collab, user, etc.)
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  user        User     @relation("UserNotifications", fields: [userId], references: [id])
-  triggeredBy User?    @relation("TriggeredBy", fields: [triggeredById], references: [id])
+  user          User    @relation("UserNotifications", fields: [userId], references: [id])
+  triggeredBy   User?   @relation("TriggeredBy", fields: [triggeredById], references: [id])
   triggeredById String?
 }
