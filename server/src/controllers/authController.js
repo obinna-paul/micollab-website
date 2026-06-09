@@ -59,6 +59,7 @@ exports.googleLogin = async (req, res) => {
           location: user.location,
           skills: user.skills,
           isAdmin: user.isAdmin,
+          isSuperAdmin: user.isSuperAdmin,
           isBanned: user.isBanned
         }
       });
@@ -296,8 +297,9 @@ exports.login = async (req, res) => {
         bio: user.bio,
         location: user.location,
         skills: user.skills,
-          isAdmin: user.isAdmin,
-          isBanned: user.isBanned,
+        isAdmin: user.isAdmin,
+        isSuperAdmin: user.isSuperAdmin,
+        isBanned: user.isBanned,
         isEmailVerified: user.isEmailVerified
       }
     });
@@ -387,6 +389,7 @@ exports.getMe = async (req, res) => {
         isVerified: true,
         isEmailVerified: true,
         isAdmin: true,
+        isSuperAdmin: true,
         isBanned: true
       }
     });

@@ -10,7 +10,7 @@ import useAuthStore from '../store/useAuthStore';
 // We inline the Withdrawals and Disputes logic to keep it unified, or we could split them into sub-components.
 
 const AdminDashboard = () => {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
 
@@ -174,9 +174,11 @@ const AdminDashboard = () => {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => handleToggleAdmin(u.id)} className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border border-[var(--border-primary)] hover:bg-[var(--bg-surface-alt)]">
-                        {u.isAdmin ? 'Revoke Admin' : 'Make Admin'}
-                      </button>
+                      {user?.isSuperAdmin && (
+                        <button onClick={() => handleToggleAdmin(u.id)} className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border border-[var(--border-primary)] hover:bg-[var(--bg-surface-alt)]">
+                          {u.isAdmin ? 'Revoke Admin' : 'Make Admin'}
+                        </button>
+                      )}
                       <button onClick={() => handleToggleBan(u.id)} className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border ${u.isBanned ? 'bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500/20'}`}>
                         {u.isBanned ? 'Unban' : 'Ban'}
                       </button>
@@ -221,8 +223,16 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <div className="flex gap-2 w-full lg:w-auto">
-                <button onClick={() => handleProcessWithdrawal(req.id, 'process')} disabled={processingId === req.id} className="flex-1 lg:w-32 py-2 bg-green-500 text-white font-black text-[10px] uppercase rounded-lg">Mark Paid</button>
-                <button onClick={() => handleProcessWithdrawal(req.id, 'reject')} disabled={processingId === req.id} className="flex-1 lg:w-32 py-2 bg-[var(--bg-base)] border border-[var(--border-primary)] text-red-500 font-black text-[10px] uppercase rounded-lg">Reject</button>
+                {user?.isSuperAdmin ? (
+                  <>
+                    <button onClick={() => handleProcessWithdrawal(req.id, 'process')} disabled={processingId === req.id} className="flex-1 lg:w-32 py-2 bg-green-500 text-white font-black text-[10px] uppercase rounded-lg">Mark Paid</button>
+                    <button onClick={() => handleProcessWithdrawal(req.id, 'reject')} disabled={processingId === req.id} className="flex-1 lg:w-32 py-2 bg-[var(--bg-base)] border border-[var(--border-primary)] text-red-500 font-black text-[10px] uppercase rounded-lg">Reject</button>
+                  </>
+                ) : (
+                  <div className="flex-1 lg:w-auto py-2 px-4 bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-muted)] font-black text-[10px] uppercase rounded-lg flex items-center justify-center text-center">
+                    Super Admin Required
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -258,12 +268,20 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => handleResolveDispute(d.id, 'REFUND_POSTER')} disabled={processingId === d.id} className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] hover:border-red-500 text-red-500 font-black text-[10px] uppercase rounded-xl transition-colors">
-                Force Refund Poster
-              </button>
-              <button onClick={() => handleResolveDispute(d.id, 'PAY_CREATIVE')} disabled={processingId === d.id} className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] hover:border-green-500 text-green-500 font-black text-[10px] uppercase rounded-xl transition-colors">
-                Force Pay Creative
-              </button>
+              {user?.isSuperAdmin ? (
+                <>
+                  <button onClick={() => handleResolveDispute(d.id, 'REFUND_POSTER')} disabled={processingId === d.id} className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] hover:border-red-500 text-red-500 font-black text-[10px] uppercase rounded-xl transition-colors">
+                    Force Refund Poster
+                  </button>
+                  <button onClick={() => handleResolveDispute(d.id, 'PAY_CREATIVE')} disabled={processingId === d.id} className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] hover:border-green-500 text-green-500 font-black text-[10px] uppercase rounded-xl transition-colors">
+                    Force Pay Creative
+                  </button>
+                </>
+              ) : (
+                <div className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-muted)] font-black text-[10px] uppercase rounded-xl text-center">
+                  Only Super Admins can resolve disputes
+                </div>
+              )}
             </div>
           </div>
         ))}

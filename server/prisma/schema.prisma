@@ -37,6 +37,7 @@ model User {
 
   // Admin & Moderation
   isAdmin         Boolean @default(false)
+  isSuperAdmin    Boolean @default(false)
   isBanned        Boolean @default(false)
 
   socialLinks String? // Stored as JSON string in SQLite
