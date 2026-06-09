@@ -55,7 +55,7 @@ router.post('/users/testimonial', authMiddleware, userController.createTestimoni
 router.post('/users/experience', authMiddleware, userController.createExperience);
 // router.put('/users/settings/password', authMiddleware, userController.changePassword);
 // router.put('/users/settings/email', authMiddleware, userController.updateEmail);
-// router.delete('/users/settings/account', authMiddleware, userController.deleteAccount);
+router.delete('/users/settings/account', authMiddleware, userController.deleteAccount);
 
 // Message Routes
 router.get('/messages/conversations', authMiddleware, messageController.getConversations);

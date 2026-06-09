@@ -63,7 +63,7 @@ const Settings = () => {
     if (res.success) {
       navigate('/login');
     } else {
-      alert('Failed to delete account. Please try again later.');
+      alert(res.error || 'Failed to delete account. Please try again later.');
       setLoadingDelete(false);
       setShowDeleteConfirm(false);
     }

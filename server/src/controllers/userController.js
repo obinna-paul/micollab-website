@@ -237,3 +237,56 @@ exports.createExperience = async (req, res) => {
     res.status(500).json({ error: 'Failed to create experience' });
   }
 };
+
+exports.deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // 1. Check if user is a freelancer in an active Collab with escrow
+    const activeFreelanceWork = await prisma.proposal.findFirst({
+      where: {
+        userId: userId,
+        status: 'ACCEPTED',
+        escrowStatus: { in: ['HELD', 'DISPUTED'] }
+      }
+    });
+
+    // 2. Check if user is a client in an active Collab with escrow
+    const activeClientWork = await prisma.collab.findFirst({
+      where: {
+        posterId: userId,
+        proposals: {
+          some: {
+            status: 'ACCEPTED',
+            escrowStatus: { in: ['HELD', 'DISPUTED'] }
+          }
+        }
+      }
+    });
+
+    // 3. Check if user is the owner of an active Circle
+    const activeCircle = await prisma.circle.findFirst({
+      where: {
+        ownerId: userId,
+        status: 'ACTIVE'
+      }
+    });
+
+    if (activeFreelanceWork || activeClientWork || activeCircle) {
+      return res.status(400).json({ 
+        error: 'Cannot delete account. You have an ongoing collab, active circle project, or an active dispute. Please settle them first.' 
+      });
+    }
+
+    // If no blocking conditions, delete the account.
+    // Because of onDelete: Cascade in the Prisma schema, all related records will be automatically deleted.
+    await prisma.user.delete({
+      where: { id: userId }
+    });
+
+    res.json({ success: true, message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error('[DELETE_ACCOUNT_ERROR]', error);
+    res.status(500).json({ error: 'Failed to delete account' });
+  }
+};
