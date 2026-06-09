@@ -167,14 +167,6 @@ const Login = () => {
           {!requiresVerification ? (
             <>
               {/* Form Header */}
-              <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
-                <div className="flex gap-1.5 items-center">
-                  <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
-                  <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
-                  <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
-                </div>
-                <span>Step 1 of 4</span>
-              </div>
 
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2">Welcome Back</h3>
