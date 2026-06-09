@@ -385,7 +385,9 @@ exports.getMe = async (req, res) => {
         location: true,
         skills: true,
         isVerified: true,
-        isEmailVerified: true
+        isEmailVerified: true,
+        isAdmin: true,
+        isBanned: true
       }
     });
     res.json(user);
