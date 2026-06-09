@@ -21,7 +21,6 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import SearchResults from './pages/SearchResults';
-import AdminWithdrawals from './pages/AdminWithdrawals';
 import AdminDashboard from './pages/AdminDashboard'; // We'll build this soon
 import AdminRoute from './components/AdminRoute';
 import useAuthStore from './store/useAuthStore';
