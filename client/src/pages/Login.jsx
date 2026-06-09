@@ -329,7 +329,7 @@ const Login = () => {
                 type="text" 
                 required
                 value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''))}
                 placeholder="creative_genius"
                 className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 px-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium"
               />

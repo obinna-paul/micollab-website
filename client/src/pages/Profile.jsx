@@ -264,7 +264,7 @@ const Profile = () => {
                 <div className="w-[120px] lg:w-[140px] flex-shrink-0"></div>
                 
                 <div className="mb-2">
-                  <h1 className="text-[32px] lg:text-[40px] font-black text-white tracking-tight leading-none mb-2 drop-shadow-lg">{profile.displayName || profile.username}</h1>
+                  <h1 className="text-[32px] lg:text-[40px] font-black text-white tracking-tight leading-none mb-2 drop-shadow-lg">@{profile.username}</h1>
                   <div className="flex items-center gap-2 drop-shadow-md">
                     <Headphones size={16} className="text-[#00D4FF]" />
                     <span className="text-[#00D4FF] font-bold text-[14px]">{profile.profileType || 'Creative Professional'}</span>
@@ -380,7 +380,15 @@ const Profile = () => {
 
           {/* YOUR TAGS + Bio + Stats */}
           <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5">
-            <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4">YOUR TAGS</h4>
+            <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4">ABOUT</h4>
+            {profile.displayName && (
+              <p className="text-sm font-bold text-[var(--text-primary)] mb-2">{profile.displayName}</p>
+            )}
+            <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-6">
+              {profile.bio || "No bio added yet."}
+            </p>
+
+            <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4 mt-6">YOUR TAGS</h4>
             <div className="flex flex-wrap gap-2 mb-5">
               {profile.profileType && profile.profileType.split(',').map(cat => (
                 <span key={cat} className="px-2.5 py-1 bg-[#252C3A] rounded text-[11px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition cursor-pointer">
@@ -388,10 +396,6 @@ const Profile = () => {
                 </span>
               ))}
             </div>
-            
-            <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-6">
-              {profile.bio || "No bio added yet."}
-            </p>
             
             <div className="flex justify-between items-center pt-4 border-t border-[var(--border-primary)]">
               <div className="text-center">

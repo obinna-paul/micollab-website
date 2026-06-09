@@ -485,7 +485,7 @@ const Register = () => {
                         type="text" 
                         required
                         value={accountDetails.username}
-                        onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value})}
+                        onChange={(e) => setAccountDetails({...accountDetails, username: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '')})}
                         placeholder="creative_soul"
                         className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl py-2.5 pl-12 pr-4 text-[var(--text-primary)] outline-none focus:border-[#7B5CFA] transition font-medium placeholder-[#8B95A5]/50"
                       />

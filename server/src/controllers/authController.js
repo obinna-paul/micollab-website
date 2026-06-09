@@ -441,7 +441,7 @@ exports.checkAvailability = async (req, res) => {
 
 // Generate smart username suggestions
 async function generateUsernameSuggestions(username) {
-  const base = username.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+  const base = username.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   const candidates = [];
   
   // Generate a pool of candidates
