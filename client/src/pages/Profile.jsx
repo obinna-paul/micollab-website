@@ -288,6 +288,13 @@ const Profile = () => {
                     </button>
                     <button 
                       type="button"
+                      onClick={() => alert("DEPLOYMENT SUCCESS: Button clicks are working!")}
+                      className="px-4 py-2.5 bg-red-600 text-white font-bold text-sm rounded-xl transition shadow-lg z-50 pointer-events-auto"
+                    >
+                      Test
+                    </button>
+                    <button 
+                      type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
