@@ -6,6 +6,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER || 'micollab.app@gmail.com',
     pass: process.env.EMAIL_PASS || 'vpkb brih clkv wisj',
   },
+  connectionTimeout: 5000,
+  greetingTimeout: 5000,
+  socketTimeout: 5000,
 });
 
 exports.sendOTP = async (email, otp) => {
