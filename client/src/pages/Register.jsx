@@ -177,20 +177,9 @@ const Register = () => {
   };
 
   const handleRegisterSubmit = async () => {
-    setLoading(true);
-    setError('');
-    
-    const result = await updateProfile({
-      profileType: selectedCategories.join(', '),
-      skills: selectedSpecializations.join(', ')
-    });
-    
-    if (result.success) {
-      setStep(5);
-    } else {
-      setError(result.error || 'Failed to save profile');
-    }
-    setLoading(false);
+    // Just move to step 5. We will save everything at the end to prevent the router
+    // from redirecting us to '/' prematurely since 'isOnboarded' depends on user.skills.
+    setStep(5);
   };
 
   const handleImageChange = (e) => {
@@ -205,6 +194,8 @@ const Register = () => {
     e?.preventDefault();
     setLoading(true);
     
+    let uploadedImageUrl = null;
+
     if (profileImageFile) {
       try {
         const formData = new FormData();
@@ -215,16 +206,21 @@ const Register = () => {
         });
 
         if (uploadRes.data.urls && uploadRes.data.urls.length > 0) {
-          await updateProfile({ profileImage: uploadRes.data.urls[0] });
+          uploadedImageUrl = uploadRes.data.urls[0];
         }
       } catch (err) {
         console.error("Image upload failed:", err);
       }
     } else {
       // Assign a default avatar using their username
-      const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(accountDetails.username || 'User')}&background=random&color=fff&size=256`;
-      await updateProfile({ profileImage: defaultAvatar });
+      uploadedImageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(accountDetails.username || 'User')}&background=random&color=fff&size=256`;
     }
+
+    await updateProfile({ 
+      profileType: selectedCategories.join(', '),
+      skills: selectedSpecializations.join(', '),
+      profileImage: uploadedImageUrl 
+    });
     
     setLoading(false);
     navigate('/');
