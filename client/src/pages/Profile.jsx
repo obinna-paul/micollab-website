@@ -146,8 +146,6 @@ const Profile = () => {
 
   const handleConnect = async () => {
     try {
-      document.body.style.border = '5px solid red';
-      setTimeout(() => { document.body.style.border = 'none'; }, 1000);
       setConnectStatus('loading');
       const res = await axios.post('/api/network/connect', { receiverId: profile.id }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -290,13 +288,6 @@ const Profile = () => {
                     </button>
                     <button 
                       type="button"
-                      onClick={() => alert("DEPLOYMENT SUCCESS: Button clicks are working!")}
-                      className="px-4 py-2.5 bg-red-600 text-white font-bold text-sm rounded-xl transition shadow-lg z-50 pointer-events-auto"
-                    >
-                      Test
-                    </button>
-                    <button 
-                      type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -339,19 +330,6 @@ const Profile = () => {
               )}
             </div>
           </div>
-          
-          {/* SUPER TEST BUTTON - OUTSIDE ALL LAYERS */}
-          {!isOwner && (
-            <div className="mt-4 ml-6 lg:ml-8">
-              <button 
-                type="button"
-                onClick={handleConnect}
-                className="px-6 py-3 bg-red-600 text-white font-black text-sm rounded-xl shadow-2xl relative z-50"
-              >
-                {connectStatus === 'loading' ? 'SENDING REQUEST...' : connectStatus?.startsWith('ERROR') ? connectStatus : 'SUPER TEST CONNECT BUTTON'}
-              </button>
-            </div>
-          )}
           
         </div>
 
