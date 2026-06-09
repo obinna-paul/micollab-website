@@ -90,6 +90,24 @@ const CollabManage = () => {
     }
   };
 
+  const handleOpenDispute = async (proposalId) => {
+    const reason = window.prompt("Please state the reason for opening this dispute. Administrators will review this.");
+    if (!reason) return;
+    setUpdating(proposalId);
+    try {
+      await axios.post('/api/escrow/dispute', { proposalId, reason }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Dispute opened. An administrator will review your case.');
+      fetchCollab();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to open dispute');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   const handleStartChat = async (creatorId) => {
     try {
       await axios.post('/api/messages/conversation', {
@@ -251,15 +269,31 @@ const CollabManage = () => {
                             </button>
                           )}
                           {proposal.status === 'ACCEPTED' && proposal.escrowStatus === 'HELD' && (
-                            <button 
-                              onClick={() => handleReleaseEscrow(proposal.id)}
-                              disabled={updating === proposal.id}
-                              className="flex-1 md:flex-none p-3 bg-[#FF8A00]/10 border border-[#FF8A00]/20 text-[#FF8A00] hover:bg-[#FF8A00]/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
-                              title="Release Funds from Escrow"
-                            >
-                               {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
-                               Release Funds
-                            </button>
+                            <div className="flex flex-col gap-2 w-full md:w-auto">
+                              <button 
+                                onClick={() => handleReleaseEscrow(proposal.id)}
+                                disabled={updating === proposal.id}
+                                className="flex-1 p-3 bg-[#FF8A00]/10 border border-[#FF8A00]/20 text-[#FF8A00] hover:bg-[#FF8A00]/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
+                                title="Release Funds from Escrow"
+                              >
+                                 {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
+                                 Release Funds
+                              </button>
+                              <button 
+                                onClick={() => handleOpenDispute(proposal.id)}
+                                disabled={updating === proposal.id}
+                                className="flex-1 p-3 bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
+                                title="Open a Dispute"
+                              >
+                                 {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} />} 
+                                 Dispute
+                              </button>
+                            </div>
+                          )}
+                          {proposal.escrowStatus === 'DISPUTED' && (
+                            <div className="flex-1 md:flex-none p-3 bg-red-500/10 border border-red-500 text-red-500 rounded-xl text-center font-black text-xs uppercase tracking-widest">
+                               Dispute Under Review
+                            </div>
                           )}
                           {proposal.status !== 'REJECTED' && (
                             <button 

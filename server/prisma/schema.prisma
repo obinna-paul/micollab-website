@@ -35,6 +35,10 @@ model User {
   completionRate  Int @default(100)
   responseRate    Int @default(100)
 
+  // Admin & Moderation
+  isAdmin         Boolean @default(false)
+  isBanned        Boolean @default(false)
+
   socialLinks String? // Stored as JSON string in SQLite
 
   createdAt DateTime @default(now())
@@ -248,7 +252,7 @@ model Proposal {
   coverLetter    String
   bidAmount      String?
   status         String  @default("PENDING") // PENDING, ACCEPTED, REJECTED
-  escrowStatus   String  @default("NONE") // NONE, HELD, RELEASED, REFUNDED
+  escrowStatus   String  @default("NONE") // NONE, HELD, RELEASED, REFUNDED, DISPUTED
   portfolioLinks String? // JSON string
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)

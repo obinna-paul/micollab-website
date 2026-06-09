@@ -190,3 +190,44 @@ exports.releaseEscrow = async (req, res) => {
     res.status(500).json({ error: 'Failed to release funds' });
   }
 };
+
+// Open Escrow Dispute
+exports.openDispute = async (req, res) => {
+  try {
+    const { proposalId, reason } = req.body;
+    const userId = req.user.id;
+
+    const proposal = await prisma.proposal.findUnique({
+      where: { id: proposalId },
+      include: { collab: true }
+    });
+
+    if (!proposal) return res.status(404).json({ error: 'Proposal not found' });
+    if (proposal.collab.posterId !== userId && proposal.userId !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    if (proposal.escrowStatus !== 'HELD') {
+      return res.status(400).json({ error: 'Only active escrows can be disputed' });
+    }
+
+    await prisma.proposal.update({
+      where: { id: proposalId },
+      data: { escrowStatus: 'DISPUTED' }
+    });
+
+    // Notify admins (simplified) and the other party
+    const otherUserId = userId === proposal.userId ? proposal.collab.posterId : proposal.userId;
+    await notificationController.createNotification(
+      otherUserId,
+      userId,
+      'ALERT',
+      `A dispute has been opened for proposal ${proposalId}. Reason: ${reason}`,
+      proposalId
+    );
+
+    res.json({ success: true, message: 'Dispute opened and admin notified' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to open dispute' });
+  }
+};

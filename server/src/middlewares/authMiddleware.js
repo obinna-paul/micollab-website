@@ -13,14 +13,18 @@ const authMiddleware = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Check if user still exists in the database
-    const userExists = await prisma.user.findUnique({
+    // Check if user still exists and is not banned
+    const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true }
+      select: { id: true, isBanned: true }
     });
 
-    if (!userExists) {
+    if (!user) {
       return res.status(401).json({ error: 'User no longer exists. Please log in again.' });
+    }
+
+    if (user.isBanned) {
+      return res.status(403).json({ error: 'Your account has been suspended for violating our terms of service.' });
     }
 
     req.user = decoded;

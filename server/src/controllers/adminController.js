@@ -85,3 +85,151 @@ exports.rejectWithdrawal = async (req, res) => {
     res.status(500).json({ error: 'Failed to reject withdrawal' });
   }
 };
+
+// Admin Dashboard Metrics
+exports.getMetrics = async (req, res) => {
+  try {
+    const totalUsers = await prisma.user.count();
+    const activeCollabs = await prisma.collab.count({ where: { status: 'OPEN' } });
+    const wallets = await prisma.wallet.findMany({ select: { escrowBalance: true, availableBalance: true } });
+    
+    const totalEscrow = wallets.reduce((acc, curr) => acc + curr.escrowBalance, 0);
+    const totalAvailable = wallets.reduce((acc, curr) => acc + curr.availableBalance, 0);
+    
+    res.json({ totalUsers, activeCollabs, totalEscrow, totalAvailable });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch metrics' });
+  }
+};
+
+// Get All Users
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true, username: true, email: true, profileImage: true, 
+        isAdmin: true, isBanned: true, createdAt: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+};
+
+// Toggle Admin Status
+exports.toggleAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({ where: { id } });
+    
+    // Prevent removing your own admin rights if you are the last admin? (Just basic toggle for now)
+    const updated = await prisma.user.update({
+      where: { id },
+      data: { isAdmin: !user.isAdmin }
+    });
+    
+    res.json({ success: true, isAdmin: updated.isAdmin });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to toggle admin status' });
+  }
+};
+
+// Toggle Ban Status
+exports.toggleBan = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({ where: { id } });
+    
+    const updated = await prisma.user.update({
+      where: { id },
+      data: { isBanned: !user.isBanned }
+    });
+    
+    res.json({ success: true, isBanned: updated.isBanned });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to toggle ban status' });
+  }
+};
+
+// Resolve Escrow Dispute
+exports.resolveDispute = async (req, res) => {
+  try {
+    const { proposalId, action, reason } = req.body; // action: 'REFUND_POSTER' or 'PAY_CREATIVE'
+    
+    const proposal = await prisma.proposal.findUnique({ 
+      where: { id: proposalId },
+      include: { collab: true }
+    });
+    
+    if (!proposal || proposal.escrowStatus !== 'DISPUTED') {
+      return res.status(400).json({ error: 'Proposal is not disputed' });
+    }
+
+    const amount = parseFloat(proposal.bidAmount);
+
+    if (action === 'PAY_CREATIVE') {
+      // Give to creative
+      await prisma.proposal.update({ where: { id: proposalId }, data: { escrowStatus: 'RELEASED' } });
+      await prisma.wallet.update({
+        where: { userId: proposal.userId },
+        data: { escrowBalance: { decrement: amount }, availableBalance: { increment: amount } }
+      });
+      // Notify creative
+      await notificationController.createNotification(
+        proposal.userId, null, 'PAYMENT',
+        `Admin resolved a dispute in your favor. ${amount} has been added to your available balance.`,
+        proposalId
+      );
+    } else if (action === 'REFUND_POSTER') {
+      // Refund to Poster
+      await prisma.proposal.update({ where: { id: proposalId }, data: { escrowStatus: 'REFUNDED' } });
+      await prisma.wallet.update({
+        where: { userId: proposal.userId },
+        data: { escrowBalance: { decrement: amount } }
+      });
+      
+      let posterWallet = await prisma.wallet.findUnique({ where: { userId: proposal.collab.posterId } });
+      if (!posterWallet) {
+        posterWallet = await prisma.wallet.create({ data: { userId: proposal.collab.posterId, availableBalance: amount } });
+      } else {
+        await prisma.wallet.update({ where: { userId: proposal.collab.posterId }, data: { availableBalance: { increment: amount } } });
+      }
+      
+      // Notify Poster
+      await notificationController.createNotification(
+        proposal.collab.posterId, null, 'PAYMENT',
+        `Admin resolved a dispute in your favor. ${amount} has been refunded to your wallet.`,
+        proposalId
+      );
+    }
+
+    res.json({ success: true, message: 'Dispute resolved successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to resolve dispute' });
+  }
+};
+
+// Get All Disputes
+exports.getDisputes = async (req, res) => {
+  try {
+    const disputes = await prisma.proposal.findMany({
+      where: { escrowStatus: 'DISPUTED' },
+      include: { 
+        collab: { select: { title: true, poster: { select: { username: true } } } },
+        user: { select: { username: true } }
+      },
+      orderBy: { updatedAt: 'desc' }
+    });
+    res.json(disputes);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch disputes' });
+  }
+};

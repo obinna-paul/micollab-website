@@ -85,11 +85,19 @@ router.post('/wallet/withdraw', authMiddleware, walletController.requestWithdraw
 router.post('/escrow/deposit/initialize', authMiddleware, paystackController.initializeDeposit);
 router.post('/escrow/deposit/verify', paystackController.verifyDeposit); // Could be public webhook or authenticated
 router.post('/escrow/release', authMiddleware, paystackController.releaseEscrow);
+router.post('/escrow/dispute', authMiddleware, paystackController.openDispute);
 
 // Admin Routes
-router.get('/admin/withdrawals', authMiddleware, adminController.getPendingWithdrawals);
-router.post('/admin/withdrawals/:id/process', authMiddleware, adminController.processWithdrawal);
-router.post('/admin/withdrawals/:id/reject', authMiddleware, adminController.rejectWithdrawal);
+const adminMiddleware = require('../middlewares/adminMiddleware');
+router.get('/admin/withdrawals', authMiddleware, adminMiddleware, adminController.getPendingWithdrawals);
+router.post('/admin/withdrawals/:id/process', authMiddleware, adminMiddleware, adminController.processWithdrawal);
+router.post('/admin/withdrawals/:id/reject', authMiddleware, adminMiddleware, adminController.rejectWithdrawal);
+router.get('/admin/metrics', authMiddleware, adminMiddleware, adminController.getMetrics);
+router.get('/admin/users', authMiddleware, adminMiddleware, adminController.getUsers);
+router.patch('/admin/users/:id/toggle-admin', authMiddleware, adminMiddleware, adminController.toggleAdmin);
+router.patch('/admin/users/:id/toggle-ban', authMiddleware, adminMiddleware, adminController.toggleBan);
+router.get('/admin/disputes', authMiddleware, adminMiddleware, adminController.getDisputes);
+router.post('/admin/disputes/resolve', authMiddleware, adminMiddleware, adminController.resolveDispute);
 
 // Collabs Hub Routes
 const collabController = require('../controllers/collabController');

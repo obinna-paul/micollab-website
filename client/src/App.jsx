@@ -22,6 +22,8 @@ import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import SearchResults from './pages/SearchResults';
 import AdminWithdrawals from './pages/AdminWithdrawals';
+import AdminDashboard from './pages/AdminDashboard'; // We'll build this soon
+import AdminRoute from './components/AdminRoute';
 import useAuthStore from './store/useAuthStore';
 
 function App() {
@@ -39,6 +41,10 @@ function App() {
     if (!isAuthenticated) return <Navigate to="/login" />;
     if (!isOnboarded) return <Navigate to="/register" state={{ resumeOnboarding: true, username: user?.username }} />;
     return element;
+  };
+
+  const requireAdmin = (element) => {
+    return <AdminRoute>{element}</AdminRoute>;
   };
 
   return (
@@ -59,7 +65,7 @@ function App() {
       <Route path="/collabs/:id" element={requireAuth(<MainLayout><CollabDetail /></MainLayout>)} />
       <Route path="/collabs/manage/:id" element={requireAuth(<MainLayout><CollabManage /></MainLayout>)} />
       <Route path="/wallet" element={requireAuth(<MainLayout><Wallet /></MainLayout>)} />
-      <Route path="/admin/withdrawals" element={requireAuth(<MainLayout><AdminWithdrawals /></MainLayout>)} />
+      <Route path="/admin/dashboard" element={requireAuth(requireAdmin(<MainLayout><AdminDashboard /></MainLayout>))} />
       <Route path="/notifications" element={requireAuth(<MainLayout><Notifications /></MainLayout>)} />
       <Route path="/files" element={requireAuth(<MainLayout><FilesHub /></MainLayout>)} />
       <Route path="/settings" element={requireAuth(<MainLayout><Settings /></MainLayout>)} />

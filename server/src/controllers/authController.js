@@ -57,7 +57,9 @@ exports.googleLogin = async (req, res) => {
           profileImage: user.profileImage,
           bio: user.bio,
           location: user.location,
-          skills: user.skills
+          skills: user.skills,
+          isAdmin: user.isAdmin,
+          isBanned: user.isBanned
         }
       });
     }
@@ -294,6 +296,8 @@ exports.login = async (req, res) => {
         bio: user.bio,
         location: user.location,
         skills: user.skills,
+          isAdmin: user.isAdmin,
+          isBanned: user.isBanned,
         isEmailVerified: user.isEmailVerified
       }
     });
