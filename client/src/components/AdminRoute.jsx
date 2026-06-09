@@ -17,10 +17,6 @@ const AdminRoute = ({ children }) => {
         <h1 className="text-3xl font-black text-[var(--text-primary)] tracking-tighter mb-2">Access Denied</h1>
         <p className="text-[var(--text-secondary)] font-bold text-center max-w-sm mb-8">
           This area is restricted to Micollab Administrators. If you believe you should have access, please contact support.
-          <br /><br />
-          <span className="text-xs font-mono text-red-300 break-all">
-            Debug Email: {user?.email} | Admin: {String(user?.isAdmin)} | Super: {String(user?.isSuperAdmin)}
-          </span>
         </p>
         <button 
           onClick={() => window.history.back()}
