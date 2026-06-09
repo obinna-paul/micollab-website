@@ -146,6 +146,8 @@ const Profile = () => {
 
   const handleConnect = async () => {
     try {
+      document.body.style.border = '5px solid red';
+      setTimeout(() => { document.body.style.border = 'none'; }, 1000);
       setConnectStatus('loading');
       const res = await axios.post('/api/network/connect', { receiverId: profile.id }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -247,7 +249,7 @@ const Profile = () => {
             )}
             
             {/* Dark gradient at bottom to make text readable */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/40 to-transparent pointer-events-none"></div>
 
             {isOwner && (
               <button onClick={() => setCoverMenuOpen(true)} className="absolute top-5 right-5 bg-black/40 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black/60 transition border border-white/10 z-10">
@@ -337,6 +339,19 @@ const Profile = () => {
               )}
             </div>
           </div>
+          
+          {/* SUPER TEST BUTTON - OUTSIDE ALL LAYERS */}
+          {!isOwner && (
+            <div className="mt-4 ml-6 lg:ml-8">
+              <button 
+                type="button"
+                onClick={handleConnect}
+                className="px-6 py-3 bg-red-600 text-white font-black text-sm rounded-xl shadow-2xl relative z-50"
+              >
+                {connectStatus === 'loading' ? 'SENDING REQUEST...' : connectStatus?.startsWith('ERROR') ? connectStatus : 'SUPER TEST CONNECT BUTTON'}
+              </button>
+            </div>
+          )}
           
         </div>
 
