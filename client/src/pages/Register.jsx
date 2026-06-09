@@ -459,8 +459,9 @@ const Register = () => {
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
-                  <span>Step 1 of 4</span>
+                  <span>Step 1 of 5</span>
                 </div>
 
                 <div className="text-center mb-6">
@@ -594,7 +595,7 @@ const Register = () => {
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
-                  <span>Step 2 of 4</span>
+                  <span>Step 2 of 5</span>
                 </div>
 
                 <button onClick={() => setStep(1)} className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition mb-6 flex items-center gap-1">
@@ -665,7 +666,7 @@ const Register = () => {
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                   </div>
-                  <span>STEP 3 OF 4</span>
+                  <span>STEP 3 OF 5</span>
                 </div>
 
                 <button onClick={() => setStep(2)} className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition mb-4 flex items-center gap-1">
@@ -749,7 +750,7 @@ const Register = () => {
                     <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                   </div>
-                  <span>STEP 4 OF 4</span>
+                  <span>STEP 4 OF 5</span>
                 </div>
 
                 <button onClick={() => setStep(3)} className="text-xs font-bold text-[#A37BFF] hover:text-[var(--text-primary)] transition mb-6 flex items-center gap-1">
@@ -757,11 +758,8 @@ const Register = () => {
                 </button>
 
                 <div className="text-center mb-6 flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#7B5CFA] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(123,92,250,0.4)]">
-                    <Rocket size={32} className="text-[var(--text-primary)]" />
-                  </div>
-                  <h2 className="text-2xl lg:text-2xl font-black text-[var(--text-primary)] mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
-                  <p className="text-[var(--text-secondary)] font-medium text-sm">Your workspace is ready. Discover briefs, connect with peers, and start creating.</p>
+                  <h2 className="text-2xl lg:text-2xl font-black text-[var(--text-primary)] mb-2 leading-tight">Review your Profile</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm">You're almost there! Review your selections before proceeding.</p>
                 </div>
 
                 {error && (
@@ -801,7 +799,7 @@ const Register = () => {
                   className="w-full py-2.5 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : (
-                    <>Complete Profile <ArrowRight size={18} /></>
+                    <>Next Step <ChevronRight size={18} /></>
                   )}
                 </button>
               </motion.div>
@@ -812,19 +810,25 @@ const Register = () => {
               <motion.div key="step5" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
                 <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
                   <div className="flex gap-1.5 items-center">
-                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
-                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
-                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
-                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA]/40 rounded-full cursor-pointer hover:bg-[#7B5CFA]/60" onClick={() => setStep(1)} />
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA]/40 rounded-full cursor-pointer hover:bg-[#7B5CFA]/60" onClick={() => setStep(2)} />
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA]/40 rounded-full cursor-pointer hover:bg-[#7B5CFA]/60" onClick={() => setStep(3)} />
+                    <div className="w-1.5 h-1.5 bg-[#7B5CFA]/40 rounded-full cursor-pointer hover:bg-[#7B5CFA]/60" onClick={() => setStep(4)} />
                     <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
                   </div>
                   <span>STEP 5 OF 5</span>
                 </div>
 
                 <div className="text-center mb-8 flex flex-col items-center">
-                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2 leading-tight">Put a face to the name</h2>
-                  <p className="text-[var(--text-secondary)] font-medium text-sm max-w-sm">
-                    Upload a profile picture so collaborators can recognize you.
+                  <div className="w-16 h-16 bg-[#7B5CFA] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(123,92,250,0.4)]">
+                    <Rocket size={32} className="text-[var(--text-primary)]" />
+                  </div>
+                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2 leading-tight">Welcome to the Future<br/>of Collaboration</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm max-w-sm mb-4">
+                    Your workspace is ready. Discover briefs, connect with peers, and start creating.
+                  </p>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm max-w-sm bg-[var(--bg-surface-alt)] p-3 rounded-lg border border-[var(--border-primary)]">
+                    Before you enter, let's put a face to the name. Upload a profile picture so collaborators can recognize you.
                   </p>
                 </div>
 
