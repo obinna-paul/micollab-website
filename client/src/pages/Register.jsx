@@ -5,9 +5,10 @@ import {
   Mail, Lock, User, Loader2, AlertCircle, ChevronRight, ChevronLeft, Check, 
   Music, Film, Camera, PenTool, Mic2, Scissors, Palette, Smartphone, 
   Calendar, Briefcase, BookOpen, ArrowLeft, Eye, EyeOff, Sparkles, Target, Search,
-  Layers, Tag, Handshake, Rocket, ArrowRight
+  Layers, Tag, Handshake, Rocket, ArrowRight, Upload, Image as ImageIcon
 } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import useAuthStore from '../store/useAuthStore';
 
 // Exhaustive Categories Data
@@ -100,6 +101,10 @@ const Register = () => {
   const [error, setError] = useState('');
   const [usernameSuggestions, setUsernameSuggestions] = useState([]);
   
+  // Profile Image State
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
+  
   // OTP State
   const [requiresVerification, setRequiresVerification] = useState(false);
   const [otpCode, setOtpCode] = useState('');
@@ -181,11 +186,44 @@ const Register = () => {
     });
     
     if (result.success) {
-      navigate('/');
+      setStep(5);
     } else {
       setError(result.error || 'Failed to save profile');
     }
     setLoading(false);
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleFinishOnboarding = async (e) => {
+    e?.preventDefault();
+    setLoading(true);
+    
+    if (profileImageFile) {
+      try {
+        const formData = new FormData();
+        formData.append('media', profileImageFile);
+        
+        const uploadRes = await axios.post('/api/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        if (uploadRes.data.urls && uploadRes.data.urls.length > 0) {
+          await updateProfile({ profileImage: uploadRes.data.urls[0] });
+        }
+      } catch (err) {
+        console.error("Image upload failed:", err);
+      }
+    }
+    
+    setLoading(false);
+    navigate('/');
   };
 
   const handleVerifyOTP = async (e) => {
@@ -763,9 +801,78 @@ const Register = () => {
                   className="w-full py-2.5 bg-gradient-to-r from-[#7B5CFA] to-[#684CE0] hover:to-[#5c40d1] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : (
-                    <>Enter Micollab <ArrowRight size={18} /></>
+                    <>Complete Profile <ArrowRight size={18} /></>
                   )}
                 </button>
+              </motion.div>
+            )}
+
+            {/* STEP 5: PROFILE PICTURE */}
+            {step === 5 && (
+              <motion.div key="step5" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
+                <div className="flex items-center justify-between mb-6 text-xs font-bold text-[var(--text-secondary)] tracking-widest uppercase">
+                  <div className="flex gap-1.5 items-center">
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-white/10 rounded-full" />
+                    <div className="w-6 h-1.5 bg-[#7B5CFA] rounded-full shadow-[0_0_8px_rgba(123,92,250,0.5)]" />
+                  </div>
+                  <span>STEP 5 OF 5</span>
+                </div>
+
+                <div className="text-center mb-8 flex flex-col items-center">
+                  <h2 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] mb-2 leading-tight">Put a face to the name</h2>
+                  <p className="text-[var(--text-secondary)] font-medium text-sm max-w-sm">
+                    Upload a profile picture so collaborators can recognize you.
+                  </p>
+                </div>
+
+                <div className="flex flex-col items-center justify-center mb-8">
+                  <div className="relative group">
+                    <div className={`w-32 h-32 rounded-full border-2 border-dashed ${profileImagePreview ? 'border-[#7B5CFA]' : 'border-[var(--border-primary)]'} flex items-center justify-center overflow-hidden bg-[var(--bg-surface-alt)] relative transition-all`}>
+                      {profileImagePreview ? (
+                        <img src={profileImagePreview} alt="Profile Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <ImageIcon size={32} className="text-[var(--text-secondary)]" />
+                      )}
+                      
+                      <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity">
+                        <Upload size={20} className="text-white mb-1" />
+                        <span className="text-[10px] font-bold text-white uppercase tracking-wider">Upload</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                      </label>
+                    </div>
+                  </div>
+                  {profileImageFile && (
+                    <button 
+                      onClick={() => { setProfileImageFile(null); setProfileImagePreview(null); }}
+                      className="mt-4 text-xs font-bold text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      Remove Photo
+                    </button>
+                  )}
+                </div>
+
+                <button 
+                  onClick={handleFinishOnboarding}
+                  disabled={loading}
+                  className="w-full py-3 bg-[#7B5CFA] hover:bg-[#684CE0] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(123,92,250,0.4)] disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="animate-spin" size={20} /> : (
+                    profileImageFile ? 'Upload & Enter Micollab' : 'Enter Micollab'
+                  )}
+                </button>
+
+                {!profileImageFile && (
+                  <button 
+                    onClick={handleFinishOnboarding}
+                    disabled={loading}
+                    className="w-full mt-4 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm font-bold transition-colors disabled:opacity-50"
+                  >
+                    Skip for now
+                  </button>
+                )}
               </motion.div>
             )}
 
