@@ -220,6 +220,10 @@ const Register = () => {
       } catch (err) {
         console.error("Image upload failed:", err);
       }
+    } else {
+      // Assign a default avatar using their username
+      const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(accountDetails.username || 'User')}&background=random&color=fff&size=256`;
+      await updateProfile({ profileImage: defaultAvatar });
     }
     
     setLoading(false);
