@@ -49,6 +49,47 @@ const CollabManage = () => {
     }
   };
 
+  const handleDepositAndAccept = async (proposalId) => {
+    setUpdating(proposalId);
+    try {
+      const res = await axios.post('/api/escrow/deposit/initialize', { proposalId }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data.authorization_url) {
+        window.location.href = res.data.authorization_url;
+      } else if (res.data.mock) {
+        // Auto-verify mock
+        await axios.post('/api/escrow/deposit/verify', { proposalId }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert('Mock deposit successful. Proposal accepted.');
+        fetchCollab();
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to initialize deposit');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const handleReleaseEscrow = async (proposalId) => {
+    if (!window.confirm("Are you sure you want to release the funds to the creative? This action cannot be undone.")) return;
+    setUpdating(proposalId);
+    try {
+      await axios.post('/api/escrow/release', { proposalId }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Funds released successfully!');
+      fetchCollab();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to release funds');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   const handleStartChat = async (creatorId) => {
     try {
       await axios.post('/api/messages/conversation', {
@@ -200,12 +241,24 @@ const CollabManage = () => {
                           )}
                           {proposal.status !== 'ACCEPTED' && (
                             <button 
-                              onClick={() => handleUpdateStatus(proposal.id, 'ACCEPTED')}
+                              onClick={() => handleDepositAndAccept(proposal.id)}
                               disabled={updating === proposal.id}
-                              className="flex-1 md:flex-none p-3 bg-[#34D399]/10 border border-[#34D399]/20 text-[#34D399] hover:bg-[#34D399]/20 rounded-xl transition-all flex items-center justify-center"
-                              title="Accept & Unlock Chat"
+                              className="flex-1 md:flex-none p-3 bg-[#34D399]/10 border border-[#34D399]/20 text-[#34D399] hover:bg-[#34D399]/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
+                              title="Deposit Funds & Accept"
                             >
-                               <Check size={18} />
+                               {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <DollarSign size={16} />} 
+                               Pay & Accept
+                            </button>
+                          )}
+                          {proposal.status === 'ACCEPTED' && proposal.escrowStatus === 'HELD' && (
+                            <button 
+                              onClick={() => handleReleaseEscrow(proposal.id)}
+                              disabled={updating === proposal.id}
+                              className="flex-1 md:flex-none p-3 bg-[#FF8A00]/10 border border-[#FF8A00]/20 text-[#FF8A00] hover:bg-[#FF8A00]/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
+                              title="Release Funds from Escrow"
+                            >
+                               {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
+                               Release Funds
                             </button>
                           )}
                           {proposal.status !== 'REJECTED' && (

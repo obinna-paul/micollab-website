@@ -67,10 +67,29 @@ router.post('/trust/block', authMiddleware, trustController.blockUser);
 router.post('/trust/unblock', authMiddleware, trustController.unblockUser);
 router.post('/trust/report', authMiddleware, trustController.reportUser);
 
-// Monetization Routes
+// Monetization / Wallet Routes
 const stripeController = require('../controllers/stripeController');
+const walletController = require('../controllers/walletController');
+const paystackController = require('../controllers/paystackController');
+const adminController = require('../controllers/adminController');
+
 router.post('/monetization/checkout', authMiddleware, stripeController.createCheckoutSession);
 router.get('/monetization/earnings', authMiddleware, stripeController.getEarnings);
+
+// Wallet & Withdrawals
+router.get('/wallet', authMiddleware, walletController.getWallet);
+router.get('/wallet/transactions', authMiddleware, walletController.getTransactions);
+router.post('/wallet/withdraw', authMiddleware, walletController.requestWithdrawal);
+
+// Paystack Escrow
+router.post('/escrow/deposit/initialize', authMiddleware, paystackController.initializeDeposit);
+router.post('/escrow/deposit/verify', paystackController.verifyDeposit); // Could be public webhook or authenticated
+router.post('/escrow/release', authMiddleware, paystackController.releaseEscrow);
+
+// Admin Routes
+router.get('/admin/withdrawals', authMiddleware, adminController.getPendingWithdrawals);
+router.post('/admin/withdrawals/:id/process', authMiddleware, adminController.processWithdrawal);
+router.post('/admin/withdrawals/:id/reject', authMiddleware, adminController.rejectWithdrawal);
 
 // Collabs Hub Routes
 const collabController = require('../controllers/collabController');

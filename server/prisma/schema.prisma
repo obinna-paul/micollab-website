@@ -74,6 +74,11 @@ model User {
   blockedBy      Block[]  @relation("Blocked")
   reportsMade    Report[] @relation("Reporter")
   reportsReceived Report[] @relation("Reported")
+
+  // Wallet & Payments
+  wallet             Wallet?
+  transactions       Transaction[]
+  withdrawalRequests WithdrawalRequest[]
 }
 
 model PortfolioItem {
@@ -243,6 +248,7 @@ model Proposal {
   coverLetter    String
   bidAmount      String?
   status         String  @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  escrowStatus   String  @default("NONE") // NONE, HELD, RELEASED, REFUNDED
   portfolioLinks String? // JSON string
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -534,4 +540,43 @@ model Report {
   reason     String
   status     String   @default("PENDING") // PENDING, REVIEWED, RESOLVED
   createdAt  DateTime @default(now())
+}
+
+model Wallet {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  availableBalance Float    @default(0.0)
+  escrowBalance    Float    @default(0.0)
+  currency         String   @default("NGN")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount          Float
+  currency        String   @default("NGN")
+  type            String   // DEPOSIT, WITHDRAWAL, ESCROW_HOLD, ESCROW_RELEASE
+  status          String   @default("COMPLETED") // PENDING, COMPLETED, FAILED
+  reference       String?  @unique // Paystack or external reference
+  description     String?
+  relatedEntityId String?  // e.g. Proposal ID
+  createdAt       DateTime @default(now())
+}
+
+model WithdrawalRequest {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount        Float
+  currency      String   @default("NGN")
+  payoutMethod  String   // BANK_ACCOUNT, PAYPAL
+  payoutDetails String   // JSON string containing bank details or email
+  status        String   @default("PENDING") // PENDING, PROCESSED, REJECTED
+  adminNotes    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

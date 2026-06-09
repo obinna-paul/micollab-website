@@ -1,186 +1,306 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion';
-import { Wallet as WalletIcon, TrendingUp, Users, DollarSign, ArrowUpRight, Download, CreditCard, PieChart, Activity } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Wallet as WalletIcon, TrendingUp, DollarSign, ArrowUpRight, Lock, CheckCircle, X, Banknote, Clock } from 'lucide-react';
+import useAuthStore from '../store/useAuthStore';
 
-const StatCard = ({ label, value, icon: Icon, color, trend }) => (
-  <div className="card p-6">
-    <div className="flex justify-between items-start mb-4">
-      <div className={`p-2.5 rounded-lg ${color}`}>
-        <Icon size={20} className="text-[var(--text-primary)]" />
+const StatCard = ({ label, value, icon: Icon, color, subtext }) => (
+  <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm relative overflow-hidden group">
+    <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-10 transition-transform group-hover:scale-110 ${color}`}></div>
+    <div className="flex justify-between items-start mb-4 relative z-10">
+      <div className={`p-3 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-primary)]`}>
+        <Icon size={24} className={color.replace('bg-', 'text-')} />
       </div>
-      {trend && (
-        <span className="flex items-center text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
-          {trend} <ArrowUpRight size={10} />
-        </span>
-      )}
     </div>
-    <p className="text-textMuted text-xs font-bold uppercase tracking-wider mb-1">{label}</p>
-    <h3 className="text-2xl font-black text-textMain">{value}</h3>
+    <p className="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-wider mb-1 relative z-10">{label}</p>
+    <h3 className="text-3xl font-black text-[var(--text-primary)] relative z-10">₦{value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+    {subtext && <p className="text-[10px] text-[var(--text-secondary)] mt-2 font-semibold">{subtext}</p>}
   </div>
 );
 
 const Wallet = () => {
-  const [stats, setStats] = useState({
-    totalRevenue: 0,
-    activeSubscribers: 0,
-    pendingBalance: 0
-  });
+  const { token, user } = useAuthStore();
+  const [wallet, setWallet] = useState({ availableBalance: 0, escrowBalance: 0 });
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+
+  // Withdraw Form State
+  const [amount, setAmount] = useState('');
+  const [payoutMethod, setPayoutMethod] = useState('BANK_ACCOUNT');
+  const [bankDetails, setBankDetails] = useState({ bankName: '', accountNumber: '', accountName: '' });
+  const [paypalEmail, setPaypalEmail] = useState('');
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [withdrawError, setWithdrawError] = useState('');
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [walletRes, txRes] = await Promise.all([
+        axios.get('/api/wallet', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('/api/wallet/transactions', { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      setWallet(walletRes.data);
+      setTransactions(txRes.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEarnings = async () => {
-      try {
-        const res = await axios.get('/api/monetization/earnings');
-        setStats(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEarnings();
-  }, []);
+    if (token) fetchData();
+  }, [token]);
+
+  const handleWithdraw = async (e) => {
+    e.preventDefault();
+    setWithdrawError('');
+    setWithdrawing(true);
+    
+    const payoutDetails = payoutMethod === 'BANK_ACCOUNT' ? bankDetails : { email: paypalEmail };
+
+    try {
+      await axios.post('/api/wallet/withdraw', {
+        amount: parseFloat(amount),
+        payoutMethod,
+        payoutDetails
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      
+      setIsWithdrawOpen(false);
+      fetchData(); // Refresh balances and history
+    } catch (err) {
+      setWithdrawError(err.response?.data?.error || 'Failed to request withdrawal');
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'COMPLETED': return 'text-green-500 bg-green-500/10';
+      case 'PENDING': return 'text-amber-500 bg-amber-500/10';
+      case 'FAILED': case 'REJECTED': return 'text-red-500 bg-red-500/10';
+      default: return 'text-gray-500 bg-gray-500/10';
+    }
+  };
+
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case 'DEPOSIT': return <ArrowUpRight size={16} className="text-green-500" />;
+      case 'WITHDRAWAL': return <Banknote size={16} className="text-amber-500" />;
+      case 'ESCROW_HOLD': return <Lock size={16} className="text-purple-500" />;
+      case 'ESCROW_RELEASE': return <CheckCircle size={16} className="text-blue-500" />;
+      default: return <TrendingUp size={16} className="text-gray-500" />;
+    }
+  };
 
   return (
-    <div className="max-w-5xl mx-auto py-2">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div className="max-w-5xl mx-auto py-8 px-4 md:px-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
-          <h1 className="text-2xl font-black text-textMain flex items-center gap-3">
-            <Activity className="text-primary" size={28} />
-            Professional Dashboard
+          <h1 className="text-3xl font-black text-[var(--text-primary)] flex items-center gap-3">
+            <WalletIcon className="text-[#7B5CFA]" size={32} />
+            My Wallet
           </h1>
-          <p className="text-textMuted text-sm font-bold mt-1">Track your earnings, gig performance, and networking growth.</p>
+          <p className="text-[var(--text-secondary)] text-sm font-bold mt-2">Manage your earnings, escrows, and withdrawals.</p>
         </div>
-        <div className="flex gap-2">
-          <button className="btn-outline flex items-center gap-2 py-2 px-4 text-xs">
-            <Download size={16} /> Export Report
-          </button>
-          <button className="btn-primary flex items-center gap-2 py-2 px-6 text-xs">
-            Withdraw Funds
-          </button>
-        </div>
+        <button 
+          onClick={() => setIsWithdrawOpen(true)}
+          className="bg-[#7B5CFA] hover:bg-[#684CE0] text-white px-6 py-3 font-black text-sm rounded-xl shadow-lg transition-colors flex items-center gap-2"
+        >
+          <Banknote size={18} /> Withdraw Funds
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatCard 
-          label="Total Earnings" 
-          value={`₦${(stats.totalRevenue * 1500).toLocaleString()}`} // Nigerian Naira conversion mock
-          icon={DollarSign} 
-          trend="+15.2%"
-          color="bg-primary"
-        />
-        <StatCard 
-          label="Active Gigs" 
-          value="4" 
-          icon={TrendingUp} 
-          trend="+2"
-          color="bg-music"
-        />
-        <StatCard 
-          label="Portfolio Views" 
-          value="1,284" 
-          icon={Users} 
-          trend="+324"
-          color="bg-photography"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Transaction History */}
-        <div className="lg:col-span-2 card overflow-hidden">
-          <div className="p-4 border-b border-divider flex justify-between items-center bg-surface">
-            <h3 className="font-bold text-textMain text-sm">Recent Activity</h3>
-            <button className="text-xs font-bold text-primary hover:underline">View Ledger</button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 text-[9px] text-textMuted font-black uppercase tracking-widest border-b border-divider">
-                <tr>
-                  <th className="px-4 py-3">Client / Source</th>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="px-4 py-3 text-right">Amount</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-divider">
-                {[
-                  { name: 'Chocolate City', date: 'May 12, 2026', type: 'Gig Payment', amount: '₦250,000', status: 'Completed' },
-                  { name: 'Greoh Studios', date: 'May 10, 2026', type: 'Proposal Hire', amount: '₦120,000', status: 'Pending' },
-                  { name: 'Premium Fan #21', date: 'May 08, 2026', type: 'Subscription', amount: '₦15,000', status: 'Completed' },
-                  { name: 'Brand Campaign X', date: 'May 05, 2026', type: 'Contract', amount: '₦500,000', status: 'Completed' }
-                ].map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-primary font-bold text-[10px]">CC</div>
-                      <span className="font-bold text-textMain text-xs">{row.name}</span>
-                    </td>
-                    <td className="px-4 py-3 text-[10px] text-textMuted">{row.date}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 bg-gray-100 text-textMuted rounded text-[9px] font-bold uppercase">{row.type}</span>
-                    </td>
-                    <td className="px-4 py-3 font-bold text-textMain text-xs text-right">{row.amount}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-[10px] font-black uppercase ${row.status === 'Completed' ? 'text-green-600' : 'text-orange-500'}`}>
-                        {row.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {loading ? (
+        <div className="flex justify-center p-20">
+          <div className="w-8 h-8 border-4 border-[#7B5CFA] border-t-transparent rounded-full animate-spin"></div>
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <StatCard 
+              label="Available Balance" 
+              value={wallet.availableBalance} 
+              icon={DollarSign} 
+              color="bg-green-500"
+              subtext="Funds available for immediate withdrawal."
+            />
+            <StatCard 
+              label="In Escrow" 
+              value={wallet.escrowBalance} 
+              icon={Lock} 
+              color="bg-purple-500"
+              subtext="Funds held securely for ongoing gigs. Released upon completion."
+            />
+          </div>
 
-        {/* Payout Methods & Tips */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="card p-5">
-            <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2">
-              <CreditCard size={18} className="text-primary" /> Payout Method
-            </h3>
-            <div className="bg-background p-4 rounded-xl border border-divider border-dashed flex flex-col items-center text-center gap-2">
-              <p className="text-[10px] text-textMuted font-bold uppercase">No bank account connected</p>
-              <button className="w-full py-2 bg-primary/10 text-primary border border-primary/10 font-bold rounded-lg hover:bg-primary/20 transition text-xs">
-                Add Bank Details
-              </button>
+          <div className="bg-[var(--bg-surface)] border border-[var(--border-primary)] rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-[var(--border-primary)] bg-[var(--bg-surface-alt)]">
+              <h3 className="font-black text-[var(--text-primary)] text-lg flex items-center gap-2">
+                <Clock size={20} className="text-[var(--text-secondary)]" /> Transaction History
+              </h3>
             </div>
+            
+            {transactions.length === 0 ? (
+              <div className="p-10 text-center text-[var(--text-secondary)] font-bold text-sm">
+                No transactions yet. Start collaborating to earn!
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-[var(--bg-base)] text-[10px] text-[var(--text-secondary)] font-black uppercase tracking-widest border-b border-[var(--border-primary)]">
+                    <tr>
+                      <th className="px-6 py-4">Transaction</th>
+                      <th className="px-6 py-4">Amount</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-primary)] text-sm">
+                    {transactions.map(tx => (
+                      <tr key={tx.id} className="hover:bg-[var(--bg-surface-alt)] transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-[var(--bg-base)] border border-[var(--border-primary)]">
+                              {getTypeIcon(tx.type)}
+                            </div>
+                            <div>
+                              <p className="font-bold text-[var(--text-primary)]">{tx.type.replace('_', ' ')}</p>
+                              {tx.description && <p className="text-[10px] text-[var(--text-secondary)] font-semibold mt-0.5">{tx.description}</p>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 font-black text-[var(--text-primary)]">
+                          {tx.type === 'WITHDRAWAL' ? '-' : '+'}₦{tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border border-current ${getStatusColor(tx.status)}`}>
+                            {tx.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right text-[var(--text-secondary)] font-bold text-xs">
+                          {new Date(tx.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
+        </>
+      )}
 
-          <div className="card p-5 bg-gradient-to-br from-primary to-primaryHover shadow-lg border-none text-white">
-            <h3 className="font-black text-lg mb-2">Grow Your Income</h3>
-            <p className="text-[var(--text-primary)]/80 text-[10px] leading-relaxed mb-4">
-              Completing more gigs and getting positive reviews increases your **Reputation Score**, which helps you rank higher in talent searches.
-            </p>
-            <button className="w-full py-2 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition text-xs shadow-md">
-              Update Portfolio
-            </button>
-          </div>
+      {/* Withdraw Modal */}
+      <AnimatePresence>
+        {isWithdrawOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsWithdrawOpen(false)}></div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[var(--bg-surface)] w-full max-w-md rounded-3xl border border-[var(--border-primary)] shadow-2xl relative z-10 overflow-hidden"
+            >
+              <div className="p-6 border-b border-[var(--border-primary)] flex justify-between items-center bg-[var(--bg-surface-alt)]">
+                <h3 className="font-black text-[var(--text-primary)] text-xl">Request Withdrawal</h3>
+                <button onClick={() => setIsWithdrawOpen(false)} className="text-[var(--text-secondary)] hover:text-red-500 transition-colors p-1">
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="p-6">
+                <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+                  <p className="text-[10px] text-green-600 font-black uppercase tracking-widest mb-1">Available to Withdraw</p>
+                  <p className="text-2xl font-black text-green-600">₦{wallet.availableBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                </div>
 
-          <div className="card p-5">
-             <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2">
-               <PieChart size={18} className="text-music" /> Category Stats
-             </h3>
-             <div className="space-y-3">
-                {[
-                  { label: 'Music Production', val: '65%', color: 'bg-music' },
-                  { label: 'Writing Gigs', val: '25%', color: 'bg-writing' },
-                  { label: 'Performances', val: '10%', color: 'bg-dance' }
-                ].map((s, i) => (
-                  <div key={i}>
-                    <div className="flex justify-between text-[10px] font-bold text-textMuted mb-1">
-                      <span>{s.label}</span>
-                      <span>{s.val}</span>
+                <form onSubmit={handleWithdraw} className="space-y-4">
+                  {withdrawError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold rounded-xl text-center">
+                      {withdrawError}
                     </div>
-                    <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
-                      <div className={`h-full ${s.color}`} style={{ width: s.val }}></div>
+                  )}
+
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] mb-2">Amount (₦)</label>
+                    <input 
+                      type="number" 
+                      required
+                      min="1000"
+                      max={wallet.availableBalance}
+                      value={amount}
+                      onChange={e => setAmount(e.target.value)}
+                      className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-[#7B5CFA] transition-colors"
+                      placeholder="Enter amount (Min ₦1,000)"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] mb-2">Payout Method</label>
+                    <div className="flex gap-2">
+                      <button 
+                        type="button"
+                        onClick={() => setPayoutMethod('BANK_ACCOUNT')}
+                        className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${payoutMethod === 'BANK_ACCOUNT' ? 'bg-[#7B5CFA]/10 border-[#7B5CFA] text-[#7B5CFA]' : 'border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-base)]'}`}
+                      >
+                        Local Bank
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setPayoutMethod('PAYPAL')}
+                        className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${payoutMethod === 'PAYPAL' ? 'bg-[#7B5CFA]/10 border-[#7B5CFA] text-[#7B5CFA]' : 'border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-base)]'}`}
+                      >
+                        PayPal
+                      </button>
                     </div>
                   </div>
-                ))}
-             </div>
+
+                  {payoutMethod === 'BANK_ACCOUNT' ? (
+                    <div className="space-y-3 pt-2 border-t border-[var(--border-primary)]">
+                      <input 
+                        type="text" required placeholder="Bank Name (e.g. GTBank)" value={bankDetails.bankName}
+                        onChange={e => setBankDetails({...bankDetails, bankName: e.target.value})}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-xl px-4 py-2.5 text-xs font-bold focus:outline-none focus:border-[#7B5CFA]"
+                      />
+                      <input 
+                        type="text" required placeholder="Account Number" value={bankDetails.accountNumber}
+                        onChange={e => setBankDetails({...bankDetails, accountNumber: e.target.value})}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-xl px-4 py-2.5 text-xs font-bold focus:outline-none focus:border-[#7B5CFA]"
+                      />
+                      <input 
+                        type="text" required placeholder="Account Name" value={bankDetails.accountName}
+                        onChange={e => setBankDetails({...bankDetails, accountName: e.target.value})}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-xl px-4 py-2.5 text-xs font-bold focus:outline-none focus:border-[#7B5CFA]"
+                      />
+                    </div>
+                  ) : (
+                    <div className="pt-2 border-t border-[var(--border-primary)]">
+                      <input 
+                        type="email" required placeholder="PayPal Email Address" value={paypalEmail}
+                        onChange={e => setPaypalEmail(e.target.value)}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-xl px-4 py-3 text-xs font-bold focus:outline-none focus:border-[#7B5CFA]"
+                      />
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit"
+                    disabled={withdrawing || wallet.availableBalance <= 0}
+                    className="w-full bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-gray-600 text-white py-3.5 rounded-xl font-black text-sm uppercase tracking-widest mt-6 transition-colors shadow-lg"
+                  >
+                    {withdrawing ? 'Processing...' : 'Submit Request'}
+                  </button>
+                  <p className="text-center text-[10px] text-[var(--text-secondary)] font-semibold">Withdrawals are processed manually within 24-48 hours.</p>
+                </form>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 };

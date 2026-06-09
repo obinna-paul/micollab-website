@@ -21,6 +21,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import SearchResults from './pages/SearchResults';
+import AdminWithdrawals from './pages/AdminWithdrawals';
 import useAuthStore from './store/useAuthStore';
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
       <Route path="/collabs/:id" element={requireAuth(<MainLayout><CollabDetail /></MainLayout>)} />
       <Route path="/collabs/manage/:id" element={requireAuth(<MainLayout><CollabManage /></MainLayout>)} />
       <Route path="/wallet" element={requireAuth(<MainLayout><Wallet /></MainLayout>)} />
+      <Route path="/admin/withdrawals" element={requireAuth(<MainLayout><AdminWithdrawals /></MainLayout>)} />
       <Route path="/notifications" element={requireAuth(<MainLayout><Notifications /></MainLayout>)} />
       <Route path="/files" element={requireAuth(<MainLayout><FilesHub /></MainLayout>)} />
       <Route path="/settings" element={requireAuth(<MainLayout><Settings /></MainLayout>)} />
