@@ -346,28 +346,64 @@ const Profile = () => {
           )}
 
           <div>
-            <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
-              <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
-            </h4>
-            {profile.mutualConnections && profile.mutualConnections.length > 0 ? (
-              <div className="space-y-4">
-                {profile.mutualConnections.map((conn, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <Link to={`/profile/${conn.username}`}>
-                      <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition" />
-                    </Link>
-                    <div>
-                      <Link to={`/profile/${conn.username}`} className="text-[13px] font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline block">{conn.username}</Link>
-                      <p className="text-[11px] text-[var(--text-secondary)]">{conn.profileType}</p>
+            <div>
+              {!isOwner ? (
+                <>
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
+                    <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
+                  </h4>
+                  {profile.mutualConnections && profile.mutualConnections.length > 0 ? (
+                    <div className="space-y-4">
+                      {profile.mutualConnections.map((conn, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <Link to={`/profile/${conn.username}`}>
+                            <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition" />
+                          </Link>
+                          <div>
+                            <Link to={`/profile/${conn.username}`} className="text-[13px] font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline block">{conn.username}</Link>
+                            <p className="text-[11px] text-[var(--text-secondary)]">{conn.profileType}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-[var(--bg-surface-alt)]/50 border border-dashed border-[var(--border-primary)] rounded-xl p-4 text-center">
+                      <p className="text-[11px] text-[var(--text-secondary)]">No mutual connections yet. Expand your network!</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
+                    <Star size={14} className="text-[#FF8A00]" /> Profile Insights
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#7B5CFA]/10 flex items-center justify-center">
+                          <Users size={14} className="text-[#7B5CFA]" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Profile Views</p>
+                          <p className="text-[13px] font-black text-[var(--text-primary)]">47 <span className="text-[10px] text-emerald-400 font-bold tracking-normal ml-1">+12% this week</span></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
+                          <Search size={14} className="text-[#00D4FF]" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Search Appearances</p>
+                          <p className="text-[13px] font-black text-[var(--text-primary)]">124 <span className="text-[10px] text-emerald-400 font-bold tracking-normal ml-1">+5% this week</span></p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-[var(--bg-surface-alt)]/50 border border-dashed border-[var(--border-primary)] rounded-xl p-4 text-center">
-                <p className="text-[11px] text-[var(--text-secondary)]">No mutual connections yet. Expand your network!</p>
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </aside>
       </div>
