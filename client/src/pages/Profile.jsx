@@ -306,7 +306,7 @@ const Profile = () => {
                       }`}
                     >
                       {connectStatus?.startsWith('ERROR:') ? <X size={15} /> : connectStatus === 'CONNECTED' ? <CheckCircle size={15} /> : connectStatus === 'REQUESTED' ? <CheckCircle size={15} /> : connectStatus === 'loading' ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <UserPlus size={15} strokeWidth={3} />} 
-                      {connectStatus?.startsWith('ERROR:') ? connectStatus : connectStatus === 'CONNECTED' ? 'Following' : connectStatus === 'REQUESTED' ? 'Request Sent' : connectStatus === 'loading' ? 'Sending...' : 'Connect'}
+                      {connectStatus?.startsWith('ERROR:') ? connectStatus : connectStatus === 'CONNECTED' ? 'Connected' : connectStatus === 'REQUESTED' ? 'Request Sent' : connectStatus === 'loading' ? 'Sending...' : 'Connect'}
                     </button>
                   </>
                 )}
