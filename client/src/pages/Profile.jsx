@@ -25,6 +25,7 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connectStatus, setConnectStatus] = useState(null);
+  const [analytics, setAnalytics] = useState(null);
   
   // Modals State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -54,6 +55,16 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setConnectStatus(statusRes.data.status); // CONNECTED, REQUESTED, RECEIVED_REQUEST, NONE
+      } else if (token && currentUser?.id === res.data.id) {
+        // Fetch real analytics for owner
+        try {
+          const analyticsRes = await axios.get('/api/users/analytics', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setAnalytics(analyticsRes.data);
+        } catch (e) {
+          console.error("Failed to fetch analytics", e);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -384,8 +395,15 @@ const Profile = () => {
                           <Users size={14} className="text-[#7B5CFA]" />
                         </div>
                         <div>
-                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Profile Views</p>
-                          <p className="text-[13px] font-black text-[var(--text-primary)]">47 <span className="text-[10px] text-emerald-400 font-bold tracking-normal ml-1">+12% this week</span></p>
+                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Profile Views Today</p>
+                          <p className="text-[13px] font-black text-[var(--text-primary)]">
+                            {analytics ? analytics.today.views : '-'}
+                            {analytics && (
+                              <span className={`text-[10px] font-bold tracking-normal ml-1 ${analytics.growth.views >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {analytics.growth.views >= 0 ? '+' : ''}{analytics.growth.views}% vs yesterday
+                              </span>
+                            )}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -396,9 +414,79 @@ const Profile = () => {
                         </div>
                         <div>
                           <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Search Appearances</p>
-                          <p className="text-[13px] font-black text-[var(--text-primary)]">124 <span className="text-[10px] text-emerald-400 font-bold tracking-normal ml-1">+5% this week</span></p>
+                          <p className="text-[13px] font-black text-[var(--text-primary)]">
+                            {analytics ? analytics.today.searchAppears : '-'}
+                            {analytics && (
+                              <span className={`text-[10px] font-bold tracking-normal ml-1 ${analytics.growth.searchAppears >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {analytics.growth.searchAppears >= 0 ? '+' : ''}{analytics.growth.searchAppears}% vs yesterday
+                              </span>
+                            )}
+                          </p>
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
+                    <Layers size={14} className="text-[#00D4FF]" /> Profile Completion
+                  </h4>
+                  <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="text-[11px] font-bold text-[var(--text-primary)]">85% Complete</p>
+                      <p className="text-[10px] font-bold text-[#00D4FF]">Almost there!</p>
+                    </div>
+                    <div className="h-1.5 w-full bg-[var(--bg-base)] rounded-full overflow-hidden mb-3">
+                      <div className="h-full bg-gradient-to-r from-[#7B5CFA] to-[#00D4FF] rounded-full" style={{ width: '85%' }}></div>
+                    </div>
+                    <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
+                      Add a <span className="text-[#00D4FF] cursor-pointer hover:underline" onClick={() => setIsEditModalOpen(true)}>Portfolio Link</span> to reach 100% and boost your visibility in search results.
+                    </p>
+                  </div>
+
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
+                    <Bell size={14} className="text-[#7B5CFA]" /> Network Pulse
+                  </h4>
+                  <div className="space-y-3">
+                    <Link to="/network" className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] hover:border-[#7B5CFA]/50 rounded-xl p-3 flex items-center justify-between transition group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#FF8A00]/10 flex items-center justify-center">
+                          <UserPlus size={14} className="text-[#FF8A00]" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold text-[var(--text-primary)] group-hover:text-[#FF8A00] transition">Connection Requests</p>
+                          <p className="text-[10px] text-[var(--text-secondary)]">{profile._count?.receivedRequests || 0} pending</p>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[var(--text-secondary)] group-hover:text-[#FF8A00] transition" />
+                    </Link>
+                    <Link to="/messages" className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] hover:border-[#7B5CFA]/50 rounded-xl p-3 flex items-center justify-between transition group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
+                          <MessageCircle size={14} className="text-[#00D4FF]" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold text-[var(--text-primary)] group-hover:text-[#00D4FF] transition">Unread Messages</p>
+                          <p className="text-[10px] text-[var(--text-secondary)]">Check your inbox</p>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[var(--text-secondary)] group-hover:text-[#00D4FF] transition" />
+                    </Link>
+                  </div>
+
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
+                    <Briefcase size={14} className="text-emerald-400" /> Quick Actions
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link to="/collabs" className="bg-[#7B5CFA]/10 hover:bg-[#7B5CFA]/20 border border-[#7B5CFA]/20 rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition text-center cursor-pointer">
+                      <Plus size={16} className="text-[#7B5CFA]" />
+                      <span className="text-[10px] font-bold text-[#7B5CFA]">New Collab</span>
+                    </Link>
+                    <div onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      alert("Profile link copied to clipboard!");
+                    }} className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] hover:border-[var(--text-primary)] rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition text-center cursor-pointer">
+                      <Share2 size={16} className="text-[var(--text-secondary)]" />
+                      <span className="text-[10px] font-bold text-[var(--text-secondary)]">Share Profile</span>
                     </div>
                   </div>
                 </>
