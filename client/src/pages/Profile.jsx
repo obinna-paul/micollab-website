@@ -240,17 +240,60 @@ const Profile = () => {
   const isOwner = currentUser?.id === profile.id;
   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.displayName || profile.username)}&background=181D2A&color=fff&size=200`;
 
+  const calculateCompletion = (prof) => {
+    if (!prof) return { score: 0, message: '', nextAction: null };
+    
+    let score = 0;
+    const missing = [];
+
+    if (prof.displayName) score += 10;
+    else missing.push({ text: 'Add your Display Name', action: () => setIsEditModalOpen(true), weight: 10 });
+
+    if (prof.bio || prof.longAbout) score += 15;
+    else missing.push({ text: 'Add a Creative Story', action: () => setIsEditModalOpen(true), weight: 15 });
+
+    if (prof.location) score += 10;
+    else missing.push({ text: 'Add your Location', action: () => setIsEditModalOpen(true), weight: 10 });
+
+    if (prof.profileType) score += 10;
+    else missing.push({ text: 'Add your Skills/Tags', action: () => setIsEditModalOpen(true), weight: 10 });
+
+    if (prof.coverImage) score += 15;
+    else missing.push({ text: 'Upload a Cover Photo', action: () => setCoverMenuOpen(true), weight: 15 });
+
+    const hasPortfolio = prof.portfolioItems && prof.portfolioItems.length > 0;
+    if (hasPortfolio) score += 15;
+    else missing.push({ text: 'Upload a Portfolio Project', action: () => setIsAddProjectOpen(true), weight: 15 });
+
+    const hasFeatured = prof.portfolioItems && prof.portfolioItems.some(p => p.featured);
+    if (hasFeatured) score += 10;
+    else missing.push({ text: 'Pin a Featured Project', action: () => setIsAddProjectOpen(true), weight: 10 });
+
+    const hasTestimonials = prof.receivedTestimonials && prof.receivedTestimonials.length > 0;
+    if (hasTestimonials) score += 15;
+    else missing.push({ text: 'Get an Endorsement', action: null, weight: 15 });
+
+    missing.sort((a, b) => b.weight - a.weight);
+
+    let message = 'Keep going!';
+    if (score === 100) message = 'All set!';
+    else if (score >= 80) message = 'Almost there!';
+    else if (score >= 50) message = 'Halfway there!';
+    else message = 'Getting started!';
+
+    return { score, message, nextAction: missing[0] };
+  };
+
+  const completion = calculateCompletion(profile);
+
   return (
     <div className="pb-20">
 
-      {/* ============ MASTER LAYOUT ============ */}
-      <div className="flex gap-7">
+      {/* ============ TOP ROW: Cover & Header Info ============ */}
+      <div className="flex gap-7 mb-8">
 
-        {/* LEFT / CENTER CONTENT */}
-        <div className="flex-1 min-w-0 flex flex-col">
-          
-          {/* Cover & Profile Info Area */}
-          <div className="mb-8">
+        {/* Cover & Profile Info Area */}
+        <div className="flex-1 min-w-0">
           
           {/* Cover Image */}
           <div className="h-[280px] lg:h-[320px] w-full rounded-[1.5rem] overflow-hidden relative group">
@@ -347,11 +390,171 @@ const Profile = () => {
           
         </div>
 
-        
-          </div> {/* End Cover Area mb-8 */}
+        {/* Right sidebar space */}
+        <aside className="hidden xl:block w-[240px] flex-shrink-0 space-y-6 pt-0 h-0 overflow-visible relative z-20">
+          {profile.availabilityStatus === 'OPEN_TO_COLLAB' && (
+            <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5 relative overflow-hidden">
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-[#00D4FF]/8 blur-3xl rounded-full" />
+              <div className="flex items-center gap-2 mb-2.5">
+                <div className="w-2 h-2 rounded-full bg-[#FF8A00] animate-pulse" />
+                <h4 className="text-[13px] font-bold text-[var(--text-primary)]">Open for Collaboration</h4>
+              </div>
+            </div>
+          )}
 
-          {/* ============ BOTTOM ROW: Left info | Middle content ============ */}
-          <div className="flex gap-7">
+          <div>
+            <div>
+              {!isOwner ? (
+                <>
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
+                    <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
+                  </h4>
+                  {profile.mutualConnections && profile.mutualConnections.length > 0 ? (
+                    <div className="space-y-4">
+                      {profile.mutualConnections.map((conn, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <Link to={`/profile/${conn.username}`}>
+                            <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition" />
+                          </Link>
+                          <div>
+                            <Link to={`/profile/${conn.username}`} className="text-[13px] font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline block">{conn.username}</Link>
+                            <p className="text-[11px] text-[var(--text-secondary)]">{conn.profileType}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-[var(--bg-surface-alt)]/50 border border-dashed border-[var(--border-primary)] rounded-xl p-4 text-center">
+                      <p className="text-[11px] text-[var(--text-secondary)]">No mutual connections yet. Expand your network!</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
+                    <Star size={14} className="text-[#FF8A00]" /> Profile Insights
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#7B5CFA]/10 flex items-center justify-center">
+                          <Users size={14} className="text-[#7B5CFA]" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Profile Views Today</p>
+                          <p className="text-[13px] font-black text-[var(--text-primary)]">
+                            {analytics ? analytics.today.views : '-'}
+                            {analytics && (
+                              <span className={`text-[10px] font-bold tracking-normal ml-1 ${analytics.growth.views >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {analytics.growth.views >= 0 ? '+' : ''}{analytics.growth.views}% vs yesterday
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
+                          <Search size={14} className="text-[#00D4FF]" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Search Appearances</p>
+                          <p className="text-[13px] font-black text-[var(--text-primary)]">
+                            {analytics ? analytics.today.searchAppears : '-'}
+                            {analytics && (
+                              <span className={`text-[10px] font-bold tracking-normal ml-1 ${analytics.growth.searchAppears >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {analytics.growth.searchAppears >= 0 ? '+' : ''}{analytics.growth.searchAppears}% vs yesterday
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
+                    <Layers size={14} className="text-[#00D4FF]" /> Profile Completion
+                  </h4>
+                  <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="text-[11px] font-bold text-[var(--text-primary)]">{completion.score}% Complete</p>
+                      <p className="text-[10px] font-bold text-[#00D4FF]">{completion.message}</p>
+                    </div>
+                    <div className="h-1.5 w-full bg-[var(--bg-base)] rounded-full overflow-hidden mb-3">
+                      <div className="h-full bg-gradient-to-r from-[#7B5CFA] to-[#00D4FF] rounded-full" style={{ width: `${completion.score}%` }}></div>
+                    </div>
+                    <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
+                      {completion.nextAction ? (
+                        <>
+                          {completion.nextAction.action ? (
+                            <span className="text-[#00D4FF] cursor-pointer hover:underline" onClick={completion.nextAction.action}>{completion.nextAction.text}</span>
+                          ) : (
+                            <span className="text-[#00D4FF]">{completion.nextAction.text}</span>
+                          )}{' '}
+                          to increase your score and boost your visibility.
+                        </>
+                      ) : (
+                        "Your profile is fully complete and optimized for search visibility!"
+                      )}
+                    </p>
+                  </div>
+
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
+                    <Bell size={14} className="text-[#7B5CFA]" /> Network Pulse
+                  </h4>
+                  <div className="space-y-3">
+                    <Link to="/network" className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] hover:border-[#7B5CFA]/50 rounded-xl p-3 flex items-center justify-between transition group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#FF8A00]/10 flex items-center justify-center">
+                          <UserPlus size={14} className="text-[#FF8A00]" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold text-[var(--text-primary)] group-hover:text-[#FF8A00] transition">Connection Requests</p>
+                          <p className="text-[10px] text-[var(--text-secondary)]">{profile._count?.receivedRequests || 0} pending</p>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[var(--text-secondary)] group-hover:text-[#FF8A00] transition" />
+                    </Link>
+                    <Link to="/messages" className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] hover:border-[#7B5CFA]/50 rounded-xl p-3 flex items-center justify-between transition group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
+                          <MessageCircle size={14} className="text-[#00D4FF]" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold text-[var(--text-primary)] group-hover:text-[#00D4FF] transition">Unread Messages</p>
+                          <p className="text-[10px] text-[var(--text-secondary)]">Check your inbox</p>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[var(--text-secondary)] group-hover:text-[#00D4FF] transition" />
+                    </Link>
+                  </div>
+
+                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
+                    <Briefcase size={14} className="text-emerald-400" /> Quick Actions
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link to="/collabs" className="bg-[#7B5CFA]/10 hover:bg-[#7B5CFA]/20 border border-[#7B5CFA]/20 rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition text-center cursor-pointer">
+                      <Plus size={16} className="text-[#7B5CFA]" />
+                      <span className="text-[10px] font-bold text-[#7B5CFA]">New Collab</span>
+                    </Link>
+                    <div onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      alert("Profile link copied to clipboard!");
+                    }} className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] hover:border-[var(--text-primary)] rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition text-center cursor-pointer">
+                      <Share2 size={16} className="text-[var(--text-secondary)]" />
+                      <span className="text-[10px] font-bold text-[var(--text-secondary)]">Share Profile</span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* ============ BOTTOM ROW: Left info | Middle content | Right sidebar continues ============ */}
+      <div className="flex gap-7">
 
         {/* LEFT INFO COLUMN — fixed width */}
         <aside className="hidden lg:block w-[240px] flex-shrink-0 space-y-5">
@@ -535,160 +738,12 @@ const Profile = () => {
           </div>
         </div>
 
-                  </div>
-        </div> {/* End LEFT/CENTER CONTENT */}
-
-        {/* Right sidebar space */}
-        <aside className="hidden xl:block w-[240px] flex-shrink-0 space-y-6 pt-0">
-          {profile.availabilityStatus === 'OPEN_TO_COLLAB' && (
-            <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-5 relative overflow-hidden">
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-[#00D4FF]/8 blur-3xl rounded-full" />
-              <div className="flex items-center gap-2 mb-2.5">
-                <div className="w-2 h-2 rounded-full bg-[#FF8A00] animate-pulse" />
-                <h4 className="text-[13px] font-bold text-[var(--text-primary)]">Open for Collaboration</h4>
-              </div>
-            </div>
-          )}
-
-          <div>
-            <div>
-              {!isOwner ? (
-                <>
-                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
-                    <LinkIcon size={14} className="text-[#7B5CFA]" /> Mutual Connections
-                  </h4>
-                  {profile.mutualConnections && profile.mutualConnections.length > 0 ? (
-                    <div className="space-y-4">
-                      {profile.mutualConnections.map((conn, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <Link to={`/profile/${conn.username}`}>
-                            <img src={conn.profileImage || `https://ui-avatars.com/api/?name=${conn.username}&background=181D2A&color=fff`} className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition" />
-                          </Link>
-                          <div>
-                            <Link to={`/profile/${conn.username}`} className="text-[13px] font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline block">{conn.username}</Link>
-                            <p className="text-[11px] text-[var(--text-secondary)]">{conn.profileType}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="bg-[var(--bg-surface-alt)]/50 border border-dashed border-[var(--border-primary)] rounded-xl p-4 text-center">
-                      <p className="text-[11px] text-[var(--text-secondary)]">No mutual connections yet. Expand your network!</p>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4">
-                    <Star size={14} className="text-[#FF8A00]" /> Profile Insights
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#7B5CFA]/10 flex items-center justify-center">
-                          <Users size={14} className="text-[#7B5CFA]" />
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Profile Views Today</p>
-                          <p className="text-[13px] font-black text-[var(--text-primary)]">
-                            {analytics ? analytics.today.views : '-'}
-                            {analytics && (
-                              <span className={`text-[10px] font-bold tracking-normal ml-1 ${analytics.growth.views >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                                {analytics.growth.views >= 0 ? '+' : ''}{analytics.growth.views}% vs yesterday
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
-                          <Search size={14} className="text-[#00D4FF]" />
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">Search Appearances</p>
-                          <p className="text-[13px] font-black text-[var(--text-primary)]">
-                            {analytics ? analytics.today.searchAppears : '-'}
-                            {analytics && (
-                              <span className={`text-[10px] font-bold tracking-normal ml-1 ${analytics.growth.searchAppears >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                                {analytics.growth.searchAppears >= 0 ? '+' : ''}{analytics.growth.searchAppears}% vs yesterday
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
-                    <Layers size={14} className="text-[#00D4FF]" /> Profile Completion
-                  </h4>
-                  <div className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] rounded-xl p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="text-[11px] font-bold text-[var(--text-primary)]">85% Complete</p>
-                      <p className="text-[10px] font-bold text-[#00D4FF]">Almost there!</p>
-                    </div>
-                    <div className="h-1.5 w-full bg-[var(--bg-base)] rounded-full overflow-hidden mb-3">
-                      <div className="h-full bg-gradient-to-r from-[#7B5CFA] to-[#00D4FF] rounded-full" style={{ width: '85%' }}></div>
-                    </div>
-                    <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
-                      Add a <span className="text-[#00D4FF] cursor-pointer hover:underline" onClick={() => setIsEditModalOpen(true)}>Portfolio Link</span> to reach 100% and boost your visibility in search results.
-                    </p>
-                  </div>
-
-                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
-                    <Bell size={14} className="text-[#7B5CFA]" /> Network Pulse
-                  </h4>
-                  <div className="space-y-3">
-                    <Link to="/network" className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] hover:border-[#7B5CFA]/50 rounded-xl p-3 flex items-center justify-between transition group">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#FF8A00]/10 flex items-center justify-center">
-                          <UserPlus size={14} className="text-[#FF8A00]" />
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-bold text-[var(--text-primary)] group-hover:text-[#FF8A00] transition">Connection Requests</p>
-                          <p className="text-[10px] text-[var(--text-secondary)]">{profile._count?.receivedRequests || 0} pending</p>
-                        </div>
-                      </div>
-                      <ChevronRight size={14} className="text-[var(--text-secondary)] group-hover:text-[#FF8A00] transition" />
-                    </Link>
-                    <Link to="/messages" className="bg-[var(--bg-surface-alt)]/50 border border-[var(--border-primary)] hover:border-[#7B5CFA]/50 rounded-xl p-3 flex items-center justify-between transition group">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center">
-                          <MessageCircle size={14} className="text-[#00D4FF]" />
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-bold text-[var(--text-primary)] group-hover:text-[#00D4FF] transition">Unread Messages</p>
-                          <p className="text-[10px] text-[var(--text-secondary)]">Check your inbox</p>
-                        </div>
-                      </div>
-                      <ChevronRight size={14} className="text-[var(--text-secondary)] group-hover:text-[#00D4FF] transition" />
-                    </Link>
-                  </div>
-
-                  <h4 className="text-[12px] font-bold text-[var(--text-primary)] flex items-center gap-2 mb-4 mt-8">
-                    <Briefcase size={14} className="text-emerald-400" /> Quick Actions
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Link to="/collabs" className="bg-[#7B5CFA]/10 hover:bg-[#7B5CFA]/20 border border-[#7B5CFA]/20 rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition text-center cursor-pointer">
-                      <Plus size={16} className="text-[#7B5CFA]" />
-                      <span className="text-[10px] font-bold text-[#7B5CFA]">New Collab</span>
-                    </Link>
-                    <div onClick={() => {
-                      navigator.clipboard.writeText(window.location.href);
-                      alert("Profile link copied to clipboard!");
-                    }} className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] hover:border-[var(--text-primary)] rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition text-center cursor-pointer">
-                      <Share2 size={16} className="text-[var(--text-secondary)]" />
-                      <span className="text-[10px] font-bold text-[var(--text-secondary)]">Share Profile</span>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </aside>
-      </div> {/* End MASTER LAYOUT */}
+        {/* RIGHT SIDEBAR COLUMN — continues from the top row */}
+        <div className="hidden xl:block w-[240px] flex-shrink-0">
+          {/* This column is intentionally empty here; its content is rendered in the top row 
+              and visually continues down due to the sticky behavior and consistent column width */}
+        </div>
+      </div>
 
       {/* Modals */}
       <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} profile={profile} onUpdate={(updated) => setProfile(updated)} />
