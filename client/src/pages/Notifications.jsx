@@ -48,19 +48,27 @@ const Notifications = () => {
       alert("Missing request ID");
       return;
     }
+    
+    // Optimistic UI update
+    setNotifications(notifications.map(n => 
+      n.id === notificationId 
+      ? { ...n, actionResult: action } 
+      : n
+    ));
+
     try {
       await axios.patch(`/api/network/requests/${requestId}`, { action }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
-      setNotifications(notifications.map(n => 
-        n.id === notificationId 
-        ? { ...n, content: action === 'ACCEPTED' ? 'You accepted the connection request' : 'You declined the connection request', isRead: true } 
-        : n
-      ));
     } catch (err) {
       console.error(err);
-      alert('Failed to handle connection request.');
+      // Revert on failure
+      setNotifications(notifications.map(n => 
+        n.id === notificationId 
+        ? { ...n, actionResult: undefined } 
+        : n
+      ));
+      alert('Failed to handle connection request. It may have already been processed.');
     }
   };
 
@@ -246,7 +254,7 @@ const Notifications = () => {
                                 )}
                              </div>
                              
-                             {notification.content === 'New Connection Request' && (
+                             {notification.content === 'New Connection Request' && !notification.actionResult && (
                                 <div className="flex items-center gap-2 mt-3">
                                   <button 
                                     onClick={() => handleConnection(notification.id, notification.relatedId, 'ACCEPTED')}
@@ -260,6 +268,20 @@ const Notifications = () => {
                                   >
                                     Decline
                                   </button>
+                                </div>
+                             )}
+                             {notification.actionResult === 'ACCEPTED' && (
+                                <div className="mt-3">
+                                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#7B5CFA]/10 border border-[#7B5CFA]/30 text-[#7B5CFA] text-[11px] font-black uppercase tracking-widest rounded-lg">
+                                    <Check size={12} strokeWidth={3} /> Connected
+                                  </span>
+                                </div>
+                             )}
+                             {notification.actionResult === 'DECLINED' && (
+                                <div className="mt-3">
+                                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-red-500/10 border border-red-500/30 text-red-500 text-[11px] font-black uppercase tracking-widest rounded-lg">
+                                    <X size={12} strokeWidth={3} /> Declined
+                                  </span>
                                 </div>
                              )}
                           </div>

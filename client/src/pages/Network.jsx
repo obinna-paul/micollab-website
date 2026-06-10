@@ -70,12 +70,8 @@ const Network = () => {
 
   const handleConnect = async (receiverId) => {
     try {
-      const res = await axios.post('/api/network/connect', { receiverId }, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.data.status === 'CONNECTED') {
-        setUsers(users.map(u => u.id === receiverId ? { ...u, connectionStatus: 'CONNECTED', requested: false } : u));
-      } else {
-        setUsers(users.map(u => u.id === receiverId ? { ...u, requested: true } : u));
-      }
+      await axios.post('/api/network/connect', { receiverId }, { headers: { Authorization: `Bearer ${token}` } });
+      setUsers(users.map(u => u.id === receiverId ? { ...u, requested: true } : u));
     } catch (err) { console.error(err); }
   };
 
@@ -175,7 +171,7 @@ const Network = () => {
             }`}
           >
             {status === 'CONNECTED' ? (
-              <span className="flex items-center justify-center gap-1"><Check size={8} strokeWidth={3} />Connected</span>
+              <span className="flex items-center justify-center gap-1"><Check size={8} strokeWidth={3} />Following</span>
             ) : status === 'REQUESTED' ? (
               <span className="flex items-center justify-center gap-1">Request Sent</span>
             ) : (
