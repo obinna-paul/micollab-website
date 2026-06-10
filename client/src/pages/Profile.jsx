@@ -315,7 +315,7 @@ const Profile = () => {
           </div>
 
           {/* Absolute Avatar positioning (overlaps cover bottom edge) */}
-          <div className="relative -mt-[60px] lg:-mt-[70px] ml-6 lg:ml-8 z-20">
+          <div className="relative -mt-[60px] lg:-mt-[70px] ml-6 lg:ml-8 z-20 w-max">
             <div className="w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] rounded-2xl border-[6px] border-[#0B0F19] shadow-2xl overflow-hidden bg-[var(--bg-surface-alt)] relative group/avatar">
               <img src={profile.profileImage || fallbackAvatar} className="w-full h-full object-cover" alt="Avatar" />
               {isOwner && (
