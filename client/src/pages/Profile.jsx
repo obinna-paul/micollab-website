@@ -384,8 +384,8 @@ const Profile = () => {
             {profile.displayName && (
               <p className="text-sm font-bold text-[var(--text-primary)] mb-2">{profile.displayName}</p>
             )}
-            <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-6">
-              {profile.bio || "No bio added yet."}
+            <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-6 whitespace-pre-wrap">
+              {profile.longAbout || profile.bio || "No creative story added yet."}
             </p>
 
             <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-4 mt-6">YOUR TAGS</h4>

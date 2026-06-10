@@ -80,16 +80,6 @@ const EditProfileModal = ({ isOpen, onClose, profile, onUpdate }) => {
                   placeholder="e.g. David Okafor"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase ml-2">Short Professional Bio</label>
-                <input 
-                  type="text"
-                  value={formData.bio}
-                  onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                  className="w-full px-4 py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-sm font-bold text-[var(--text-primary)] focus:border-[#7B5CFA] outline-none transition"
-                  placeholder="e.g. Award-winning Cinematographer based in Lagos"
-                />
-              </div>
             </div>
           </section>
 
