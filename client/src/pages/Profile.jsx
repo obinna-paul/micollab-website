@@ -275,15 +275,15 @@ const Profile = () => {
               {/* Right Side: Buttons on Cover */}
               <div className="flex flex-wrap items-center gap-3 mb-2 z-10">
                 {isOwner ? (
-                  <button onClick={() => setIsEditModalOpen(true)} className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm rounded-xl hover:bg-white/20 transition shadow-lg">
+                  <button onClick={() => setIsEditModalOpen(true)} className="relative z-50 pointer-events-auto px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm rounded-xl hover:bg-white/20 transition shadow-lg">
                     Edit Profile
                   </button>
                 ) : (
                   <>
-                    <button onClick={handleMessage} className="px-5 py-2.5 bg-[#1A1F2E]/80 backdrop-blur-md border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-[#1A1F2E] transition flex items-center gap-2 shadow-lg">
+                    <button onClick={handleMessage} className="relative z-50 pointer-events-auto px-5 py-2.5 bg-[#1A1F2E]/80 backdrop-blur-md border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-[#1A1F2E] transition flex items-center gap-2 shadow-lg">
                       <Mail size={15} /> Message
                     </button>
-                    <button onClick={handleWriteTestimonial} className="px-5 py-2.5 bg-[#FF8A00]/10 backdrop-blur-md border border-[#FF8A00]/30 text-[#FF8A00] font-bold text-sm rounded-xl hover:bg-[#FF8A00]/20 transition flex items-center gap-2 shadow-lg">
+                    <button onClick={handleWriteTestimonial} className="relative z-50 pointer-events-auto px-5 py-2.5 bg-[#FF8A00]/10 backdrop-blur-md border border-[#FF8A00]/30 text-[#FF8A00] font-bold text-sm rounded-xl hover:bg-[#FF8A00]/20 transition flex items-center gap-2 shadow-lg">
                       <Star size={15} /> Endorse
                     </button>
                     <button 
