@@ -43,6 +43,27 @@ const Notifications = () => {
     }
   };
 
+  const handleConnection = async (notificationId, requestId, action) => {
+    if (!requestId) {
+      alert("Missing request ID");
+      return;
+    }
+    try {
+      await axios.patch(`/api/network/requests/${requestId}`, { action }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setNotifications(notifications.map(n => 
+        n.id === notificationId 
+        ? { ...n, content: action === 'ACCEPTED' ? 'You accepted the connection request' : 'You declined the connection request', isRead: true } 
+        : n
+      ));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to handle connection request.');
+    }
+  };
+
   const deleteNotification = async (id) => {
     try {
       await axios.delete(`/api/notifications/${id}`, {
@@ -224,6 +245,23 @@ const Notifications = () => {
                                   </Link>
                                 )}
                              </div>
+                             
+                             {notification.content === 'New Connection Request' && (
+                                <div className="flex items-center gap-2 mt-3">
+                                  <button 
+                                    onClick={() => handleConnection(notification.id, notification.relatedId, 'ACCEPTED')}
+                                    className="px-4 py-1.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white text-[11px] font-black uppercase tracking-widest rounded-lg transition-all shadow-md shadow-[#7B5CFA]/20"
+                                  >
+                                    Accept
+                                  </button>
+                                  <button 
+                                    onClick={() => handleConnection(notification.id, notification.relatedId, 'DECLINED')}
+                                    className="px-4 py-1.5 bg-[var(--bg-sunken)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[#2A303C] text-[11px] font-black uppercase tracking-widest rounded-lg transition-all"
+                                  >
+                                    Decline
+                                  </button>
+                                </div>
+                             )}
                           </div>
                        </div>
 
