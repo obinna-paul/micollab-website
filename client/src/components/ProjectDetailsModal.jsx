@@ -168,7 +168,7 @@ const ProjectDetailsModal = ({ isOpen, onClose, project }) => {
                       <div className="flex items-center gap-3">
                         <img src={credit.user.profileImage} className="w-10 h-10 rounded-full" />
                         <div>
-                          <p className="text-xs font-black text-[var(--text-primary)] group-hover:text-[#7B5CFA] transition">@{credit.user.username}</p>
+                          <p className="text-xs font-black text-[var(--text-primary)] group-hover:text-[#7B5CFA] transition">{credit.user.username}</p>
                           <p className="text-[9px] text-[var(--text-secondary)] font-bold uppercase">{credit.user.profileType}</p>
                         </div>
                       </div>

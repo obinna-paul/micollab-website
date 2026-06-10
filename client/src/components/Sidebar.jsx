@@ -59,7 +59,7 @@ const Sidebar = () => {
               className="w-8 h-8 rounded-full border border-gray-700"
             />
             <div className="hidden lg:block min-w-0">
-              <p className="text-sm font-bold text-[var(--text-primary)] truncate">@{user?.username}</p>
+              <p className="text-sm font-bold text-[var(--text-primary)] truncate">{user?.username}</p>
               <p className="text-[10px] text-textMuted uppercase font-bold">{user?.role}</p>
             </div>
           </div>

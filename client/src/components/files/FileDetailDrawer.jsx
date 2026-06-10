@@ -448,7 +448,7 @@ const FileDetailDrawer = ({
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl border border-divider">
                       <p className="text-[8px] font-black text-textMuted uppercase tracking-widest">Uploader</p>
-                      <p className="text-xs font-black text-primary mt-1">@{file.uploader?.username || 'member'}</p>
+                      <p className="text-xs font-black text-primary mt-1">{file.uploader?.username || 'member'}</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl border border-divider">
                       <p className="text-[8px] font-black text-textMuted uppercase tracking-widest">Version</p>
@@ -525,7 +525,7 @@ const FileDetailDrawer = ({
                               </span>
                             </div>
 
-                            <p className="text-[10px] text-textMuted mt-1">Uploaded by @{hist.uploaderName || 'member'}</p>
+                            <p className="text-[10px] text-textMuted mt-1">Uploaded by {hist.uploaderName || 'member'}</p>
                             
                             <div className="flex items-center justify-between pt-3 border-t border-divider/50 mt-3">
                               <span className="text-[9px] font-bold text-textMuted">Size: {formatSize(hist.size)}</span>
@@ -579,7 +579,7 @@ const FileDetailDrawer = ({
                           >
                             <option value="">Choose team member...</option>
                             {shareableUsers.map(m => (
-                              <option key={memberKey(m)} value={m.userId}>@{m.user?.username || 'member'}</option>
+                              <option key={memberKey(m)} value={m.userId}>{m.user?.username || 'member'}</option>
                             ))}
                           </select>
                           <select
@@ -633,7 +633,7 @@ const FileDetailDrawer = ({
                                 alt=""
                               />
                               <div>
-                                <p className="font-black text-textMain text-xs">@{member?.user?.username || 'member'}</p>
+                                <p className="font-black text-textMain text-xs">{member?.user?.username || 'member'}</p>
                                 <p className="text-[8px] font-black text-textMuted uppercase tracking-widest">{perm.role === 'EDIT' ? 'Editor' : 'Viewer'}</p>
                               </div>
                             </div>
@@ -805,7 +805,7 @@ const FileDetailDrawer = ({
                             <div className="flex items-center gap-2">
                               <img src={comm.userAvatar} className="w-6 h-6 rounded-md object-cover" alt="" />
                               <div>
-                                <span className="font-bold text-xs text-textMain">@{comm.username}</span>
+                                <span className="font-bold text-xs text-textMain">{comm.username}</span>
                                 <span className="text-[8px] font-bold text-textMuted ml-2">
                                   {new Date(comm.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                 </span>
@@ -891,7 +891,7 @@ const FileDetailDrawer = ({
                             </span>
                           </div>
                           <p className="text-[10px] text-textMuted mt-0.5 leading-relaxed">
-                            {log.details} • Triggered by @{log.username}
+                            {log.details} • Triggered by {log.username}
                           </p>
                         </div>
                       </div>

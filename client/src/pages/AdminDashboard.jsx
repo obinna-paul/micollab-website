@@ -159,7 +159,7 @@ const AdminDashboard = () => {
                     <div className="flex items-center gap-3">
                       <img src={u.profileImage} className="w-10 h-10 rounded-lg object-cover" alt=""/>
                       <div>
-                        <p className="font-bold text-[var(--text-primary)]">@{u.username}</p>
+                        <p className="font-bold text-[var(--text-primary)]">{u.username}</p>
                         <p className="text-xs text-[var(--text-secondary)]">{u.email}</p>
                       </div>
                     </div>
@@ -211,7 +211,7 @@ const AdminDashboard = () => {
               <div className="flex items-center gap-4">
                 <img src={req.user.profileImage} alt="" className="w-12 h-12 rounded-xl object-cover" />
                 <div>
-                  <h3 className="font-black text-[var(--text-primary)] text-lg">@{req.user.username}</h3>
+                  <h3 className="font-black text-[var(--text-primary)] text-lg">{req.user.username}</h3>
                   <p className="text-[10px] font-black uppercase text-[#7B5CFA] bg-[#7B5CFA]/10 px-2 py-0.5 rounded-md inline-block mt-1">Requested: {new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
@@ -260,7 +260,7 @@ const AdminDashboard = () => {
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
               <div>
                 <h3 className="font-black text-[var(--text-primary)] text-xl mb-1">{d.collab.title}</h3>
-                <p className="text-sm font-bold text-[var(--text-secondary)]">Poster: <span className="text-[var(--text-primary)]">@{d.collab.poster.username}</span> | Creative: <span className="text-[var(--text-primary)]">@{d.user.username}</span></p>
+                <p className="text-sm font-bold text-[var(--text-secondary)]">Poster: <span className="text-[var(--text-primary)]">{d.collab.poster.username}</span> | Creative: <span className="text-[var(--text-primary)]">{d.user.username}</span></p>
               </div>
               <div className="bg-red-500/10 border border-red-500/20 px-6 py-3 rounded-xl text-center">
                 <p className="text-[9px] font-black uppercase text-red-500 tracking-widest">Locked Amount</p>

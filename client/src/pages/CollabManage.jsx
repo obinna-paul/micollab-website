@@ -221,7 +221,7 @@ const CollabManage = () => {
                          </div>
                        )}
                     </div>
-                    <h3 className="font-black text-[var(--text-primary)] text-lg mt-4 truncate w-full text-center tracking-tight">@{proposal.creator?.username}</h3>
+                    <h3 className="font-black text-[var(--text-primary)] text-lg mt-4 truncate w-full text-center tracking-tight">{proposal.creator?.username}</h3>
                     <p className="text-[9px] text-[#7B5CFA] font-black uppercase tracking-widest mt-1 text-center">{proposal.creator?.profileType}</p>
                     
                     <Link 

@@ -124,10 +124,10 @@ const Messages = () => {
   const handleBlock = async () => {
     const partner = getPartner(activeConversation);
     if (!partner) return;
-    if (window.confirm(`Are you sure you want to block @${partner.username}? You will no longer receive messages from them.`)) {
+    if (window.confirm(`Are you sure you want to block ${partner.username}? You will no longer receive messages from them.`)) {
       const success = await blockUser(token, partner.userId);
       if (success) {
-        alert(`@${partner.username} has been blocked.`);
+        alert(`${partner.username} has been blocked.`);
       } else {
         alert('Failed to block user.');
       }
@@ -137,11 +137,11 @@ const Messages = () => {
   const handleReport = async () => {
     const partner = getPartner(activeConversation);
     if (!partner) return;
-    const reason = window.prompt(`Why are you reporting @${partner.username}?`);
+    const reason = window.prompt(`Why are you reporting ${partner.username}?`);
     if (reason && reason.trim()) {
       const success = await reportUser(token, partner.userId, reason.trim());
       if (success) {
-        alert(`@${partner.username} has been reported to moderation.`);
+        alert(`${partner.username} has been reported to moderation.`);
       } else {
         alert('Failed to submit report.');
       }
@@ -228,7 +228,7 @@ const Messages = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex justify-between items-center mb-0.5">
-                      <Link to={`/profile/${partner?.username}`} onClick={e => e.stopPropagation()} className="text-sm font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline truncate">@{partner?.username}</Link>
+                      <Link to={`/profile/${partner?.username}`} onClick={e => e.stopPropagation()} className="text-sm font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline truncate">{partner?.username}</Link>
                       <span className="text-[9px] text-textMuted font-medium">
                         {lastMsg ? new Date(lastMsg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                       </span>
@@ -260,7 +260,7 @@ const Messages = () => {
                     className="w-8 h-8 rounded-full border border-divider"
                   />
                   <div>
-                    <Link to={`/profile/${getPartner(activeConversation)?.username}`} className="text-sm font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline">@{getPartner(activeConversation)?.username}</Link>
+                    <Link to={`/profile/${getPartner(activeConversation)?.username}`} className="text-sm font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline">{getPartner(activeConversation)?.username}</Link>
                     <p className="text-[10px] text-green-500 font-bold">Active now</p>
                   </div>
                 </div>
@@ -392,7 +392,7 @@ const Messages = () => {
                 src={getPartner(activeConversation)?.profileImage || 'https://via.placeholder.com/150'} 
                 className="w-24 h-24 rounded-full mx-auto border-4 border-background shadow-xl mb-4 object-cover"
               />
-              <Link to={`/profile/${getPartner(activeConversation)?.username}`} className="text-lg font-black text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline">@{getPartner(activeConversation)?.username}</Link>
+              <Link to={`/profile/${getPartner(activeConversation)?.username}`} className="text-lg font-black text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline">{getPartner(activeConversation)?.username}</Link>
               <p className="text-xs text-textMuted font-bold uppercase tracking-widest mt-1">{getPartner(activeConversation)?.profileType}</p>
               
               <div className="flex gap-2 mt-6">
@@ -418,7 +418,7 @@ const Messages = () => {
                        Mute Notifications
                        <div className="w-8 h-4 bg-divider rounded-full relative"><div className="absolute left-1 top-1 w-2 h-2 bg-white rounded-full"></div></div>
                     </button>
-                    <button onClick={handleBlock} className="w-full text-left text-xs font-bold text-red-500 hover:underline">Block @{getPartner(activeConversation)?.username}</button>
+                    <button onClick={handleBlock} className="w-full text-left text-xs font-bold text-red-500 hover:underline">Block {getPartner(activeConversation)?.username}</button>
                     <button onClick={handleReport} className="w-full text-left text-xs font-bold text-red-500 hover:underline">Report Conversation</button>
                  </div>
               </div>
@@ -481,7 +481,7 @@ const Messages = () => {
                            >
                               <img src={u.profileImage || `https://ui-avatars.com/api/?name=${u.username}`} className="w-10 h-10 rounded-full border border-divider" />
                               <div className="flex-1 min-w-0">
-                                 <Link to={`/profile/${u.username}`} onClick={e => e.stopPropagation()} className="font-black text-[var(--text-primary)] text-xs hover:text-[#7B5CFA] hover:underline transition-colors block">@{u.username}</Link>
+                                 <Link to={`/profile/${u.username}`} onClick={e => e.stopPropagation()} className="font-black text-[var(--text-primary)] text-xs hover:text-[#7B5CFA] hover:underline transition-colors block">{u.username}</Link>
                                  <p className="text-[9px] text-textMuted uppercase tracking-widest truncate">{u.profileType} • {u.location || 'Global'}</p>
                               </div>
                               <ChevronLeft size={16} className="text-textMuted rotate-180 opacity-0 group-hover:opacity-100 transition-all" />

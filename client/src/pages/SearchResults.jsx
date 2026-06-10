@@ -74,7 +74,7 @@ const SearchResults = () => {
                     <Link key={u.id} to={`/profile/${u.username}`} className="bg-[var(--bg-surface)] p-4 rounded-2xl border border-[var(--border-primary)] hover:border-[#7B5CFA] transition group flex items-center gap-3">
                       <img src={u.profileImage || `https://ui-avatars.com/api/?name=${u.username}&background=7B5CFA&color=fff`} alt={u.username} className="w-12 h-12 rounded-full object-cover" />
                       <div className="overflow-hidden">
-                        <p className="text-sm font-bold text-[var(--text-primary)] truncate group-hover:text-[#7B5CFA] transition">{u.name || `@${u.username}`}</p>
+                        <p className="text-sm font-bold text-[var(--text-primary)] truncate group-hover:text-[#7B5CFA] transition">{u.name || `${u.username}`}</p>
                         <p className="text-xs text-[var(--text-secondary)] font-bold uppercase truncate">{u.profileType || 'CREATIVE'}</p>
                       </div>
                     </Link>
@@ -101,7 +101,7 @@ const SearchResults = () => {
                       <p className="text-sm text-[var(--text-secondary)] line-clamp-2 mb-3">{c.description}</p>
                       <div className="flex items-center gap-2">
                         <img src={c.poster?.profileImage || `https://ui-avatars.com/api/?name=${c.poster?.username}`} className="w-5 h-5 rounded-full" alt="" />
-                        <span className="text-xs font-bold text-[var(--text-secondary)]">@{c.poster?.username}</span>
+                        <span className="text-xs font-bold text-[var(--text-secondary)]">{c.poster?.username}</span>
                       </div>
                     </Link>
                   ))}

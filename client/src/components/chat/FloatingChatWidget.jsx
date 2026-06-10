@@ -39,7 +39,7 @@ const FloatingChatWidget = () => {
             <div className="p-3 bg-primary text-[var(--text-primary)] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src={partner?.profileImage || 'https://via.placeholder.com/150'} className="w-8 h-8 rounded-full border border-white/20" />
-                <p className="text-xs font-bold truncate">@{partner?.username}</p>
+                <p className="text-xs font-bold truncate">{partner?.username}</p>
               </div>
               <div className="flex items-center gap-1">
                 <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded"><Minus size={14} /></button>

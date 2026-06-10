@@ -45,7 +45,7 @@ const MobileDrawer = ({ isOpen, onClose }) => {
                   <X size={20} className="text-[var(--text-secondary)]" />
                 </button>
               </div>
-              <h3 className="font-black text-xl text-[var(--text-primary)] tracking-tight">@{user?.username}</h3>
+              <h3 className="font-black text-xl text-[var(--text-primary)] tracking-tight">{user?.username}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#7B5CFA]">Reputation: {user?.reputationScore || 0}</span>
                 <span className="w-1 h-1 bg-[var(--border-primary)] rounded-full" />

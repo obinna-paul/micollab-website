@@ -196,7 +196,7 @@ const CollabDetail = () => {
                   alt="" 
                 />
                 <div className="mt-2 md:mt-0">
-                   <p className="text-lg font-black text-[var(--text-primary)] tracking-tight">@{collab.poster?.username}</p>
+                   <p className="text-lg font-black text-[var(--text-primary)] tracking-tight">{collab.poster?.username}</p>
                    <div className="flex items-center justify-center md:justify-start gap-1.5 mt-1">
                       <span className="text-[9px] font-black uppercase tracking-widest text-[#7B5CFA]">{collab.poster?.profileType}</span>
                       {collab.isVerified && <ShieldCheck size={12} className="text-[#34D399]" />}

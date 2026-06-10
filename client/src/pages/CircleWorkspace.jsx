@@ -376,7 +376,7 @@ const CircleWorkspace = () => {
                 <div key={i} className="flex items-center gap-3">
                    <img src={m.user?.profileImage || `https://ui-avatars.com/api/?name=${m.user?.username}`} className="w-9 h-9 rounded-lg object-cover" />
                    <div>
-                      <p className="font-bold text-[var(--text-primary)] text-[13px]">@{m.user?.username}</p>
+                      <p className="font-bold text-[var(--text-primary)] text-[13px]">{m.user?.username}</p>
                       <p className="text-[10px] text-[var(--text-muted)] font-medium">{m.role}</p>
                    </div>
                 </div>
@@ -600,7 +600,7 @@ const CircleWorkspace = () => {
                 className="bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] outline-none focus:border-[#7B5CFA]/30 transition appearance-none cursor-pointer">
                 <option value="ALL">All Members</option>
                 {circle.members?.map(m => (
-                  <option key={m.userId} value={m.userId}>@{m.user?.username || 'member'}</option>
+                  <option key={m.userId} value={m.userId}>{m.user?.username || 'member'}</option>
                 ))}
               </select>
 
@@ -1353,7 +1353,7 @@ const CircleWorkspace = () => {
                       className="w-full bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-lg px-2.5 py-2 text-[11px] font-bold text-[var(--text-primary)] outline-none cursor-pointer appearance-none">
                       <option value="">Unassigned</option>
                       {circle.members?.map(m => (
-                        <option key={m.userId} value={m.userId}>@{m.user?.username || 'member'}</option>
+                        <option key={m.userId} value={m.userId}>{m.user?.username || 'member'}</option>
                       ))}
                     </select>
                   </div>
@@ -1448,7 +1448,7 @@ const CircleWorkspace = () => {
                         <div key={c.id} className={`p-3 rounded-xl border ${isSystem ? 'bg-[#FFAB4C]/5 border-[#FFAB4C]/10' : 'bg-[var(--bg-surface-alt)] border-[var(--border-primary)]'}`}>
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-[10px] font-bold text-[var(--text-primary)]">
-                              {isSystem ? '⚙ System' : `@${c.user?.username}`}
+                              {isSystem ? '⚙ System' : `${c.user?.username}`}
                             </span>
                             <span className="text-[9px] text-[var(--text-muted)]">
                               {new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

@@ -264,7 +264,7 @@ const Profile = () => {
                 <div className="w-[120px] lg:w-[140px] flex-shrink-0"></div>
                 
                 <div className="mb-2">
-                  <h1 className="text-[32px] lg:text-[40px] font-black text-white tracking-tight leading-none mb-2 drop-shadow-lg">@{profile.username}</h1>
+                  <h1 className="text-[32px] lg:text-[40px] font-black text-white tracking-tight leading-none mb-2 drop-shadow-lg">{profile.username}</h1>
                   <div className="flex items-center gap-2 drop-shadow-md">
                     <Headphones size={16} className="text-[#00D4FF]" />
                     <span className="text-[#00D4FF] font-bold text-[14px]">{profile.profileType || 'Creative Professional'}</span>

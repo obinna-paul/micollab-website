@@ -200,7 +200,7 @@ const Notifications = () => {
                              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                                 {notification.triggeredBy?.username && (
                                   <Link to={`/profile/${notification.triggeredBy.username}`} className="font-bold text-[var(--text-primary)] hover:underline">
-                                    @{notification.triggeredBy.username}
+                                    {notification.triggeredBy.username}
                                   </Link>
                                 )}
                                 {' '}

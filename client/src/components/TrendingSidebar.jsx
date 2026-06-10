@@ -78,7 +78,7 @@ const TrendingSidebar = () => {
                      alt="" 
                    />
                    <span className="text-[10px] font-bold text-[var(--text-secondary)]">
-                     @{collab.poster?.username}
+                     {collab.poster?.username}
                    </span>
                  </div>
               </div>

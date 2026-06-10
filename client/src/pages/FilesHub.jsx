@@ -645,7 +645,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                               </td>
                               <td className="p-4 text-[var(--text-secondary)] font-bold">{formatSize(file.size)}</td>
                               <td className="p-4 text-[var(--text-secondary)] truncate max-w-[100px]">{file.type}</td>
-                              <td className="p-4 font-bold text-[#7B5CFA]">@{file.uploader?.username || 'member'}</td>
+                              <td className="p-4 font-bold text-[#7B5CFA]">{file.uploader?.username || 'member'}</td>
                               <td className="p-4"><span className="text-[9px] font-black bg-[#7B5CFA]/5 px-2 py-0.5 rounded text-[#7B5CFA] border border-[#7B5CFA]/10">v{file.version}</span></td>
                               <td className="p-4">
                                 {file.sourceTaskId ? (
@@ -713,7 +713,7 @@ const FilesHub = ({ circleIdScope = null }) => {
                       
                       <div className="mt-4">
                         <h5 className="font-black text-[var(--text-primary)] text-xs leading-snug break-all line-clamp-2">{file.originalName}</h5>
-                        <p className="text-[9px] font-bold text-[var(--text-secondary)] mt-1">From @{file.uploader?.username || 'member'}</p>
+                        <p className="text-[9px] font-bold text-[var(--text-secondary)] mt-1">From {file.uploader?.username || 'member'}</p>
                         
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#0F131E]/5/50">
                           <span className="text-[9px] font-bold text-[var(--text-secondary)]">{formatSize(file.size)}</span>

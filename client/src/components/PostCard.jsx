@@ -151,7 +151,7 @@ const PostCard = ({ post }) => {
           <div className="px-4 py-2 border-b border-divider bg-gray-50 flex items-center gap-2">
             <Repeat2 size={14} className="text-primary" />
             <span className="text-[10px] font-bold text-textMuted">
-              Reposted by <Link to={`/profile/${creator.username}`} className="text-primary">@{creator.username}</Link>
+              Reposted by <Link to={`/profile/${creator.username}`} className="text-primary">{creator.username}</Link>
             </span>
           </div>
         )}
@@ -351,7 +351,7 @@ const PostCard = ({ post }) => {
                       <div className="flex-1 bg-[var(--bg-base)] rounded-2xl p-3 border border-[var(--border-primary)]">
                         <div className="flex justify-between items-start mb-1">
                           <div>
-                            <Link to={`/profile/${comment.user.username}`} className="text-xs font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline transition">@{comment.user.username}</Link>
+                            <Link to={`/profile/${comment.user.username}`} className="text-xs font-bold text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline transition">{comment.user.username}</Link>
                             <span className="text-[9px] text-[var(--text-secondary)] ml-2">{new Date(comment.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -392,7 +392,7 @@ const PostCard = ({ post }) => {
                     <img src={comment.user.profileImage || fallbackAvatar} className="w-9 h-9 rounded-full object-cover border border-[var(--border-primary)]" alt={comment.user.username} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Link to={`/profile/${comment.user.username}`} className="text-xs font-black text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline transition">@{comment.user.username}</Link>
+                        <Link to={`/profile/${comment.user.username}`} className="text-xs font-black text-[var(--text-primary)] hover:text-[#7B5CFA] hover:underline transition">{comment.user.username}</Link>
                         <span className="text-[9px] text-[var(--text-secondary)]">{new Date(comment.createdAt).toLocaleDateString()}</span>
                       </div>
                       <p className="text-xs text-[var(--text-primary)] leading-relaxed">{comment.content}</p>

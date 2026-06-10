@@ -59,7 +59,7 @@ const Feed = () => {
         />
         <div>
           <p className="text-sm font-black text-textMain tracking-tight">
-            <Link to={`/profile/${post.creator?.username}`} className="hover:text-primary transition-colors hover:underline">@{post.creator?.username}</Link>
+            <Link to={`/profile/${post.creator?.username}`} className="hover:text-primary transition-colors hover:underline">{post.creator?.username}</Link>
           </p>
           <p className="text-[10px] text-textMuted font-black uppercase tracking-widest">{post.creator?.profileType} • Shared a New Opportunity</p>
         </div>

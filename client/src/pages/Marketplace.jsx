@@ -72,7 +72,7 @@ const Marketplace = () => {
                   />
                   <div>
                     <h3 className="text-lg font-bold text-textMain group-hover:text-primary transition-colors">{gig.title}</h3>
-                    <p className="text-sm font-bold text-primary">@{gig.poster.username} • {gig.poster.category}</p>
+                    <p className="text-sm font-bold text-primary">{gig.poster.username} • {gig.poster.category}</p>
                     <div className="flex flex-wrap gap-4 mt-3">
                       <span className="flex items-center gap-1 text-xs text-textMuted font-bold">
                         <MapPin size={14} /> {gig.location || 'Remote'}

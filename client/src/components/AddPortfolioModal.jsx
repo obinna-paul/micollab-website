@@ -94,7 +94,7 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
   };
 
   const addCredit = (user) => {
-    const role = window.prompt(`What was @${user.username}'s role in this project? (e.g. Editor, Producer)`, 'Collaborator');
+    const role = window.prompt(`What was ${user.username}'s role in this project? (e.g. Editor, Producer)`, 'Collaborator');
     if (role) {
       setCredits(prev => [...prev, { userId: user.id, username: user.username, profileImage: user.profileImage, role }]);
       setSearchQuery('');
@@ -278,7 +278,7 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
                           <button key={u.id} onClick={() => addCredit(u)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-left border-b border-[var(--border-primary)] last:border-0 transition">
                             <img src={u.profileImage} className="w-8 h-8 rounded-full" />
                             <div className="min-w-0">
-                              <p className="text-xs font-black text-[var(--text-primary)]">@{u.username}</p>
+                              <p className="text-xs font-black text-[var(--text-primary)]">{u.username}</p>
                               <p className="text-[9px] text-[var(--text-secondary)] uppercase font-bold">{u.profileType}</p>
                             </div>
                             <UserPlus size={14} className="ml-auto text-[#7B5CFA]" />
@@ -293,7 +293,7 @@ const AddPortfolioModal = ({ isOpen, onClose, onProjectCreated }) => {
                     {credits.map((c, i) => (
                       <div key={i} className="flex items-center gap-2 bg-[#7B5CFA]/10 text-[#7B5CFA] px-3 py-2 rounded-xl border border-[#7B5CFA]/20">
                         <img src={c.profileImage} className="w-5 h-5 rounded-full" />
-                        <span className="text-[10px] font-black">@{c.username} ({c.role})</span>
+                        <span className="text-[10px] font-black">{c.username} ({c.role})</span>
                         <button onClick={() => setCredits(prev => prev.filter((_, idx) => idx !== i))} className="hover:text-red-500">
                           <X size={12} />
                         </button>

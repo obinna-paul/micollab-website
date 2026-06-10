@@ -71,7 +71,7 @@ const MessageRequests = ({ onRequestHandled }) => {
             </Link>
             <div className="flex-1">
               <Link to={`/profile/${req.sender.username}`} className="font-bold text-sm text-textMain hover:underline block">
-                @{req.sender.username}
+                {req.sender.username}
               </Link>
               <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-2">{req.sender.profileType || 'Creative'}</p>
               
