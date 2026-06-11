@@ -35,4 +35,26 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+const optionalAuthMiddleware = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, isBanned: true }
+    });
+
+    if (user && !user.isBanned) {
+      req.user = decoded;
+    }
+  } catch (error) {
+    // silently ignore invalid tokens for optional auth
+  }
+  next();
+};
+
+module.exports = { authMiddleware, optionalAuthMiddleware };

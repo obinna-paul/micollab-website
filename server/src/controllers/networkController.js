@@ -8,6 +8,13 @@ exports.discoverUsers = async (req, res) => {
     const { search, profileType } = req.query;
     const currentUserId = req.user.id;
 
+    // Get current user profile for matching
+    const currentUser = await prisma.user.findUnique({
+      where: { id: currentUserId },
+      select: { profileType: true, skills: true }
+    });
+    const mySkills = currentUser?.skills ? currentUser.skills.split(',').map(s => s.trim()) : [];
+
     // Get my sent requests
     const sentRequests = await prisma.connectionRequest.findMany({
       where: { fromUserId: currentUserId, status: 'PENDING' },
@@ -26,7 +33,7 @@ exports.discoverUsers = async (req, res) => {
     });
     const connectedUserIds = new Set(myConnections.map(c => c.userId === currentUserId ? c.connectedId : c.userId));
 
-    const users = await prisma.user.findMany({
+    let users = await prisma.user.findMany({
       where: {
         id: { not: currentUserId },
         ...(search && {
@@ -48,16 +55,32 @@ exports.discoverUsers = async (req, res) => {
         location: true,
         isVerified: true
       },
-      take: 20
+      take: 50 // take more to allow meaningful sorting
     });
 
-    // Add status property to each user
-    const usersWithStatus = users.map(u => ({
-      ...u,
-      connectionStatus: connectedUserIds.has(u.id) ? 'CONNECTED' : (requestedUserIds.has(u.id) ? 'REQUESTED' : 'NONE')
-    }));
+    // Add status property and match score to each user
+    let usersWithStatus = users.map(u => {
+      let matchScore = 0;
+      const uSkills = u.skills ? u.skills.split(',').map(s => s.trim()) : [];
+      
+      if (currentUser) {
+        if (u.profileType === currentUser.profileType) matchScore += 30;
+        const overlap = uSkills.filter(s => mySkills.includes(s)).length;
+        matchScore += overlap * 20; // 20 points per overlapping specialization
+      }
 
-    res.json(usersWithStatus);
+      return {
+        ...u,
+        connectionStatus: connectedUserIds.has(u.id) ? 'CONNECTED' : requestedUserIds.has(u.id) ? 'PENDING' : 'NONE',
+        _matchScore: matchScore
+      };
+    });
+
+    // Sort by highest match score
+    usersWithStatus.sort((a, b) => b._matchScore - a._matchScore);
+    
+    // Return top 20 after sorting
+    res.json(usersWithStatus.slice(0, 20));
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to discover users' });

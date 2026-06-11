@@ -3,7 +3,7 @@ const router = express.Router();
 const postController = require('../controllers/postController');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const { authMiddleware, optionalAuthMiddleware } = require('../middlewares/authMiddleware');
 const uploadController = require('../controllers/uploadController');
 const messageController = require('../controllers/messageController');
 const adminMiddleware = require('../middlewares/adminMiddleware');
@@ -34,7 +34,7 @@ router.post('/auth/reset-password', authController.resetPassword);
 router.get('/auth/me', authMiddleware, authController.getMe);
 
 // Post Routes
-router.get('/posts', postController.getPosts);
+router.get('/posts', optionalAuthMiddleware, postController.getPosts);
 router.post('/posts', authMiddleware, postController.createPost);
 router.get('/posts/:id', postController.getPostById);
 router.put('/posts/:id', authMiddleware, postController.updatePost);

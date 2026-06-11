@@ -3,6 +3,7 @@ import { X, Camera, MapPin, Globe, Check, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import useAuthStore from '../store/useAuthStore';
+import { ROLES_CONFIG, getSpecializationsForRole } from '../utils/rolesAndSpecializations';
 
 const EditProfileModal = ({ isOpen, onClose, profile, onUpdate }) => {
   const { token } = useAuthStore();
@@ -86,26 +87,58 @@ const EditProfileModal = ({ isOpen, onClose, profile, onUpdate }) => {
           {/* Role & Specializations */}
           <section className="space-y-4">
             <h3 className="text-[10px] font-black text-[#7B5CFA] uppercase tracking-widest">Role & Specializations</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase ml-2">Primary Role</label>
-                <input 
-                  type="text"
+                <select 
                   value={formData.profileType}
-                  onChange={(e) => setFormData({...formData, profileType: e.target.value})}
-                  className="w-full px-4 py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-sm font-bold text-[var(--text-primary)] focus:border-[#7B5CFA] outline-none transition"
-                  placeholder="e.g. Sound Designer"
-                />
+                  onChange={(e) => setFormData({...formData, profileType: e.target.value, skills: ''})}
+                  className="w-full px-4 py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-sm font-bold text-[var(--text-primary)] focus:border-[#7B5CFA] outline-none transition appearance-none"
+                >
+                  <option value="" disabled className="bg-[var(--bg-surface-alt)]">Select a Primary Role</option>
+                  {ROLES_CONFIG.map(role => (
+                    <option key={role.id} value={role.id} className="bg-[var(--bg-surface-alt)]">{role.label}</option>
+                  ))}
+                  <option value="CREATIVE" className="bg-[var(--bg-surface-alt)]">General Creative</option>
+                  <option value="SCOUT" className="bg-[var(--bg-surface-alt)]">Talent Scout</option>
+                </select>
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase ml-2">Specializations</label>
-                <input 
-                  type="text"
-                  value={formData.skills}
-                  onChange={(e) => setFormData({...formData, skills: e.target.value})}
-                  className="w-full px-4 py-3 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl text-sm font-bold text-[var(--text-primary)] focus:border-[#7B5CFA] outline-none transition"
-                  placeholder="e.g. Mixing, Mastering, Scoring"
-                />
+                <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-2xl p-3 min-h-[50px] max-h-48 overflow-y-auto custom-scrollbar flex flex-wrap gap-2">
+                  {formData.profileType && getSpecializationsForRole(formData.profileType).length > 0 ? (
+                    getSpecializationsForRole(formData.profileType).map(spec => {
+                      const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
+                      const isSelected = currentSkills.includes(spec);
+                      return (
+                        <button
+                          key={spec}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setFormData({...formData, skills: currentSkills.filter(s => s !== spec).join(', ')});
+                            } else {
+                              if (currentSkills.length >= 5) {
+                                alert("You can select up to 5 specializations.");
+                                return;
+                              }
+                              setFormData({...formData, skills: [...currentSkills, spec].filter(Boolean).join(', ')});
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                            isSelected 
+                              ? 'bg-[#7B5CFA] text-white shadow-md' 
+                              : 'bg-[var(--bg-base)] text-[var(--text-secondary)] hover:bg-[var(--border-primary)] hover:text-[var(--text-primary)]'
+                          }`}
+                        >
+                          {spec}
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <p className="text-xs text-[var(--text-secondary)] p-2">Select a primary role first to see specializations.</p>
+                  )}
+                </div>
               </div>
             </div>
           </section>

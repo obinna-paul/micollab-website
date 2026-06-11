@@ -3,32 +3,58 @@ const prisma = new PrismaClient();
 
 exports.getPosts = async (req, res) => {
   try {
-    const posts = await prisma.post.findMany({
+    let posts = await prisma.post.findMany({
       where: { isArchived: false },
       include: {
         creator: {
-          select: {
-            username: true,
-            profileImage: true,
-            profileType: true,
-            isVerified: true
-          }
+          select: { id: true, username: true, profileImage: true, profileType: true, isVerified: true }
         },
         originalPost: {
           include: {
-            creator: {
-              select: {
-                username: true,
-                profileImage: true,
-                profileType: true,
-                isVerified: true
-              }
-            }
+            creator: { select: { id: true, username: true, profileImage: true, profileType: true, isVerified: true } }
           }
         }
       },
       orderBy: { createdAt: 'desc' }
     });
+
+    if (req.user) {
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: { profileType: true, skills: true, connectedTo: { select: { id: true } } }
+      });
+      
+      if (user) {
+        const userSkills = user.skills ? user.skills.split(',').map(s => s.trim()) : [];
+        const networkIds = user.connectedTo.map(c => c.id);
+
+        posts = posts.map(post => {
+          let score = 0;
+          const postTags = post.tags ? post.tags.split(',').map(t => t.trim()) : [];
+          
+          // Match by tags / specializations
+          const hasOverlappingTag = postTags.some(t => userSkills.includes(t));
+          if (hasOverlappingTag) score += 50;
+          
+          // Match by Primary Role
+          if (post.creator.profileType === user.profileType) score += 30;
+          
+          // Network boost
+          if (networkIds.includes(post.creator.id)) score += 40;
+
+          return { ...post, _matchScore: score };
+        });
+
+        // Sort by match score descending, then by creation date
+        posts.sort((a, b) => {
+          if (b._matchScore !== a._matchScore) {
+            return b._matchScore - a._matchScore;
+          }
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+      }
+    }
+
     res.json(posts);
   } catch (error) {
     console.error(error);

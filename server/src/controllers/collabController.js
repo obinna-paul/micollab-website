@@ -63,24 +63,43 @@ exports.getRecommendedCollabs = async (req, res) => {
     const userId = req.user.id;
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
-    // Recommendation strategy: Category match + Location match
-    const collabs = await prisma.collab.findMany({
-      where: {
-        status: 'OPEN',
-        OR: [
-          { category: user.profileType === 'CREATIVE' ? user.skills?.split(',')[0] : undefined },
-          { location: { contains: user.location || '' } }
-        ]
-      },
+    // Recommendation strategy: Category match + Specialization match + Location match
+    let collabs = await prisma.collab.findMany({
+      where: { status: 'OPEN' },
       include: {
         poster: { select: { username: true, profileImage: true, profileType: true } },
+        requirements: true,
         _count: { select: { proposals: true } }
       },
-      take: 5,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
+      take: 100 // score recent collabs
     });
 
-    res.json(collabs);
+    const userSkills = user.skills ? user.skills.split(',').map(s => s.trim()) : [];
+
+    const scoredCollabs = collabs.map(collab => {
+      let score = 0;
+      
+      // 1. Role match
+      if (collab.category === user.profileType) score += 30;
+      
+      // 2. Specialization match
+      const reqTags = collab.requirements.map(r => r.tag);
+      const overlap = reqTags.filter(t => userSkills.includes(t)).length;
+      score += overlap * 20;
+
+      // 3. Location match
+      if (user.location && collab.location && collab.location.includes(user.location)) {
+        score += 15;
+      }
+
+      return { ...collab, _matchScore: score };
+    });
+
+    // Sort by highest score
+    scoredCollabs.sort((a, b) => b._matchScore - a._matchScore);
+
+    res.json(scoredCollabs.slice(0, 5));
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch recommendations' });
   }
