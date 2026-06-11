@@ -49,6 +49,7 @@ const Sidebar = () => {
         <SidebarItem to="/wallet" icon={Wallet} label="Wallet" />
         <SidebarItem to="/settings" icon={Settings} label="Settings" />
         <SidebarItem to="/disputes" icon={ShieldAlert} label="Dispute Center" />
+        <SidebarItem to="/policies" icon={Briefcase} label="Usage Policies" />
       </nav>
 
       {isAuthenticated ? (

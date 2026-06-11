@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { ShieldCheck, Send, AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import useAuthStore from '../store/useAuthStore';
 
 const DisputeRoom = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [dispute, setDispute] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
