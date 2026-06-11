@@ -34,7 +34,10 @@ exports.globalSearch = async (req, res) => {
       }),
       prisma.post.findMany({
         where: {
-          content: { contains: keyword, mode: 'insensitive' },
+          OR: [
+            { content: { contains: keyword, mode: 'insensitive' } },
+            { caption: { contains: keyword, mode: 'insensitive' } }
+          ],
           isArchived: false
         },
         include: {

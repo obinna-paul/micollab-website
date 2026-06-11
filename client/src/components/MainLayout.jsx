@@ -113,7 +113,15 @@ const MainLayout = ({ children }) => {
           </div>
 
           <div className="hidden md:block flex-1 max-w-xl px-4 relative">
-            <Search className="absolute left-7 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={16} />
+            <Search 
+              className="absolute left-7 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] cursor-pointer hover:text-[#7B5CFA] transition-colors" 
+              size={16} 
+              onClick={() => {
+                if (searchQuery.trim()) {
+                  navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                }
+              }}
+            />
             <input 
               type="text" 
               placeholder="Search creatives, projects, or tags..." 

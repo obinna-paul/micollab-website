@@ -119,7 +119,7 @@ const SearchResults = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {circles.map(c => (
                     <div key={c.id} className="bg-[var(--bg-surface)] p-5 rounded-2xl border border-[var(--border-primary)] hover:border-[#FBBF24] transition">
-                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1">{c.name}</h3>
+                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1">{c.title}</h3>
                       <p className="text-sm text-[var(--text-secondary)] mb-3 line-clamp-2">{c.description}</p>
                       <span className="text-xs font-bold text-[#FBBF24] bg-[#FBBF24]/10 px-2 py-1 rounded-lg">{c._count.members} Members</span>
                     </div>
