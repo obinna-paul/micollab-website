@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Lock, Trash2, Mail, ShieldAlert, Loader2, CheckCircle } from 'lucide-react';
+import { User, Lock, Trash2, Mail, ShieldAlert, Loader2, CheckCircle, Sliders, Bell, Eye } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
-  const { user, updateEmail, changePassword, deleteAccount, logout } = useAuthStore();
+  const { user, updateEmail, changePassword, updatePreferences, deleteAccount, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('ACCOUNT'); // ACCOUNT, SECURITY
+  const [activeTab, setActiveTab] = useState('ACCOUNT'); // ACCOUNT, SECURITY, PREFERENCES
   
   // Account Tab State
   const [email, setEmail] = useState(user?.email || '');
@@ -20,6 +20,13 @@ const Settings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [securityStatus, setSecurityStatus] = useState(null);
   const [loadingSecurity, setLoadingSecurity] = useState(false);
+
+  // Preferences Tab State
+  const [emailNotifications, setEmailNotifications] = useState(user?.emailNotifications ?? true);
+  const [pushNotifications, setPushNotifications] = useState(user?.pushNotifications ?? true);
+  const [profileVisibility, setProfileVisibility] = useState(user?.profileVisibility || 'PUBLIC');
+  const [prefStatus, setPrefStatus] = useState(null);
+  const [loadingPref, setLoadingPref] = useState(false);
 
   // Delete State
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -54,6 +61,19 @@ const Settings = () => {
       setSecurityStatus({ type: 'error', msg: res.error });
     }
     setLoadingSecurity(false);
+  };
+
+  const handleUpdatePreferences = async (e) => {
+    e.preventDefault();
+    setLoadingPref(true);
+    setPrefStatus(null);
+    const res = await updatePreferences({ emailNotifications, pushNotifications, profileVisibility });
+    if (res.success) {
+      setPrefStatus({ type: 'success', msg: 'Preferences updated successfully.' });
+    } else {
+      setPrefStatus({ type: 'error', msg: res.error });
+    }
+    setLoadingPref(false);
   };
 
   const handleDeleteAccount = async () => {
@@ -98,6 +118,16 @@ const Settings = () => {
             }`}
           >
             <Lock size={18} /> Security
+          </button>
+          <button 
+            onClick={() => setActiveTab('PREFERENCES')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${
+              activeTab === 'PREFERENCES' 
+                ? 'bg-primary text-[var(--text-primary)] shadow-md' 
+                : 'text-textMuted hover:bg-surface hover:text-textMain'
+            }`}
+          >
+            <Sliders size={18} /> Preferences
           </button>
         </div>
 
@@ -236,6 +266,130 @@ const Settings = () => {
                   </div>
                 )}
               </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'PREFERENCES' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <h2 className="text-xl font-bold text-textMain mb-6 flex items-center gap-2">
+                <Sliders size={24} className="text-primary" /> Notification & Privacy
+              </h2>
+
+              {prefStatus && (
+                <div className={`p-4 rounded-xl mb-6 text-sm font-semibold flex items-start gap-3 ${
+                  prefStatus.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
+                }`}>
+                  {prefStatus.type === 'success' && <CheckCircle size={20} className="shrink-0" />}
+                  <p>{prefStatus.msg}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleUpdatePreferences} className="space-y-6 max-w-xl">
+                
+                {/* Notifications Section */}
+                <div className="bg-background border border-divider rounded-2xl p-5 space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-textMuted flex items-center gap-2">
+                    <Bell size={16} /> Notifications
+                  </h3>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-textMain">Email Notifications</p>
+                      <p className="text-xs text-textMuted font-medium">Receive updates and alerts via email.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={emailNotifications}
+                        onChange={(e) => setEmailNotifications(e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-divider peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-divider">
+                    <div>
+                      <p className="font-bold text-textMain">Push Notifications</p>
+                      <p className="text-xs text-textMuted font-medium">Receive in-app push alerts.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={pushNotifications}
+                        onChange={(e) => setPushNotifications(e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-divider peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Privacy Section */}
+                <div className="bg-background border border-divider rounded-2xl p-5 space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-textMuted flex items-center gap-2">
+                    <Eye size={16} /> Privacy
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <p className="font-bold text-textMain">Profile Visibility</p>
+                    <p className="text-xs text-textMuted font-medium mb-3">Control who can see your profile and portfolio.</p>
+                    
+                    <div className="flex flex-col gap-2">
+                      <label className="flex items-center gap-3 p-3 border border-divider rounded-xl cursor-pointer hover:bg-surface transition-colors">
+                        <input 
+                          type="radio" 
+                          name="visibility" 
+                          value="PUBLIC"
+                          checked={profileVisibility === 'PUBLIC'}
+                          onChange={(e) => setProfileVisibility(e.target.value)}
+                          className="w-4 h-4 text-primary focus:ring-primary border-gray-300"
+                        />
+                        <div>
+                          <p className="font-bold text-textMain text-sm">Public (Recommended)</p>
+                          <p className="text-xs text-textMuted">Anyone can view your profile and find you in search.</p>
+                        </div>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 border border-divider rounded-xl cursor-pointer hover:bg-surface transition-colors">
+                        <input 
+                          type="radio" 
+                          name="visibility" 
+                          value="NETWORK_ONLY"
+                          checked={profileVisibility === 'NETWORK_ONLY'}
+                          onChange={(e) => setProfileVisibility(e.target.value)}
+                          className="w-4 h-4 text-primary focus:ring-primary border-gray-300"
+                        />
+                        <div>
+                          <p className="font-bold text-textMain text-sm">Network Only</p>
+                          <p className="text-xs text-textMuted">Only people in your network can view your full profile.</p>
+                        </div>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 border border-divider rounded-xl cursor-pointer hover:bg-surface transition-colors">
+                        <input 
+                          type="radio" 
+                          name="visibility" 
+                          value="PRIVATE"
+                          checked={profileVisibility === 'PRIVATE'}
+                          onChange={(e) => setProfileVisibility(e.target.value)}
+                          className="w-4 h-4 text-primary focus:ring-primary border-gray-300"
+                        />
+                        <div>
+                          <p className="font-bold text-textMain text-sm">Private</p>
+                          <p className="text-xs text-textMuted">Your profile is hidden. You can still apply to Collabs.</p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loadingPref}
+                  className="bg-primary text-[var(--text-primary)] px-6 py-3 rounded-xl font-bold hover:scale-[1.02] transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2 w-full sm:w-auto shadow-md"
+                >
+                  {loadingPref ? <Loader2 className="animate-spin" size={18} /> : 'Save Preferences'}
+                </button>
+              </form>
             </motion.div>
           )}
         </div>

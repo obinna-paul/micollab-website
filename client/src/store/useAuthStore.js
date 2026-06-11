@@ -173,9 +173,19 @@ const useAuthStore = create(
         try {
           const res = await axios.put('/api/users/settings/email', { newEmail });
           set({ user: { ...get().user, email: res.data.email } });
-          return { success: true, message: res.data.message };
+          return { success: true };
         } catch (error) {
           return { success: false, error: error.response?.data?.error || 'Failed to update email' };
+        }
+      },
+
+      updatePreferences: async (preferencesData) => {
+        try {
+          const res = await axios.put('/api/users/settings/preferences', preferencesData);
+          set({ user: { ...get().user, ...res.data.preferences } });
+          return { success: true };
+        } catch (error) {
+          return { success: false, error: error.response?.data?.error || 'Failed to update preferences' };
         }
       },
 

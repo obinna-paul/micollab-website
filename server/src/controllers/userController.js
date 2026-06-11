@@ -379,3 +379,86 @@ exports.activityPing = async (req, res) => {
     res.status(500).json({ error: 'Failed to ping activity' });
   }
 };
+
+exports.updateEmail = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { newEmail } = req.body;
+    if (!newEmail) return res.status(400).json({ error: 'Email is required' });
+
+    const existingUser = await prisma.user.findUnique({ where: { email: newEmail } });
+    if (existingUser && existingUser.id !== userId) {
+      return res.status(400).json({ error: 'Email is already in use by another account' });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { email: newEmail, isEmailVerified: false } // require re-verification
+    });
+    
+    res.json({ success: true, email: updatedUser.email, message: 'Email updated successfully.' });
+  } catch (error) {
+    console.error('[UPDATE_EMAIL_ERROR]', error);
+    res.status(500).json({ error: 'Failed to update email' });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Both current and new passwords are required' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user.password) {
+      return res.status(400).json({ error: 'Account uses Google Sign-In. Password cannot be changed.' });
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Incorrect current password' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword }
+    });
+
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('[CHANGE_PASSWORD_ERROR]', error);
+    res.status(500).json({ error: 'Failed to change password' });
+  }
+};
+
+exports.updatePreferences = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { emailNotifications, pushNotifications, profileVisibility } = req.body;
+    
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        emailNotifications,
+        pushNotifications,
+        profileVisibility
+      }
+    });
+
+    res.json({ 
+      success: true, 
+      preferences: {
+        emailNotifications: updatedUser.emailNotifications,
+        pushNotifications: updatedUser.pushNotifications,
+        profileVisibility: updatedUser.profileVisibility
+      } 
+    });
+  } catch (error) {
+    console.error('[UPDATE_PREFERENCES_ERROR]', error);
+    res.status(500).json({ error: 'Failed to update preferences' });
+  }
+};

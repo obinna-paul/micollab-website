@@ -46,6 +46,11 @@ model User {
 
   socialLinks String? // Stored as JSON string in SQLite
 
+  // Preferences
+  emailNotifications  Boolean @default(true)
+  pushNotifications   Boolean @default(true)
+  profileVisibility   String  @default("PUBLIC") // PUBLIC, PRIVATE, NETWORK_ONLY
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
