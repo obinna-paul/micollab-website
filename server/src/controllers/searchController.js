@@ -17,17 +17,17 @@ exports.globalSearch = async (req, res) => {
         where: {
           OR: [
             { username: { contains: keyword, mode: 'insensitive' } },
-            { name: { contains: keyword, mode: 'insensitive' } },
-            { specializations: { contains: keyword, mode: 'insensitive' } }
+            { displayName: { contains: keyword, mode: 'insensitive' } },
+            { skills: { contains: keyword, mode: 'insensitive' } }
           ]
         },
         select: {
           id: true,
           username: true,
-          name: true,
+          displayName: true,
           profileImage: true,
           profileType: true,
-          specializations: true,
+          skills: true,
           location: true
         },
         take: 10
@@ -35,14 +35,14 @@ exports.globalSearch = async (req, res) => {
       prisma.post.findMany({
         where: {
           content: { contains: keyword, mode: 'insensitive' },
-          archived: false
+          isArchived: false
         },
         include: {
-          author: {
+          creator: {
             select: { id: true, username: true, profileImage: true, profileType: true }
           },
-          likes: { select: { userId: true } },
-          _count: { select: { comments: true } }
+          postLikes: { select: { userId: true } },
+          _count: { select: { postComments: true } }
         },
         orderBy: { createdAt: 'desc' },
         take: 10
@@ -67,7 +67,7 @@ exports.globalSearch = async (req, res) => {
       prisma.circle.findMany({
         where: {
           OR: [
-            { name: { contains: keyword, mode: 'insensitive' } },
+            { title: { contains: keyword, mode: 'insensitive' } },
             { description: { contains: keyword, mode: 'insensitive' } }
           ]
         },
@@ -77,6 +77,20 @@ exports.globalSearch = async (req, res) => {
         take: 10
       })
     ]);
+
+    // Fire and forget search appearance tracking
+    if (users.length > 0) {
+      const today = new Date();
+      today.setUTCHours(0,0,0,0);
+      
+      Promise.all(users.map(u => 
+        prisma.profileAnalytics.upsert({
+          where: { userId_date: { userId: u.id, date: today } },
+          update: { searchAppears: { increment: 1 } },
+          create: { userId: u.id, date: today, searchAppears: 1 }
+        })
+      )).catch(err => console.error('Search analytics tracking error:', err));
+    }
 
     res.json({ users, posts, collabs, circles });
   } catch (error) {

@@ -194,6 +194,10 @@ exports.handleConnectionRequest = async (req, res) => {
       return res.status(404).json({ error: 'Request not found' });
     }
 
+    if (request.status === 'ACCEPTED') {
+      return res.json({ message: 'Already accepted' });
+    }
+
     if (action === 'ACCEPTED') {
       const updated = await prisma.connectionRequest.update({
         where: { id: requestId },

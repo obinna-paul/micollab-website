@@ -40,6 +40,10 @@ model User {
   isSuperAdmin    Boolean @default(false)
   isBanned        Boolean @default(false)
 
+  // Usage Metrics
+  lastActive      DateTime @default(now())
+  totalTimeSpent  Int      @default(0) // Time spent in seconds
+
   socialLinks String? // Stored as JSON string in SQLite
 
   createdAt DateTime @default(now())
@@ -61,6 +65,7 @@ model User {
   testimonials      Testimonial[]     @relation("ReceivedTestimonials")
   givenTestimonials Testimonial[]     @relation("GivenTestimonials")
   analytics         UserAnalytics?
+  profileAnalytics  ProfileAnalytics[]
   credits           PortfolioCredit[] @relation("UserCredits")
   comments          Comment[]
   postLikes         PostLike[]
@@ -149,6 +154,18 @@ model UserAnalytics {
   profileViews      Int    @default(0)
   portfolioViews    Int    @default(0)
   searchAppearances Int    @default(0)
+}
+
+model ProfileAnalytics {
+  id            String   @id @default(cuid())
+  userId        String
+  date          DateTime @db.Date
+  views         Int      @default(0)
+  searchAppears Int      @default(0)
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }
 
 model Post {

@@ -46,6 +46,8 @@ router.get('/posts/:id/comments', postController.getComments);
 router.post('/posts/:id/comments', authMiddleware, postController.addComment);
 
 // User Routes
+router.post('/users/activity-ping', authMiddleware, userController.activityPing);
+router.get('/users/analytics', authMiddleware, userController.getAnalytics);
 router.get('/users/search', authMiddleware, userController.searchUsers);
 router.get('/users/trending', userController.getTrendingCreators);
 router.get('/users/profile/:username', userController.getProfile);

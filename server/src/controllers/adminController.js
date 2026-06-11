@@ -88,20 +88,41 @@ exports.rejectWithdrawal = async (req, res) => {
 
 // Admin Dashboard Metrics
 exports.getMetrics = async (req, res) => {
-  try {
-    const totalUsers = await prisma.user.count();
-    const activeCollabs = await prisma.collab.count({ where: { status: 'OPEN' } });
-    const wallets = await prisma.wallet.findMany({ select: { escrowBalance: true, availableBalance: true } });
-    
-    const totalEscrow = wallets.reduce((acc, curr) => acc + curr.escrowBalance, 0);
-    const totalAvailable = wallets.reduce((acc, curr) => acc + curr.availableBalance, 0);
-    
-    res.json({ totalUsers, activeCollabs, totalEscrow, totalAvailable });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch metrics' });
-  }
-};
+    try {
+      const totalUsers = await prisma.user.count();
+      const activeCollabs = await prisma.collab.count({ where: { status: 'OPEN' } });
+      const wallets = await prisma.wallet.findMany({ select: { escrowBalance: true, availableBalance: true } });
+      
+      const totalEscrow = wallets.reduce((acc, curr) => acc + curr.escrowBalance, 0);
+      const totalAvailable = wallets.reduce((acc, curr) => acc + curr.availableBalance, 0);
+      
+      // Calculate DAU (Active in last 24h)
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const dau = await prisma.user.count({ where: { lastActive: { gte: oneDayAgo } } });
+
+      // Calculate MAU (Active in last 30d)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const mau = await prisma.user.count({ where: { lastActive: { gte: thirtyDaysAgo } } });
+
+      // Calculate Active Now (Active in last 5 minutes)
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      const activeNow = await prisma.user.count({ where: { lastActive: { gte: fiveMinutesAgo } } });
+
+      // Sum of Total Time Spent
+      const timeSpentAgg = await prisma.user.aggregate({
+        _sum: { totalTimeSpent: true }
+      });
+      const totalTimeSpentSeconds = timeSpentAgg._sum.totalTimeSpent || 0;
+
+      res.json({ 
+        totalUsers, activeCollabs, totalEscrow, totalAvailable,
+        dau, mau, activeNow, totalTimeSpentSeconds
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to fetch metrics' });
+    }
+  };
 
 // Get All Users
 exports.getUsers = async (req, res) => {

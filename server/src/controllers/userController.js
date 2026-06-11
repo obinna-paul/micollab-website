@@ -56,6 +56,17 @@ exports.getProfile = async (req, res) => {
 
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    const viewerId = req.user?.id;
+    if (viewerId !== user.id) {
+      const today = new Date();
+      today.setUTCHours(0,0,0,0);
+      prisma.profileAnalytics.upsert({
+        where: { userId_date: { userId: user.id, date: today } },
+        update: { views: { increment: 1 } },
+        create: { userId: user.id, date: today, views: 1 }
+      }).catch(err => console.error('Analytics tracking error:', err));
+    }
+
     const connectionsCount = (user._count?.sentRequests || 0) + (user._count?.receivedRequests || 0);
     const collabsCount = user._count?.collabs || 0;
     const { password: _, _count, testimonials, ...userData } = user;
@@ -190,6 +201,61 @@ exports.createPortfolioItem = async (req, res) => {
   }
 };
 
+exports.getWalletMetrics = async (req, res) => {
+  try {
+    const wallet = await prisma.wallet.findUnique({ where: { userId: req.user.id } });
+    if (!wallet) return res.json({ availableBalance: 0, escrowBalance: 0 });
+    res.json(wallet);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch wallet metrics' });
+  }
+};
+
+exports.getAnalytics = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const today = new Date();
+    today.setUTCHours(0,0,0,0);
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const analytics = await prisma.profileAnalytics.findMany({
+      where: {
+        userId,
+        date: { in: [today, yesterday] }
+      }
+    });
+
+    const todayStats = analytics.find(a => a.date.getTime() === today.getTime()) || { views: 0, searchAppears: 0 };
+    const yesterdayStats = analytics.find(a => a.date.getTime() === yesterday.getTime()) || { views: 0, searchAppears: 0 };
+
+    const calculateGrowth = (todayCount, yesterdayCount) => {
+      if (yesterdayCount === 0) return todayCount > 0 ? 100 : 0;
+      return Math.round(((todayCount - yesterdayCount) / yesterdayCount) * 100);
+    };
+
+    res.json({
+      today: {
+        views: todayStats.views,
+        searchAppears: todayStats.searchAppears
+      },
+      yesterday: {
+        views: yesterdayStats.views,
+        searchAppears: yesterdayStats.searchAppears
+      },
+      growth: {
+        views: calculateGrowth(todayStats.views, yesterdayStats.views),
+        searchAppears: calculateGrowth(todayStats.searchAppears, yesterdayStats.searchAppears)
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch analytics' });
+  }
+};
+
 exports.getTrendingCreators = async (req, res) => {
   try {
     const creators = await prisma.user.findMany({
@@ -288,5 +354,28 @@ exports.deleteAccount = async (req, res) => {
   } catch (error) {
     console.error('[DELETE_ACCOUNT_ERROR]', error);
     res.status(500).json({ error: 'Failed to delete account' });
+  }
+};
+
+exports.activityPing = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    // We assume the frontend pings every 60 seconds
+    const PING_INTERVAL_SECONDS = 60;
+    
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        lastActive: new Date(),
+        totalTimeSpent: {
+          increment: PING_INTERVAL_SECONDS
+        }
+      }
+    });
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[ACTIVITY_PING_ERROR]', err);
+    res.status(500).json({ error: 'Failed to ping activity' });
   }
 };
