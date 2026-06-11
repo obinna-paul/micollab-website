@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Compass, MessageSquare, Bell, User, Wallet, Settings, TrendingUp, LogOut, Users, Briefcase } from 'lucide-react';
+import { Home, Compass, MessageSquare, Bell, User, Wallet, Settings, TrendingUp, LogOut, Users, Briefcase, ShieldAlert } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 
 const SidebarItem = ({ to, icon: Icon, label }) => (
@@ -48,6 +48,7 @@ const Sidebar = () => {
         <SidebarItem to={`/profile/${user?.username}`} icon={User} label="Profile" />
         <SidebarItem to="/wallet" icon={Wallet} label="Wallet" />
         <SidebarItem to="/settings" icon={Settings} label="Settings" />
+        <SidebarItem to="/disputes" icon={ShieldAlert} label="Dispute Center" />
       </nav>
 
       {isAuthenticated ? (

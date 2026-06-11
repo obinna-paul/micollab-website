@@ -215,17 +215,32 @@ exports.openDispute = async (req, res) => {
       data: { escrowStatus: 'DISPUTED' }
     });
 
+    // Create the Dispute record
+    const dispute = await prisma.dispute.create({
+      data: {
+        proposalId,
+        openedById: userId,
+        reason,
+        messages: {
+          create: {
+            senderId: userId,
+            message: reason
+          }
+        }
+      }
+    });
+
     // Notify admins (simplified) and the other party
     const otherUserId = userId === proposal.userId ? proposal.collab.posterId : proposal.userId;
     await notificationController.createNotification(
       otherUserId,
       userId,
       'ALERT',
-      `A dispute has been opened for proposal ${proposalId}. Reason: ${reason}`,
-      proposalId
+      `A dispute has been opened for "${proposal.collab.title}".`,
+      dispute.id
     );
 
-    res.json({ success: true, message: 'Dispute opened and admin notified' });
+    res.json({ success: true, message: 'Dispute opened and admin notified', disputeId: dispute.id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to open dispute' });

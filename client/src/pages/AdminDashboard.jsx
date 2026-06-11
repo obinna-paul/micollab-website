@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
   ShieldCheck, LayoutDashboard, Users, Banknote, 
@@ -291,29 +292,22 @@ const AdminDashboard = () => {
             </div>
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
               <div>
-                <h3 className="font-black text-[var(--text-primary)] text-xl mb-1">{d.collab.title}</h3>
-                <p className="text-sm font-bold text-[var(--text-secondary)]">Poster: <span className="text-[var(--text-primary)]">{d.collab.poster.username}</span> | Creative: <span className="text-[var(--text-primary)]">{d.user.username}</span></p>
+                <h3 className="font-black text-[var(--text-primary)] text-xl mb-1">{d.proposal.collab.title}</h3>
+                <p className="text-sm font-bold text-[var(--text-secondary)]">Poster: <span className="text-[var(--text-primary)]">{d.proposal.collab.poster.username}</span> | Creative: <span className="text-[var(--text-primary)]">{d.proposal.user.username}</span></p>
+                <div className="mt-3 p-3 bg-[var(--bg-background)] border border-[var(--border-primary)] rounded-xl text-sm italic text-[var(--text-secondary)]">
+                  "{d.reason}"
+                </div>
               </div>
               <div className="bg-red-500/10 border border-red-500/20 px-6 py-3 rounded-xl text-center">
                 <p className="text-[9px] font-black uppercase text-red-500 tracking-widest">Locked Amount</p>
-                <p className="text-2xl font-black text-red-500">₦{parseFloat(d.bidAmount).toLocaleString()}</p>
+                <p className="text-2xl font-black text-red-500">₦{parseFloat(d.proposal.bidAmount).toLocaleString()}</p>
               </div>
             </div>
             <div className="flex gap-2">
-              {user?.isSuperAdmin ? (
-                <>
-                  <button onClick={() => handleResolveDispute(d.id, 'REFUND_POSTER')} disabled={processingId === d.id} className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] hover:border-red-500 text-red-500 font-black text-[10px] uppercase rounded-xl transition-colors">
-                    Force Refund Poster
-                  </button>
-                  <button onClick={() => handleResolveDispute(d.id, 'PAY_CREATIVE')} disabled={processingId === d.id} className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] hover:border-green-500 text-green-500 font-black text-[10px] uppercase rounded-xl transition-colors">
-                    Force Pay Creative
-                  </button>
-                </>
-              ) : (
-                <div className="flex-1 py-3 bg-[var(--bg-base)] border border-[var(--border-primary)] text-[var(--text-muted)] font-black text-[10px] uppercase rounded-xl text-center">
-                  Only Super Admins can resolve disputes
-                </div>
-              )}
+              <Link to={`/disputes/${d.id}`} className="flex-1 py-3 bg-primary hover:bg-[#00b3cc] text-black font-black text-xs uppercase rounded-xl transition-colors text-center flex items-center justify-center gap-2 tracking-widest">
+                <ShieldCheck size={18} />
+                Enter Dispute Room
+              </Link>
             </div>
           </div>
         ))}

@@ -194,7 +194,10 @@ exports.resolveDispute = async (req, res) => {
 
     const amount = parseFloat(proposal.bidAmount);
 
+    let disputeStatus = 'RESOLVED';
+
     if (action === 'PAY_CREATIVE') {
+      disputeStatus = 'RESOLVED_CREATIVE';
       // Give to creative
       await prisma.proposal.update({ where: { id: proposalId }, data: { escrowStatus: 'RELEASED' } });
       await prisma.wallet.update({
@@ -208,6 +211,7 @@ exports.resolveDispute = async (req, res) => {
         proposalId
       );
     } else if (action === 'REFUND_POSTER') {
+      disputeStatus = 'RESOLVED_POSTER';
       // Refund to Poster
       await prisma.proposal.update({ where: { id: proposalId }, data: { escrowStatus: 'REFUNDED' } });
       await prisma.wallet.update({
@@ -230,6 +234,12 @@ exports.resolveDispute = async (req, res) => {
       );
     }
 
+    // Update the dispute model status
+    await prisma.dispute.updateMany({
+      where: { proposalId: proposalId },
+      data: { status: disputeStatus, adminNotes: reason }
+    });
+
     res.json({ success: true, message: 'Dispute resolved successfully' });
   } catch (err) {
     console.error(err);
@@ -239,18 +249,23 @@ exports.resolveDispute = async (req, res) => {
 
 // Get All Disputes
 exports.getDisputes = async (req, res) => {
-  try {
-    const disputes = await prisma.proposal.findMany({
-      where: { escrowStatus: 'DISPUTED' },
-      include: { 
-        collab: { select: { title: true, poster: { select: { username: true } } } },
-        user: { select: { username: true } }
-      },
-      orderBy: { updatedAt: 'desc' }
-    });
-    res.json(disputes);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch disputes' });
-  }
-};
+    try {
+      const disputes = await prisma.dispute.findMany({
+        where: { status: 'OPEN' },
+        include: { 
+          proposal: {
+            include: {
+              collab: { select: { title: true, poster: { select: { username: true } } } },
+              user: { select: { username: true } }
+            }
+          },
+          openedBy: { select: { username: true } }
+        },
+        orderBy: { updatedAt: 'desc' }
+      });
+      res.json(disputes);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to fetch disputes' });
+    }
+  };

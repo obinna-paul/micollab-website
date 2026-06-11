@@ -23,6 +23,8 @@ import Settings from './pages/Settings';
 import SearchResults from './pages/SearchResults';
 import AdminDashboard from './pages/AdminDashboard'; // We'll build this soon
 import AdminRoute from './components/AdminRoute';
+import Disputes from './pages/Disputes';
+import DisputeRoom from './pages/DisputeRoom';
 import useAuthStore from './store/useAuthStore';
 import axios from 'axios';
 
@@ -95,6 +97,9 @@ function App() {
       <Route path="/files" element={requireAuth(<MainLayout><FilesHub /></MainLayout>)} />
       <Route path="/settings" element={requireAuth(<MainLayout><Settings /></MainLayout>)} />
       <Route path="/search" element={requireAuth(<MainLayout><SearchResults /></MainLayout>)} />
+      
+      <Route path="/disputes" element={requireAuth(<MainLayout><Disputes /></MainLayout>)} />
+      <Route path="/disputes/:id" element={requireAuth(<MainLayout><DisputeRoom /></MainLayout>)} />
 
       <Route path="/share/:linkId" element={<PublicSharePage />} />
 

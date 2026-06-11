@@ -8,6 +8,7 @@ const uploadController = require('../controllers/uploadController');
 const messageController = require('../controllers/messageController');
 const adminMiddleware = require('../middlewares/adminMiddleware');
 const superAdminMiddleware = require('../middlewares/superAdminMiddleware');
+const disputeController = require('../controllers/disputeController');
 
 // Upload Route
 router.post('/upload', authMiddleware, uploadController.uploadMiddleware, uploadController.uploadMedia);
@@ -173,5 +174,10 @@ router.get('/notifications', authMiddleware, notificationController.getNotificat
 router.patch('/notifications/mark-all', authMiddleware, notificationController.markAllAsRead);
 router.patch('/notifications/:id/read', authMiddleware, notificationController.markAsRead);
 router.delete('/notifications/:id', authMiddleware, notificationController.deleteNotification);
+
+// Dispute Routes
+router.get('/disputes/my-disputes', authMiddleware, disputeController.getMyDisputes);
+router.get('/disputes/:id', authMiddleware, disputeController.getDisputeDetails);
+router.post('/disputes/:id/message', authMiddleware, disputeController.addDisputeMessage);
 
 module.exports = router;
