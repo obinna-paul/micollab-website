@@ -101,7 +101,7 @@ exports.getPostById = async (req, res) => {
 
 exports.createPost = async (req, res) => {
   try {
-    const { caption, mediaUrl, contentType, postCategory } = req.body;
+    const { caption, mediaUrl, contentType, postCategory, tags } = req.body;
     const creatorId = req.user.id;
 
     const validCategories = ['UPDATE', 'MEDIA', 'EVENT'];
@@ -113,6 +113,7 @@ exports.createPost = async (req, res) => {
         mediaUrl: mediaUrl || null,
         contentType: contentType || 'TEXT',
         postCategory: category,
+        tags: tags || null,
         creatorId
       },
       include: {

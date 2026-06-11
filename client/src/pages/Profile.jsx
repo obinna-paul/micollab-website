@@ -11,7 +11,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 import useChatStore from '../store/useChatStore';
-import EditProfileModal from '../components/EditProfileModal';
 import PhotoActionModal from '../components/PhotoActionModal';
 import PhotoViewerModal from '../components/PhotoViewerModal';
 import AddPortfolioModal from '../components/AddPortfolioModal';
@@ -28,7 +27,6 @@ const Profile = () => {
   const [analytics, setAnalytics] = useState(null);
   
   // Modals State
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEndorseModalOpen, setIsEndorseModalOpen] = useState(false);
   const [endorsementText, setEndorsementText] = useState('');
   const [isEndorsing, setIsEndorsing] = useState(false);
@@ -247,16 +245,16 @@ const Profile = () => {
     const missing = [];
 
     if (prof.displayName) score += 10;
-    else missing.push({ text: 'Add your Display Name', action: () => setIsEditModalOpen(true), weight: 10 });
+    else missing.push({ text: 'Add your Display Name', action: () => navigate('/settings'), weight: 10 });
 
     if (prof.bio || prof.longAbout) score += 15;
-    else missing.push({ text: 'Add a Creative Story', action: () => setIsEditModalOpen(true), weight: 15 });
+    else missing.push({ text: 'Add a Creative Story', action: () => navigate('/settings'), weight: 15 });
 
     if (prof.location) score += 10;
-    else missing.push({ text: 'Add your Location', action: () => setIsEditModalOpen(true), weight: 10 });
+    else missing.push({ text: 'Add your Location', action: () => navigate('/settings'), weight: 10 });
 
     if (prof.profileType) score += 10;
-    else missing.push({ text: 'Add your Skills/Tags', action: () => setIsEditModalOpen(true), weight: 10 });
+    else missing.push({ text: 'Add your Skills/Tags', action: () => navigate('/settings'), weight: 10 });
 
     if (prof.coverImage) score += 15;
     else missing.push({ text: 'Upload a Cover Photo', action: () => setCoverMenuOpen(true), weight: 15 });
@@ -332,7 +330,7 @@ const Profile = () => {
               {/* Right Side: Buttons on Cover */}
               <div className="flex flex-wrap items-center gap-3 mb-2 z-10">
                 {isOwner ? (
-                  <button onClick={() => setIsEditModalOpen(true)} className="relative z-50 pointer-events-auto px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm rounded-xl hover:bg-white/20 transition shadow-lg">
+                  <button onClick={() => navigate('/settings')} className="relative z-50 pointer-events-auto px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm rounded-xl hover:bg-white/20 transition shadow-lg">
                     Edit Profile
                   </button>
                 ) : (
@@ -746,7 +744,6 @@ const Profile = () => {
       </div>
 
       {/* Modals */}
-      <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} profile={profile} onUpdate={(updated) => setProfile(updated)} />
       <AddPortfolioModal isOpen={isAddProjectOpen} onClose={() => setIsAddProjectOpen(false)} onProjectCreated={fetchProfile} />
       <ProjectDetailsModal isOpen={isProjectDetailOpen} onClose={() => setIsProjectDetailOpen(false)} project={selectedProject} />
       

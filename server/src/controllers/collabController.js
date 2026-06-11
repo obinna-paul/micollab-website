@@ -84,7 +84,7 @@ exports.getRecommendedCollabs = async (req, res) => {
       if (collab.category === user.profileType) score += 30;
       
       // 2. Specialization match
-      const reqTags = collab.requirements.map(r => r.tag);
+      const reqTags = collab.requirements.map(r => r.skill);
       const overlap = reqTags.filter(t => userSkills.includes(t)).length;
       score += overlap * 20;
 
@@ -136,7 +136,7 @@ exports.createCollab = async (req, res) => {
     const { 
       title, description, budget, category, location, 
       projectType, deadline, experienceLevel, duration,
-      requirements, attachments, crossPostToFeed 
+      requirements, attachments, crossPostToFeed, targetCircleId 
     } = req.body;
 
     const collab = await prisma.collab.create({
@@ -150,7 +150,8 @@ exports.createCollab = async (req, res) => {
         deadline: deadline ? new Date(deadline) : null,
         experienceLevel,
         duration,
-        posterId, 
+        posterId,
+        targetCircleId: targetCircleId || null,
         crossPostToFeed: crossPostToFeed || false,
         requirements: {
           create: requirements?.map(skill => ({ skill }))
@@ -348,6 +349,29 @@ exports.convertToCircle = async (req, res) => {
       return res.status(400).json({ error: 'Invalid proposal' });
     }
 
+    // Check if collab has a targetCircleId
+    if (collab.targetCircleId) {
+      // Fetch the existing circle
+      const existingCircle = await prisma.circle.findUnique({
+        where: { id: collab.targetCircleId }
+      });
+
+      if (!existingCircle || existingCircle.ownerId !== userId) {
+        return res.status(403).json({ error: 'Unauthorized or target circle not found' });
+      }
+
+      // Add user to the existing circle
+      await prisma.circleMember.create({
+        data: {
+          circleId: collab.targetCircleId,
+          userId: proposal.userId,
+          role: 'CONTRIBUTOR'
+        }
+      });
+
+      return res.status(200).json({ message: 'User added to existing circle', circle: existingCircle });
+    }
+
     // Create the Circle
     const circle = await prisma.circle.create({
       data: {
@@ -356,6 +380,7 @@ exports.convertToCircle = async (req, res) => {
         description: collab.description,
         isPrivate: true,
         category: collab.category,
+        collabId: collab.id,
         members: {
           create: [
             { userId: userId, role: 'OWNER' },

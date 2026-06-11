@@ -1,15 +1,32 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Lock, Trash2, Mail, ShieldAlert, Loader2, CheckCircle, Sliders, Bell, Eye } from 'lucide-react';
+import { User, Lock, Trash2, Mail, ShieldAlert, Loader2, CheckCircle, Sliders, Bell, Eye, MapPin, Globe, Check, UserCircle } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
+import { ROLES_CONFIG, getSpecializationsForRole } from '../utils/rolesAndSpecializations';
 
 const Settings = () => {
-  const { user, updateEmail, changePassword, updatePreferences, deleteAccount, logout } = useAuthStore();
+  const { user, updateProfile, updateEmail, changePassword, updatePreferences, deleteAccount, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('ACCOUNT'); // ACCOUNT, SECURITY, PREFERENCES
+  const [activeTab, setActiveTab] = useState('PROFILE'); // PROFILE, ACCOUNT, SECURITY, PREFERENCES
   
+  // Profile Tab State
+  const [profileFormData, setProfileFormData] = useState({
+    displayName: user?.displayName || '',
+    bio: user?.bio || '',
+    longAbout: user?.longAbout || '',
+    location: user?.location || '',
+    availabilityStatus: user?.availabilityStatus || 'AVAILABLE',
+    profileType: user?.profileType || '',
+    skills: user?.skills || '',
+    socialLinks: typeof user?.socialLinks === 'string'  
+      ? JSON.parse(user.socialLinks) 
+      : user?.socialLinks || { instagram: '', twitter: '', youtube: '', website: '' }
+  });
+  const [profileStatus, setProfileStatus] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+
   // Account Tab State
   const [email, setEmail] = useState(user?.email || '');
   const [accountStatus, setAccountStatus] = useState(null);
@@ -32,6 +49,22 @@ const Settings = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [loadingDelete, setLoadingDelete] = useState(false);
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setLoadingProfile(true);
+    setProfileStatus(null);
+    const res = await updateProfile({
+      ...profileFormData,
+      socialLinks: JSON.stringify(profileFormData.socialLinks)
+    });
+    if (res.success) {
+      setProfileStatus({ type: 'success', msg: 'Profile updated successfully.' });
+    } else {
+      setProfileStatus({ type: 'error', msg: res.error || 'Failed to update profile' });
+    }
+    setLoadingProfile(false);
+  };
 
   const handleUpdateEmail = async (e) => {
     e.preventDefault();
@@ -90,15 +123,25 @@ const Settings = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8 font-sans animate-fade-in">
+    <div className="max-w-5xl mx-auto p-4 md:p-8 font-sans animate-fade-in">
       <div className="mb-8">
         <h1 className="text-3xl font-black text-textMain tracking-tight">Settings</h1>
-        <p className="text-textMuted font-medium mt-1">Manage your account preferences and security.</p>
+        <p className="text-textMuted font-medium mt-1">Manage your identity, account preferences, and security.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar Nav */}
         <div className="w-full md:w-64 flex flex-col gap-2 shrink-0">
+          <button 
+            onClick={() => setActiveTab('PROFILE')}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${
+              activeTab === 'PROFILE' 
+                ? 'bg-primary text-[var(--text-primary)] shadow-md' 
+                : 'text-textMuted hover:bg-surface hover:text-textMain'
+            }`}
+          >
+            <UserCircle size={18} /> Public Profile
+          </button>
           <button 
             onClick={() => setActiveTab('ACCOUNT')}
             className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${
@@ -107,7 +150,7 @@ const Settings = () => {
                 : 'text-textMuted hover:bg-surface hover:text-textMain'
             }`}
           >
-            <User size={18} /> Account
+            <User size={18} /> Account Details
           </button>
           <button 
             onClick={() => setActiveTab('SECURITY')}
@@ -133,10 +176,190 @@ const Settings = () => {
 
         {/* Content Area */}
         <div className="flex-1 bg-surface border border-divider rounded-3xl p-6 md:p-8 shadow-sm">
+          {activeTab === 'PROFILE' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <h2 className="text-xl font-bold text-textMain mb-6 flex items-center gap-2">
+                <UserCircle size={24} className="text-primary" /> Public Profile
+              </h2>
+
+              {profileStatus && (
+                <div className={`p-4 rounded-xl mb-6 text-sm font-semibold flex items-start gap-3 ${
+                  profileStatus.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
+                }`}>
+                  {profileStatus.type === 'success' && <CheckCircle size={20} className="shrink-0" />}
+                  <p>{profileStatus.msg}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleUpdateProfile} className="space-y-8">
+                {/* Basics */}
+                <section className="space-y-4 border-b border-divider pb-8">
+                  <h3 className="text-xs font-black text-primary uppercase tracking-widest">Core Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-textMuted uppercase ml-1">Display Name</label>
+                      <input 
+                        type="text"
+                        value={profileFormData.displayName}
+                        onChange={(e) => setProfileFormData({...profileFormData, displayName: e.target.value})}
+                        className="w-full px-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain focus:border-primary outline-none transition"
+                        placeholder="e.g. David Okafor"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-textMuted uppercase ml-1">Short Bio</label>
+                      <input 
+                        type="text"
+                        value={profileFormData.bio}
+                        onChange={(e) => setProfileFormData({...profileFormData, bio: e.target.value})}
+                        className="w-full px-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain focus:border-primary outline-none transition"
+                        placeholder="e.g. Award-winning Videographer"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                {/* Role & Specializations */}
+                <section className="space-y-4 border-b border-divider pb-8">
+                  <h3 className="text-xs font-black text-primary uppercase tracking-widest">Identity & Anchors</h3>
+                  <p className="text-xs text-textMuted font-medium mb-4">Your role and specializations determine the collaborations you see and the creatives recommended to you.</p>
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-textMuted uppercase ml-1">Primary Role</label>
+                      <select 
+                        value={profileFormData.profileType}
+                        onChange={(e) => setProfileFormData({...profileFormData, profileType: e.target.value, skills: ''})}
+                        className="w-full px-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain focus:border-primary outline-none transition appearance-none"
+                      >
+                        <option value="" disabled>Select a Primary Role</option>
+                        {ROLES_CONFIG.map(role => (
+                          <option key={role.id} value={role.id}>{role.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-textMuted uppercase ml-1">Specializations (Max 5)</label>
+                      <div className="bg-background border border-divider rounded-xl p-4 min-h-[80px] max-h-48 overflow-y-auto custom-scrollbar flex flex-wrap gap-2">
+                        {profileFormData.profileType && getSpecializationsForRole(profileFormData.profileType).length > 0 ? (
+                          getSpecializationsForRole(profileFormData.profileType).map(spec => {
+                            const currentSkills = profileFormData.skills ? profileFormData.skills.split(',').map(s => s.trim()) : [];
+                            const isSelected = currentSkills.includes(spec);
+                            return (
+                              <button
+                                key={spec}
+                                type="button"
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setProfileFormData({...profileFormData, skills: currentSkills.filter(s => s !== spec).join(', ')});
+                                  } else {
+                                    if (currentSkills.length >= 5) {
+                                      alert("You can select up to 5 specializations.");
+                                      return;
+                                    }
+                                    setProfileFormData({...profileFormData, skills: [...currentSkills, spec].filter(Boolean).join(', ')});
+                                  }
+                                }}
+                                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                                  isSelected 
+                                    ? 'bg-primary text-white shadow-md border border-primary' 
+                                    : 'bg-surface text-textMuted border border-divider hover:border-textMuted hover:text-textMain'
+                                }`}
+                              >
+                                {spec}
+                              </button>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-textMuted p-2">Select a primary role first to see specializations.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Availability & Location */}
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-divider pb-8">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-textMuted uppercase ml-1">Location</label>
+                    <div className="relative">
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={16} />
+                      <input 
+                        type="text"
+                        value={profileFormData.location}
+                        onChange={(e) => setProfileFormData({...profileFormData, location: e.target.value})}
+                        className="w-full pl-12 pr-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain outline-none focus:border-primary transition"
+                        placeholder="e.g. Lagos, Nigeria"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-textMuted uppercase ml-1">Availability</label>
+                    <select 
+                      value={profileFormData.availabilityStatus}
+                      onChange={(e) => setProfileFormData({...profileFormData, availabilityStatus: e.target.value})}
+                      className="w-full px-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain outline-none focus:border-primary transition appearance-none"
+                    >
+                      <option value="AVAILABLE">Available for Collab</option>
+                      <option value="OPEN_TO_WORK">Looking for Work</option>
+                      <option value="BUSY">Booked / Busy</option>
+                    </select>
+                  </div>
+                </section>
+
+                {/* Long Form About */}
+                <section className="space-y-1 border-b border-divider pb-8">
+                  <label className="text-xs font-bold text-textMuted uppercase ml-1">Your Creative Story</label>
+                  <textarea 
+                    value={profileFormData.longAbout}
+                    onChange={(e) => setProfileFormData({...profileFormData, longAbout: e.target.value})}
+                    rows={4}
+                    className="w-full px-4 py-3 bg-background border border-divider rounded-xl text-sm font-medium text-textMain focus:border-primary outline-none transition resize-y"
+                    placeholder="Tell your story, your style, your influences..."
+                  />
+                </section>
+
+                {/* Social Links */}
+                <section className="space-y-4 border-b border-divider pb-8">
+                  <h3 className="text-xs font-black text-primary uppercase tracking-widest">Digital Presence</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={16} />
+                      <input 
+                        type="text"
+                        value={profileFormData.socialLinks.instagram}
+                        onChange={(e) => setProfileFormData({...profileFormData, socialLinks: {...profileFormData.socialLinks, instagram: e.target.value}})}
+                        className="w-full pl-12 pr-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain outline-none focus:border-primary transition"
+                        placeholder="Instagram User/URL"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted" size={16} />
+                      <input 
+                        type="text"
+                        value={profileFormData.socialLinks.youtube}
+                        onChange={(e) => setProfileFormData({...profileFormData, socialLinks: {...profileFormData.socialLinks, youtube: e.target.value}})}
+                        className="w-full pl-12 pr-4 py-3 bg-background border border-divider rounded-xl text-sm font-bold text-textMain outline-none focus:border-primary transition"
+                        placeholder="YouTube Channel/URL"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                <button
+                  type="submit"
+                  disabled={loadingProfile}
+                  className="bg-primary text-[var(--text-primary)] px-6 py-3 rounded-xl font-bold hover:scale-[1.02] transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2 shadow-md"
+                >
+                  {loadingProfile ? <Loader2 className="animate-spin" size={18} /> : <><Check size={18} /> Save Profile</>}
+                </button>
+              </form>
+            </motion.div>
+          )}
+
           {activeTab === 'ACCOUNT' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <h2 className="text-xl font-bold text-textMain mb-6 flex items-center gap-2">
-                <User size={24} className="text-primary" /> Profile Details
+                <User size={24} className="text-primary" /> Account Details
               </h2>
 
               {accountStatus && (
@@ -164,9 +387,9 @@ const Settings = () => {
                 <button
                   type="submit"
                   disabled={loadingAccount || email === user?.email}
-                  className="bg-primary text-[var(--text-primary)] px-6 py-2.5 rounded-xl font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2 shadow-md"
+                  className="bg-primary text-[var(--text-primary)] px-6 py-2.5 rounded-xl font-bold hover:scale-[1.02] transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2 shadow-md"
                 >
-                  {loadingAccount ? <Loader2 className="animate-spin" size={18} /> : 'Save Changes'}
+                  {loadingAccount ? <Loader2 className="animate-spin" size={18} /> : 'Update Email'}
                 </button>
               </form>
             </motion.div>
@@ -185,7 +408,7 @@ const Settings = () => {
               ) : (
                 <>
                   {securityStatus && (
-                    <div className={`p-4 rounded-xl mb-6 text-sm font-semibold flex items-start gap-3 ${
+                     <div className={`p-4 rounded-xl mb-6 text-sm font-semibold flex items-start gap-3 ${
                       securityStatus.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
                     }`}>
                       {securityStatus.type === 'success' && <CheckCircle size={20} className="shrink-0" />}
@@ -214,7 +437,7 @@ const Settings = () => {
                     <button
                       type="submit"
                       disabled={loadingSecurity || !currentPassword || !newPassword}
-                      className="bg-primary text-[var(--text-primary)] px-6 py-2.5 rounded-xl font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2 shadow-md"
+                      className="bg-primary text-[var(--text-primary)] px-6 py-2.5 rounded-xl font-bold hover:scale-[1.02] transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2 shadow-md"
                     >
                       {loadingSecurity ? <Loader2 className="animate-spin" size={18} /> : 'Update Password'}
                     </button>
@@ -276,7 +499,7 @@ const Settings = () => {
               </h2>
 
               {prefStatus && (
-                <div className={`p-4 rounded-xl mb-6 text-sm font-semibold flex items-start gap-3 ${
+                 <div className={`p-4 rounded-xl mb-6 text-sm font-semibold flex items-start gap-3 ${
                   prefStatus.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
                 }`}>
                   {prefStatus.type === 'success' && <CheckCircle size={20} className="shrink-0" />}

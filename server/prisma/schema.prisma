@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 generator client {
@@ -176,14 +176,15 @@ model ProfileAnalytics {
 }
 
 model Post {
-  id           String  @id @default(cuid())
-  content      String?
-  contentType  String  @default("TEXT") // TEXT, IMAGE, VIDEO
-  mediaUrl     String?
-  caption      String?
-  postCategory String  @default("GENERAL") // UPDATE, SHOWCASE, QUESTION
-  isCollabCard Boolean @default(false)
-  collabId     String?
+  id             String    @id @default(uuid())
+  content        String?   @db.Text
+  contentType    String    @default("TEXT") // TEXT, IMAGE, VIDEO
+  mediaUrl       String?
+  caption        String?   @db.Text
+  postCategory   String    @default("GENERAL") // UPDATE, SHOWCASE, QUESTION
+  tags           String?   // Added tags field for specializations mapping
+  isCollabCard   Boolean   @default(false)
+  collabId       String?
 
   createdAt DateTime @default(now())
   creator   User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -247,6 +248,7 @@ model Collab {
 
   poster    User     @relation(fields: [posterId], references: [id], onDelete: Cascade)
   posterId  String
+  targetCircleId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

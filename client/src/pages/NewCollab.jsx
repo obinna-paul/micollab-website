@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { 
@@ -75,6 +75,10 @@ const getRecommendedSkills = (title, category) => {
 
 const NewCollab = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const targetCircleId = queryParams.get('circleId');
+
   const { token } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -145,7 +149,8 @@ const NewCollab = () => {
       await axios.post('/api/collabs', {
         ...formData,
         location: finalLocation,
-        budget: finalBudget
+        budget: finalBudget,
+        targetCircleId: targetCircleId || undefined
       }, {
          headers: { Authorization: `Bearer ${token}` }
       });

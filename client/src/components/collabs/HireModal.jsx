@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle, ArrowRight, ShieldCheck, CreditCard, Layout } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../../store/useAuthStore';
+import useAuthStore from '../../store/useAuthStore';
 
 const HireModal = ({ collab, proposal, isOpen, onClose }) => {
   const navigate = useNavigate();

@@ -13,6 +13,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
 import FilesHub from './FilesHub';
+import InviteMemberModal from '../components/InviteMemberModal';
 
 const CircleWorkspace = () => {
   const { id } = useParams();
@@ -33,6 +34,8 @@ const CircleWorkspace = () => {
   const fileInputRef = useRef(null);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isRecruitMenuOpen, setIsRecruitMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -367,9 +370,56 @@ const CircleWorkspace = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="bg-[var(--bg-surface-alt)] rounded-2xl p-7 border border-[var(--border-primary)]">
-           <div className="flex items-center justify-between mb-5">
+           <div className="flex items-center justify-between mb-5 relative">
               <h3 className="font-bold text-[var(--text-primary)] text-sm">Active Team</h3>
-              <button className="text-[10px] font-bold text-[#7B5CFA] hover:text-[#A78BFA] transition">+ Recruit</button>
+              
+              {/* Recruit Dropdown */}
+              <div className="relative z-[100]">
+                <button 
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsRecruitMenuOpen(!isRecruitMenuOpen);
+                  }}
+                  className="text-sm font-black text-white bg-[#7B5CFA] hover:bg-[#6B4CE0] px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-xl shadow-[#7B5CFA]/30"
+                >
+                  + Recruit <ChevronDown size={16} className={`transition-transform ${isRecruitMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                <AnimatePresence>
+                  {isRecruitMenuOpen && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl shadow-xl z-50 overflow-hidden"
+                    >
+                      <button 
+                        onClick={() => {
+                          setIsRecruitMenuOpen(false);
+                          setIsInviteModalOpen(true);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
+                      >
+                        <Users size={14} className="text-[#34D399]" />
+                        Invite from Network
+                      </button>
+                      <div className="h-px bg-[var(--border-primary)]" />
+                      <button 
+                        onClick={() => {
+                          setIsRecruitMenuOpen(false);
+                          navigate(`/collabs/create?circleId=${id}`);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
+                      >
+                        <Target size={14} className="text-[#FFAB4C]" />
+                        Create Collab Listing
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
            </div>
            <div className="space-y-3.5">
               {circle.members?.map((m, i) => (
@@ -1550,8 +1600,14 @@ const CircleWorkspace = () => {
               </div>
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+
+      <InviteMemberModal 
+        isOpen={isInviteModalOpen} 
+        onClose={() => setIsInviteModalOpen(false)} 
+        circleId={id} 
+      />
     </div>
   );
 };
