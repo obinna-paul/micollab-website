@@ -91,6 +91,16 @@ const AdminDashboard = () => {
 
   const renderOverview = () => {
     if (!metrics) return null;
+
+    const formatTimeSpent = (seconds) => {
+      const hours = Math.floor(seconds / 3600);
+      if (hours > 24) {
+        const days = Math.floor(hours / 24);
+        return `${days} Days`;
+      }
+      return `${hours} Hours`;
+    };
+
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -99,6 +109,35 @@ const AdminDashboard = () => {
             <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Total Users</p>
             <h3 className="text-3xl font-black text-[var(--text-primary)]">{metrics.totalUsers}</h3>
             <p className="text-xs text-green-500 font-bold mt-2 flex items-center gap-1"><TrendingUp size={14} /> +12% this week</p>
+          </div>
+          <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm relative overflow-hidden group hover:border-[#00D4FF]/50 transition duration-300">
+            <div className="absolute top-0 right-0 p-6 flex gap-2">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+            </div>
+            <Activity size={24} className="text-[#00D4FF] mb-3" />
+            <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Active Right Now</p>
+            <h3 className="text-3xl font-black text-[var(--text-primary)]">{metrics.activeNow || 0}</h3>
+          </div>
+          <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm">
+            <Users size={24} className="text-[#7B5CFA] mb-3" />
+            <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Daily Active Users (DAU)</p>
+            <h3 className="text-3xl font-black text-[var(--text-primary)]">{metrics.dau || 0}</h3>
+          </div>
+          <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm">
+            <Users size={24} className="text-purple-400 mb-3" />
+            <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Monthly Active Users (MAU)</p>
+            <h3 className="text-3xl font-black text-[var(--text-primary)]">{metrics.mau || 0}</h3>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm">
+            <Clock size={24} className="text-pink-500 mb-3" />
+            <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Total Time Spent</p>
+            <h3 className="text-3xl font-black text-[var(--text-primary)]">{formatTimeSpent(metrics.totalTimeSpentSeconds)}</h3>
           </div>
           <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm">
             <Activity size={24} className="text-green-500 mb-3" />
@@ -112,16 +151,9 @@ const AdminDashboard = () => {
           </div>
           <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm">
             <DollarSign size={24} className="text-amber-500 mb-3" />
-            <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Available (Ready to Withdraw)</p>
+            <p className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-widest">Available (Ready)</p>
             <h3 className="text-3xl font-black text-[var(--text-primary)]">₦{metrics.totalAvailable.toLocaleString()}</h3>
           </div>
-        </div>
-
-        {/* Future expansion: Charts go here */}
-        <div className="bg-[var(--bg-surface)] p-8 rounded-3xl border border-[var(--border-primary)] text-center shadow-sm">
-           <Clock size={32} className="mx-auto text-[var(--text-muted)] mb-3" />
-           <h3 className="text-xl font-black text-[var(--text-primary)]">Advanced Analytics Coming Soon</h3>
-           <p className="text-[var(--text-secondary)]">Daily Active Users, Time spent on app, and Retention Cohorts are being instrumented.</p>
         </div>
       </div>
     );

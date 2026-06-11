@@ -24,13 +24,39 @@ import SearchResults from './pages/SearchResults';
 import AdminDashboard from './pages/AdminDashboard'; // We'll build this soon
 import AdminRoute from './components/AdminRoute';
 import useAuthStore from './store/useAuthStore';
+import axios from 'axios';
 
 function App() {
-  const { initAuth, isAuthenticated, user } = useAuthStore();
+  const { initAuth, isAuthenticated, user, token } = useAuthStore();
 
   useEffect(() => {
     initAuth();
   }, [initAuth]);
+
+  // Global Activity Tracker
+  useEffect(() => {
+    let intervalId;
+    if (isAuthenticated && token) {
+      // Ping immediately upon mount/auth, then every 60 seconds
+      const pingActivity = async () => {
+        if (document.visibilityState === 'visible') {
+          try {
+            await axios.post('/api/users/activity-ping', {}, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+          } catch (err) {
+            console.error('Activity ping failed:', err);
+          }
+        }
+      };
+      
+      pingActivity(); // initial ping
+      intervalId = setInterval(pingActivity, 60000);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isAuthenticated, token]);
 
   // A user is considered fully onboarded if their skills property is present (even if empty string)
   const isOnboarded = isAuthenticated && user?.skills !== null && user?.skills !== undefined;
