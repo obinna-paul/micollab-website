@@ -581,6 +581,11 @@ const Register = () => {
                     Already have an account? {' '}
                     <Link to="/login" className="text-[#00B5D8] hover:text-[var(--text-primary)] transition">Log in</Link>
                   </p>
+                  
+                  <p className="pt-2 text-center text-[var(--text-secondary)] text-[10px] font-bold">
+                    By signing up, you agree to our {' '}
+                    <Link to="/policies" target="_blank" className="text-[#7B5CFA] hover:underline transition">Usage Policies</Link>.
+                  </p>
                 </form>
               </motion.div>
             )}

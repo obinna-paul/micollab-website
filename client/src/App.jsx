@@ -25,15 +25,37 @@ import AdminDashboard from './pages/AdminDashboard'; // We'll build this soon
 import AdminRoute from './components/AdminRoute';
 import Disputes from './pages/Disputes';
 import DisputeRoom from './pages/DisputeRoom';
+import Policies from './pages/Policies';
 import useAuthStore from './store/useAuthStore';
 import axios from 'axios';
 
 function App() {
-  const { initAuth, isAuthenticated, user, token } = useAuthStore();
+  const { initAuth, isAuthenticated, user, token, logout } = useAuthStore();
 
   useEffect(() => {
     initAuth();
   }, [initAuth]);
+
+  // Global Axios Interceptor for Bans/Auth Failures
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          if (error.response.data?.error?.includes('suspended') || error.response.data?.error?.includes('banned')) {
+            alert('Your account has been suspended for violating our terms of service.');
+            logout();
+          } else if (error.response.status === 401) {
+            logout();
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, [logout]);
 
   // Global Activity Tracker
   useEffect(() => {
@@ -102,6 +124,7 @@ function App() {
       <Route path="/disputes/:id" element={requireAuth(<MainLayout><DisputeRoom /></MainLayout>)} />
 
       <Route path="/share/:linkId" element={<PublicSharePage />} />
+      <Route path="/policies" element={<Policies />} />
 
       {/* Catch all */}
       <Route path="*" element={<Navigate to={isAuthenticated && isOnboarded ? "/" : "/login"} />} />
