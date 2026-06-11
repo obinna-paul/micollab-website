@@ -9,6 +9,7 @@ import {
   Paperclip, Layout, DollarSign
 } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
+import HireModal from '../components/collabs/HireModal';
 
 const CollabManage = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const CollabManage = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
   const [activeTab, setActiveTab] = useState('ALL');
+  const [selectedProposalForHire, setSelectedProposalForHire] = useState(null);
 
   useEffect(() => {
     fetchCollab();
@@ -259,13 +261,11 @@ const CollabManage = () => {
                           )}
                           {proposal.status !== 'ACCEPTED' && (
                             <button 
-                              onClick={() => handleDepositAndAccept(proposal.id)}
+                              onClick={() => setSelectedProposalForHire(proposal)}
                               disabled={updating === proposal.id}
-                              className="flex-1 md:flex-none p-3 bg-[#34D399]/10 border border-[#34D399]/20 text-[#34D399] hover:bg-[#34D399]/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
-                              title="Deposit Funds & Accept"
+                              className="flex-1 md:flex-none px-6 py-3 bg-[#34D399] hover:bg-[#10B981] text-white rounded-xl transition-colors font-black uppercase text-xs tracking-widest flex items-center justify-center gap-2"
                             >
-                               {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <DollarSign size={16} />} 
-                               Pay & Accept
+                               Hire
                             </button>
                           )}
                           {proposal.status === 'ACCEPTED' && proposal.escrowStatus === 'HELD' && (
@@ -295,7 +295,29 @@ const CollabManage = () => {
                                Dispute Under Review
                             </div>
                           )}
-                          {proposal.status !== 'REJECTED' && (
+                          {proposal.status === 'ACCEPTED' && proposal.escrowStatus === 'HELD' && (
+                            <button 
+                              onClick={async () => {
+                                setUpdating(proposal.id);
+                                try {
+                                  await axios.post('/api/escrow/release', { proposalId: proposal.id }, {
+                                    headers: { Authorization: `Bearer ${token}` }
+                                  });
+                                  fetchCollab();
+                                } catch (err) {
+                                  alert('Failed to release funds');
+                                } finally {
+                                  setUpdating(null);
+                                }
+                              }}
+                              disabled={updating === proposal.id}
+                              className="flex-1 md:flex-none p-3 bg-[#7B5CFA]/10 border border-[#7B5CFA]/20 text-[#7B5CFA] hover:bg-[#7B5CFA]/20 rounded-xl transition-all flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
+                            >
+                              {updating === proposal.id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
+                              Mark Completed & Release
+                            </button>
+                          )}
+                          {proposal.status !== 'REJECTED' && proposal.status !== 'ACCEPTED' && (
                             <button 
                               onClick={() => handleUpdateStatus(proposal.id, 'REJECTED')}
                               disabled={updating === proposal.id}
@@ -366,6 +388,16 @@ const CollabManage = () => {
           </div>
         )}
       </div>
+
+      <HireModal 
+        collab={collab} 
+        proposal={selectedProposalForHire} 
+        isOpen={!!selectedProposalForHire} 
+        onClose={() => {
+          setSelectedProposalForHire(null);
+          fetchCollab(); // refresh status
+        }} 
+      />
     </div>
   );
 };

@@ -9,6 +9,7 @@ import Collabs from './pages/Collabs';
 import CollabDetail from './pages/CollabDetail';
 import NewCollab from './pages/NewCollab';
 import CollabManage from './pages/CollabManage';
+import EscrowCheckout from './pages/EscrowCheckout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Network from './pages/Network';
@@ -113,6 +114,7 @@ function App() {
       <Route path="/collabs/new" element={requireAuth(<MainLayout><NewCollab /></MainLayout>)} />
       <Route path="/collabs/:id" element={requireAuth(<MainLayout><CollabDetail /></MainLayout>)} />
       <Route path="/collabs/manage/:id" element={requireAuth(<MainLayout><CollabManage /></MainLayout>)} />
+      <Route path="/escrow/checkout/collab/:id" element={requireAuth(<MainLayout><EscrowCheckout /></MainLayout>)} />
       <Route path="/wallet" element={requireAuth(<MainLayout><Wallet /></MainLayout>)} />
       <Route path="/admin/dashboard" element={requireAuth(requireAdmin(<MainLayout><AdminDashboard /></MainLayout>))} />
       <Route path="/notifications" element={requireAuth(<MainLayout><Notifications /></MainLayout>)} />

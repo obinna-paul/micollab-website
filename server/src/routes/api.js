@@ -9,6 +9,7 @@ const messageController = require('../controllers/messageController');
 const adminMiddleware = require('../middlewares/adminMiddleware');
 const superAdminMiddleware = require('../middlewares/superAdminMiddleware');
 const disputeController = require('../controllers/disputeController');
+const escrowController = require('../controllers/escrowController');
 
 // Upload Route
 router.post('/upload', authMiddleware, uploadController.uploadMiddleware, uploadController.uploadMedia);
@@ -112,8 +113,13 @@ router.get('/collabs/my-collabs', authMiddleware, collabController.getMyCollabs)
 router.get('/collabs/my-proposals', authMiddleware, collabController.getMyProposals);
 router.get('/collabs/:id', collabController.getCollabById);
 router.post('/collabs', authMiddleware, collabController.createCollab);
+router.post('/collabs/:id/convertToCircle', authMiddleware, collabController.convertToCircle);
 router.post('/collabs/apply', authMiddleware, collabController.submitProposal);
 router.patch('/collabs/proposals/:proposalId/status', authMiddleware, collabController.updateProposalStatus);
+
+// Escrow Routes
+router.post('/escrow/deposit', authMiddleware, escrowController.deposit);
+router.post('/escrow/release', authMiddleware, escrowController.release);
 
 // Network Routes
 const networkController = require('../controllers/networkController');

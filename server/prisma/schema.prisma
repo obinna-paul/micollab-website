@@ -478,13 +478,17 @@ model CircleFolder {
 }
 
 model CircleMilestone {
-  id          String    @id @default(cuid())
-  circleId    String
-  circle      Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  deadline    DateTime?
-  status      String    @default("PENDING") // PENDING, COMPLETED
+  id           String    @id @default(cuid())
+  circleId     String
+  circle       Circle    @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  deadline     DateTime?
+  status       String    @default("PENDING") // PENDING, COMPLETED
+  
+  // Escrow & Payout Integration
+  payoutAmount Float?
+  payoutStatus String    @default("UNFUNDED") // UNFUNDED, FUNDED, RELEASED, DISPUTED
 }
 
 model ProjectCredit {
@@ -588,12 +592,14 @@ model Transaction {
   userId          String
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount          Float
+  feeAmount       Float?   @default(0) // Platform fee deducted
+  netAmount       Float?   // Amount after fee
   currency        String   @default("NGN")
-  type            String   // DEPOSIT, WITHDRAWAL, ESCROW_HOLD, ESCROW_RELEASE
+  type            String   // DEPOSIT, WITHDRAWAL, ESCROW_HOLD, ESCROW_RELEASE, PLATFORM_FEE
   status          String   @default("COMPLETED") // PENDING, COMPLETED, FAILED
   reference       String?  @unique // Paystack or external reference
   description     String?
-  relatedEntityId String?  // e.g. Proposal ID
+  relatedEntityId String?  // e.g. Proposal ID, Milestone ID
   createdAt       DateTime @default(now())
 }
 

@@ -183,19 +183,19 @@ exports.createCollab = async (req, res) => {
 
 exports.submitProposal = async (req, res) => {
   try {
-    const creatorId = req.user.id;
+    const userId = req.user.id;
     const { collabId, coverLetter, portfolioLinks, attachments } = req.body;
 
-    const existing = await prisma.proposal.findFirst({ where: { collabId, creatorId } });
+    const existing = await prisma.proposal.findFirst({ where: { collabId, userId } });
     if (existing) return res.status(400).json({ error: 'You have already applied to this collab' });
 
     const collab = await prisma.collab.findUnique({ where: { id: collabId } });
-    if (collab.posterId === creatorId) return res.status(400).json({ error: 'You cannot apply to your own collab' });
+    if (collab.posterId === userId) return res.status(400).json({ error: 'You cannot apply to your own collab' });
 
     const proposal = await prisma.proposal.create({
       data: { 
         collabId, 
-        creatorId, 
+        userId, 
         coverLetter, 
         portfolioLinks,
         attachments: {
@@ -209,7 +209,7 @@ exports.submitProposal = async (req, res) => {
     // Notify poster
     await notificationController.createNotification(
       collab.posterId,
-      creatorId,
+      userId,
       'COLLAB_PROPOSAL',
       'New Project Proposal',
       `submitted a proposal for: ${collab.title}`,
@@ -244,33 +244,29 @@ exports.updateProposalStatus = async (req, res) => {
 
     // messaging unlock: Create a conversation thread if shortlisted/accepted
     if (status === 'SHORTLISTED' || status === 'ACCEPTED') {
-      const existingThread = await prisma.proposalThread.findFirst({
-        where: { 
-          collabId: proposal.collabId,
-          creatorId: proposal.creatorId
-        }
+      // Find if conversation already exists between the two users
+      const existingConvo = await prisma.conversation.findFirst({
+        where: {
+          participants: {
+            every: {
+              userId: { in: [proposal.collab.posterId, proposal.userId] }
+            }
+          }
+        },
+        include: { participants: true }
       });
 
-      if (!existingThread) {
+      const hasBoth = existingConvo && existingConvo.participants.length === 2;
+
+      if (!hasBoth) {
         const conversation = await prisma.conversation.create({
           data: {
-            type: 'PROPOSAL',
             participants: {
               create: [
                 { userId: proposal.collab.posterId },
-                { userId: proposal.creatorId }
+                { userId: proposal.userId }
               ]
             }
-          }
-        });
-
-        await prisma.proposalThread.create({
-          data: {
-            conversationId: conversation.id,
-            collabId: proposal.collabId,
-            creatorId: proposal.creatorId,
-            scoutId: proposal.collab.posterId,
-            status: status
           }
         });
 
@@ -282,12 +278,6 @@ exports.updateProposalStatus = async (req, res) => {
             content: `👋 I've reviewed your proposal for "${proposal.collab.title}" and would like to chat further!`
           }
         });
-      } else {
-         // Update existing thread status
-         await prisma.proposalThread.update({
-            where: { id: existingThread.id },
-            data: { status }
-         });
       }
     }
 
@@ -295,7 +285,7 @@ exports.updateProposalStatus = async (req, res) => {
 
     // Notify applicant
     await notificationController.createNotification(
-      proposal.creatorId,
+      proposal.userId,
       userId,
       'COLLAB_PROPOSAL',
       'Proposal Status Update',
@@ -325,7 +315,7 @@ exports.getMyProposals = async (req, res) => {
   try {
     const userId = req.user.id;
     const proposals = await prisma.proposal.findMany({
-      where: { creatorId: userId },
+      where: { userId },
       include: {
         collab: {
           include: {
@@ -338,5 +328,46 @@ exports.getMyProposals = async (req, res) => {
     res.json(proposals);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch your proposals' });
+  }
+};
+
+exports.convertToCircle = async (req, res) => {
+  try {
+    const { id: collabId } = req.params;
+    const { proposalId } = req.body;
+    const userId = req.user.id;
+
+    // Verify ownership and proposal
+    const collab = await prisma.collab.findUnique({ where: { id: collabId } });
+    if (!collab || collab.posterId !== userId) {
+      return res.status(403).json({ error: 'Unauthorized to convert this collab' });
+    }
+
+    const proposal = await prisma.proposal.findUnique({ where: { id: proposalId } });
+    if (!proposal || proposal.collabId !== collabId) {
+      return res.status(400).json({ error: 'Invalid proposal' });
+    }
+
+    // Create the Circle
+    const circle = await prisma.circle.create({
+      data: {
+        ownerId: userId,
+        title: collab.title,
+        description: collab.description,
+        isPrivate: true,
+        category: collab.category,
+        members: {
+          create: [
+            { userId: userId, role: 'OWNER' },
+            { userId: proposal.userId, role: 'MEMBER' }
+          ]
+        }
+      }
+    });
+
+    res.status(201).json({ message: 'Circle generated', circle });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to generate Circle' });
   }
 };
