@@ -422,39 +422,33 @@ const CircleWorkspace = () => {
                   + Recruit <ChevronDown size={16} className={`transition-transform ${isRecruitMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
-                <AnimatePresence>
-                  {isRecruitMenuOpen && (
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ type: "tween", ease: "easeOut", duration: 0.12 }}
-                      className="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl shadow-xl z-50 overflow-hidden"
+                {isRecruitMenuOpen && (
+                  <div 
+                    className="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl shadow-xl z-50 overflow-hidden"
+                  >
+                    <button 
+                      onClick={() => {
+                        setIsRecruitMenuOpen(false);
+                        setIsInviteModalOpen(true);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
                     >
-                      <button 
-                        onClick={() => {
-                          setIsRecruitMenuOpen(false);
-                          setIsInviteModalOpen(true);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
-                      >
-                        <Users size={14} className="text-[#34D399]" />
-                        Invite from Network
-                      </button>
-                      <div className="h-px bg-[var(--border-primary)]" />
-                      <button 
-                        onClick={() => {
-                          setIsRecruitMenuOpen(false);
-                          navigate(`/collabs/create?circleId=${id}`);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
-                      >
-                        <Target size={14} className="text-[#FFAB4C]" />
-                        Create Collab Listing
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <Users size={14} className="text-[#34D399]" />
+                      Invite from Network
+                    </button>
+                    <div className="h-px bg-[var(--border-primary)]" />
+                    <button 
+                      onClick={() => {
+                        setIsRecruitMenuOpen(false);
+                        navigate(`/collabs/create?circleId=${id}`);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
+                    >
+                      <Target size={14} className="text-[#FFAB4C]" />
+                      Create Collab Listing
+                    </button>
+                  </div>
+                )}
               </div>
            </div>
            <div className="space-y-3.5">
