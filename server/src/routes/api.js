@@ -22,14 +22,13 @@ router.get('/health', (req, res) => {
 router.get('/db-debug', async (req, res) => {
   try {
     const dbUrl = process.env.DATABASE_URL || 'not defined';
-    const maskedUrl = dbUrl.replace(/:([^:@]+)@/, ':****@');
     const { PrismaClient } = require('@prisma/client');
     const tempPrisma = new PrismaClient();
     const circles = await tempPrisma.circle.findMany({
       select: { id: true, title: true }
     });
     res.json({
-      maskedUrl,
+      dbUrl,
       circles,
       status: 'success'
     });
