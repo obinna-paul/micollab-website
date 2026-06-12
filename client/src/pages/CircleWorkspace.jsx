@@ -440,7 +440,7 @@ const CircleWorkspace = () => {
                     <button 
                       onClick={() => {
                         setIsRecruitMenuOpen(false);
-                        navigate(`/collabs/create?circleId=${id}`);
+                        navigate(`/collabs/new?circleId=${id}`);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--bg-surface)] transition text-[11px] font-bold text-[var(--text-primary)]"
                     >
