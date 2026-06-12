@@ -19,27 +19,6 @@ router.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Micollab API is running' });
 });
 
-router.get('/db-debug', async (req, res) => {
-  try {
-    const dbUrl = process.env.DATABASE_URL || 'not defined';
-    const { PrismaClient } = require('@prisma/client');
-    const tempPrisma = new PrismaClient();
-    const circles = await tempPrisma.circle.findMany({
-      select: { id: true, title: true }
-    });
-    res.json({
-      dbUrl,
-      circles,
-      status: 'success'
-    });
-  } catch (err) {
-    res.status(500).json({
-      error: err.message,
-      stack: err.stack
-    });
-  }
-});
-
 // Global Search
 const searchController = require('../controllers/searchController');
 router.get('/search', searchController.globalSearch);
