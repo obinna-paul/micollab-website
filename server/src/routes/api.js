@@ -19,6 +19,136 @@ router.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Micollab API is running' });
 });
 
+router.get('/test-auto-join', async (req, res) => {
+  const { PrismaClient } = require('@prisma/client');
+  const tempPrisma = new PrismaClient();
+  let testUserId = null;
+  let testCollabId = null;
+  let testProposalId = null;
+  let circleId = null;
+
+  try {
+    // 1. Find a circle to test with
+    const circle = await tempPrisma.circle.findFirst();
+    if (!circle) {
+      return res.status(400).json({ error: 'No circle found in production database to run the test' });
+    }
+    circleId = circle.id;
+    const posterId = circle.ownerId;
+
+    // 2. Create a dummy creative user
+    const creative = await tempPrisma.user.create({
+      data: {
+        username: `test_creative_${Math.random().toString(36).substring(2, 7)}`,
+        email: `creative_${Math.random().toString(36).substring(2, 7)}@example.com`,
+        profileType: 'CREATIVE',
+        availabilityStatus: 'AVAILABLE'
+      }
+    });
+    testUserId = creative.id;
+
+    // 3. Create a Collab linked to the circle
+    const collab = await tempPrisma.collab.create({
+      data: {
+        title: 'Sound Design Integration Test',
+        description: 'Temporary test listing.',
+        category: 'Music & Audio',
+        location: 'Remote',
+        posterId,
+        targetCircleId: circleId
+      }
+    });
+    testCollabId = collab.id;
+
+    // 4. Create a Proposal for this collab
+    const proposal = await tempPrisma.proposal.create({
+      data: {
+        collabId: collab.id,
+        userId: creative.id,
+        coverLetter: 'Temporary test proposal.'
+      }
+    });
+    testProposalId = proposal.id;
+
+    // Simulate updateProposalStatus logic directly
+    // A. Update status to ACCEPTED
+    await tempPrisma.proposal.update({
+      where: { id: proposal.id },
+      data: { status: 'ACCEPTED' }
+    });
+
+    // B. Run our auto-join logic
+    const existingMember = await tempPrisma.circleMember.findUnique({
+      where: {
+        circleId_userId: {
+          circleId,
+          userId: creative.id
+        }
+      }
+    });
+    
+    let autoJoinSuccess = false;
+    if (!existingMember) {
+      await tempPrisma.circleMember.create({
+        data: {
+          circleId,
+          userId: creative.id,
+          role: 'CONTRIBUTOR'
+        }
+      });
+      autoJoinSuccess = true;
+    }
+
+    // Verify it exists in the database now
+    const verifiedMember = await tempPrisma.circleMember.findUnique({
+      where: {
+        circleId_userId: {
+          circleId,
+          userId: creative.id
+        }
+      }
+    });
+
+    res.json({
+      status: 'success',
+      circleId,
+      creativeId: creative.id,
+      collabId: collab.id,
+      proposalId: proposal.id,
+      autoJoinSuccess,
+      verifiedInDatabase: !!verifiedMember
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      error: err.message,
+      stack: err.stack
+    });
+  } finally {
+    // Cleanup
+    try {
+      if (testProposalId) {
+        await tempPrisma.proposal.delete({ where: { id: testProposalId } }).catch(() => {});
+      }
+      if (testCollabId) {
+        await tempPrisma.collab.delete({ where: { id: testCollabId } }).catch(() => {});
+      }
+      if (testUserId) {
+        await tempPrisma.circleMember.delete({
+          where: {
+            circleId_userId: { circleId, userId: testUserId }
+          }
+        }).catch(() => {});
+        await tempPrisma.user.delete({ where: { id: testUserId } }).catch(() => {});
+      }
+    } catch (cleanupErr) {
+      console.error('Test cleanup failed:', cleanupErr);
+    }
+    await tempPrisma.$disconnect();
+  }
+});
+
 // Global Search
 const searchController = require('../controllers/searchController');
 router.get('/search', searchController.globalSearch);

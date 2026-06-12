@@ -100,6 +100,46 @@ async function completeEscrowDeposit(proposalId, creativeId, amount, reference) 
     data: { status: 'ACCEPTED', escrowStatus: 'HELD' }
   });
 
+  // Auto-join circle if collab is linked to a circle
+  try {
+    const proposal = await prisma.proposal.findUnique({
+      where: { id: proposalId },
+      include: { collab: true }
+    });
+
+    if (proposal && proposal.collab.targetCircleId) {
+      const existingMember = await prisma.circleMember.findUnique({
+        where: {
+          circleId_userId: {
+            circleId: proposal.collab.targetCircleId,
+            userId: creativeId
+          }
+        }
+      });
+      if (!existingMember) {
+        await prisma.circleMember.create({
+          data: {
+            circleId: proposal.collab.targetCircleId,
+            userId: creativeId,
+            role: 'CONTRIBUTOR'
+          }
+        });
+        console.log(`Auto-added user ${creativeId} to circle ${proposal.collab.targetCircleId}`);
+        
+        await notificationController.createNotification(
+          creativeId,
+          proposal.collab.posterId,
+          'CIRCLE_JOINED',
+          'Added to Circle Workspace',
+          `automatically added you to the collaboration circle workspace for: ${proposal.collab.title}`,
+          `/circles/${proposal.collab.targetCircleId}`
+        );
+      }
+    }
+  } catch (circleErr) {
+    console.error('Error auto-adding user to circle in completeEscrowDeposit:', circleErr);
+  }
+
   // 2. Add to Creative's Escrow Balance
   let wallet = await prisma.wallet.findUnique({ where: { userId: creativeId } });
   if (!wallet) {

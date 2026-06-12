@@ -243,6 +243,41 @@ exports.updateProposalStatus = async (req, res) => {
       data: { status }
     });
 
+    // Auto-join circle if proposal is accepted and collab is linked to a circle
+    if (status === 'ACCEPTED' && proposal.collab.targetCircleId) {
+      try {
+        const existingMember = await prisma.circleMember.findUnique({
+          where: {
+            circleId_userId: {
+              circleId: proposal.collab.targetCircleId,
+              userId: proposal.userId
+            }
+          }
+        });
+        if (!existingMember) {
+          await prisma.circleMember.create({
+            data: {
+              circleId: proposal.collab.targetCircleId,
+              userId: proposal.userId,
+              role: 'CONTRIBUTOR'
+            }
+          });
+          console.log(`Auto-added user ${proposal.userId} to circle ${proposal.collab.targetCircleId}`);
+          
+          await notificationController.createNotification(
+            proposal.userId,
+            proposal.collab.posterId,
+            'CIRCLE_JOINED',
+            'Added to Circle Workspace',
+            `automatically added you to the collaboration circle workspace for: ${proposal.collab.title}`,
+            `/circles/${proposal.collab.targetCircleId}`
+          );
+        }
+      } catch (circleErr) {
+        console.error('Error auto-adding user to circle in updateProposalStatus:', circleErr);
+      }
+    }
+
     // messaging unlock: Create a conversation thread if shortlisted/accepted
     if (status === 'SHORTLISTED' || status === 'ACCEPTED') {
       // Find if conversation already exists between the two users
