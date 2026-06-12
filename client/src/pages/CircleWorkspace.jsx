@@ -428,7 +428,7 @@ const CircleWorkspace = () => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
+                      transition={{ type: "tween", ease: "easeOut", duration: 0.12 }}
                       className="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-base)] border border-[var(--border-primary)] rounded-xl shadow-xl z-50 overflow-hidden"
                     >
                       <button 
