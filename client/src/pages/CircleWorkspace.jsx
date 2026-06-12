@@ -26,6 +26,7 @@ const CircleWorkspace = () => {
   const [files, setFiles]       = useState([]);
   const [msgInput, setMsgInput] = useState('');
   const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
   const [sending, setSending]   = useState(false);
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('OVERVIEW');
@@ -84,6 +85,7 @@ const CircleWorkspace = () => {
 
   const fetchCircleData = useCallback(async () => {
     try {
+      setError(null);
       const circleRes = await axios.get(`/api/circles/${id}`, { headers });
       setCircle(circleRes.data);
       setMessages(circleRes.data.messages || []);
@@ -95,6 +97,7 @@ const CircleWorkspace = () => {
       setFiles(filesRes.data);
     } catch (err) {
       console.error('Circle fetch error:', err.response?.data || err.message);
+      setError(err.response?.data?.error || err.message);
     } finally {
       setLoading(false);
     }
@@ -329,6 +332,23 @@ const CircleWorkspace = () => {
       <div className="flex flex-col items-center justify-center h-[80vh] gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#7B5CFA]" />
         <p className="text-[var(--text-secondary)] text-sm font-medium">Powering up workspace...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh] gap-4 px-4 text-center">
+        <div className="text-xl font-black text-red-500 tracking-tight">Failed to Load Workspace</div>
+        <p className="text-[var(--text-secondary)] text-sm max-w-md">
+          {error}
+        </p>
+        <button 
+          onClick={() => { setError(null); setLoading(true); fetchCircleData(); }} 
+          className="btn-primary py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest mt-2 shadow-[0_0_15px_rgba(123,92,250,0.3)]"
+        >
+          Retry
+        </button>
       </div>
     );
   }
