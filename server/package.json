@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
+    "start": "npx prisma db push --accept-data-loss && node src/index.js",
     "dev": "nodemon src/index.js",
-    "build": "npm install && npx prisma generate"
+    "build": "npm install && npx prisma generate && npx prisma db push --accept-data-loss"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

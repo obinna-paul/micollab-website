@@ -111,7 +111,11 @@ exports.getCircleDetails = async (req, res) => {
     res.json(circle);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to fetch circle details' });
+    res.status(500).json({ 
+      error: 'Failed to fetch circle details', 
+      details: error.message, 
+      stack: error.stack 
+    });
   }
 };
 

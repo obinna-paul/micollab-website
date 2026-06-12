@@ -97,7 +97,7 @@ const CircleWorkspace = () => {
       setFiles(filesRes.data);
     } catch (err) {
       console.error('Circle fetch error:', err.response?.data || err.message);
-      setError(err.response?.data?.error || err.message);
+      setError(err.response?.data?.details || err.response?.data?.error || err.message);
     } finally {
       setLoading(false);
     }
