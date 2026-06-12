@@ -333,7 +333,22 @@ const CircleWorkspace = () => {
     );
   }
 
-  if (!circle) return null;
+  if (!circle) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh] gap-4 px-4 text-center">
+        <div className="text-xl font-black text-[var(--text-primary)] tracking-tight">Circle Not Found</div>
+        <p className="text-[var(--text-secondary)] text-sm max-w-md">
+          We couldn't retrieve the details for this workspace. It might have been deleted, or you might not have permission to access it.
+        </p>
+        <button 
+          onClick={() => navigate('/circles')} 
+          className="btn-primary py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest mt-2 shadow-[0_0_15px_rgba(123,92,250,0.3)]"
+        >
+          Go Back to Circles
+        </button>
+      </div>
+    );
+  }
 
   // ── Component Panels ────────────────────────────────
 
