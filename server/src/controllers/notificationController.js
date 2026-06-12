@@ -17,7 +17,43 @@ exports.getNotifications = async (req, res) => {
       },
       orderBy: { createdAt: 'desc' }
     });
-    res.json(notifications);
+
+    const inviteIds = notifications
+      .filter(n => n.type === 'CIRCLE_INVITE' && n.relatedId)
+      .map(n => n.relatedId);
+
+    const invitations = await prisma.circleInvitation.findMany({
+      where: { id: { in: inviteIds } },
+      select: { id: true, circleId: true }
+    });
+
+    const inviteMap = invitations.reduce((acc, inv) => {
+      acc[inv.id] = inv.circleId;
+      return acc;
+    }, {});
+
+    const notificationsWithLinks = notifications.map(n => {
+      let link = null;
+      if (n.type === 'CIRCLE_INVITE') {
+        const circleId = inviteMap[n.relatedId];
+        if (circleId) {
+          link = `/circles/${circleId}`;
+        }
+      } else if (n.type === 'CIRCLE_JOINED' || n.type === 'CIRCLE_REJECTED') {
+        link = `/circles/${n.relatedId}`;
+      } else if (n.type === 'CONNECTION') {
+        link = '/network';
+      } else if (n.type === 'PROPOSAL_RECEIVED' || n.type === 'PROPOSAL_STATUS_CHANGED') {
+        link = '/collabs';
+      }
+      
+      return {
+        ...n,
+        link
+      };
+    });
+
+    res.json(notificationsWithLinks);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch notifications' });

@@ -106,7 +106,35 @@ exports.getCircleDetails = async (req, res) => {
 
     // Check access
     const isMember = circle.members.some(m => m.userId === userId);
-    if (!isMember) return res.status(403).json({ error: 'Access denied' });
+    if (!isMember) {
+      const invitation = await prisma.circleInvitation.findFirst({
+        where: {
+          circleId: id,
+          inviteeId: userId,
+          status: 'PENDING'
+        }
+      });
+
+      if (!invitation) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+
+      return res.json({
+        id: circle.id,
+        title: circle.title,
+        slug: circle.slug,
+        description: circle.description,
+        category: circle.category,
+        coverImage: circle.coverImage,
+        visibility: circle.visibility,
+        compensationType: circle.compensationType,
+        ownerId: circle.ownerId,
+        owner: circle.owner,
+        members: circle.members,
+        hasPendingInvitation: true,
+        invitationId: invitation.id
+      });
+    }
 
     res.json(circle);
   } catch (error) {
@@ -154,9 +182,8 @@ exports.inviteMember = async (req, res) => {
       inviteeId,
       inviterId,
       'CIRCLE_INVITE',
-      'Circle Invitation',
       `invited you to join the circle: ${circle.title}`,
-      `/circles/${circleId}`
+      invitation.id
     );
 
     res.status(201).json(invitation);
@@ -203,15 +230,23 @@ exports.respondToInvite = async (req, res) => {
         invitation.inviterId,
         userId,
         'CIRCLE_JOINED',
-        'Invitation Accepted',
         `joined your circle: ${invitation.circle.title}`,
-        `/circles/${invitation.circleId}`
+        invitation.circleId
       );
     } else {
       await prisma.circleInvitation.update({
         where: { id: inviteId },
         data: { status: 'REJECTED' }
       });
+
+      // Notify owner of rejection
+      await notificationController.createNotification(
+        invitation.inviterId,
+        userId,
+        'CIRCLE_REJECTED',
+        `declined your invitation to join: ${invitation.circle.title}`,
+        invitation.circleId
+      );
     }
 
     res.json({ message: `Invitation ${status.toLowerCase()}` });

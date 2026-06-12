@@ -30,6 +30,7 @@ const CircleWorkspace = () => {
   const [sending, setSending]   = useState(false);
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('OVERVIEW');
+  const [respondingInvite, setRespondingInvite] = useState(false);
   const scrollRef = useRef(null);
   const pollRef   = useRef(null);
   const fileInputRef = useRef(null);
@@ -108,6 +109,24 @@ const CircleWorkspace = () => {
     pollRef.current = setInterval(fetchCircleData, 5000);
     return () => clearInterval(pollRef.current);
   }, [fetchCircleData]);
+
+  const handleRespondFromPreview = async (action) => {
+    if (!circle?.invitationId) return;
+    setRespondingInvite(true);
+    try {
+      await axios.patch(`/api/circles/invites/${circle.invitationId}`, { status: action }, { headers });
+      if (action === 'ACCEPTED') {
+        await fetchCircleData();
+      } else {
+        navigate('/circles');
+      }
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to respond to invitation');
+      console.error(err);
+    } finally {
+      setRespondingInvite(false);
+    }
+  };
 
   useEffect(() => {
     if (tasks.length > 0) {
@@ -366,6 +385,138 @@ const CircleWorkspace = () => {
         >
           Go Back to Circles
         </button>
+      </div>
+    );
+  }
+
+  if (circle && circle.hasPendingInvitation) {
+    return (
+      <div className="max-w-3xl mx-auto py-12 px-4">
+        <div className="bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+          
+          <div className="h-48 relative bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 flex items-end p-6">
+            {circle.coverImage && (
+              <img 
+                src={circle.coverImage} 
+                alt="Circle Cover" 
+                className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface-alt)] to-transparent" />
+            
+            <div className="relative z-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#7B5CFA]/25 border border-[#7B5CFA]/40 text-[#a78bfa] text-[10px] font-black uppercase tracking-widest rounded-full mb-3">
+                <Shield size={10} /> Pending Invitation
+              </span>
+              <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)] tracking-tighter leading-none">
+                {circle.title}
+              </h1>
+            </div>
+          </div>
+
+          <div className="p-8 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+              <div className="md:col-span-8 space-y-4">
+                <h3 className="text-xs font-black text-[#7B5CFA] uppercase tracking-widest flex items-center gap-2">
+                  <Target size={12} /> Project Overview
+                </h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {circle.description || "No description provided for this circle."}
+                </p>
+                
+                <div className="flex gap-4 pt-4">
+                  <div className="bg-[var(--bg-sunken)] px-4 py-3 rounded-2xl border border-[var(--border-primary)] flex-1">
+                    <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">Category</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{circle.category}</p>
+                  </div>
+                  <div className="bg-[var(--bg-sunken)] px-4 py-3 rounded-2xl border border-[var(--border-primary)] flex-1">
+                    <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">Visibility</p>
+                    <p className="text-sm font-bold text-[var(--text-primary)]">{circle.visibility}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="md:col-span-4 bg-[var(--bg-sunken)] p-6 rounded-[2rem] border border-[var(--border-primary)] h-fit space-y-4">
+                <h4 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Invited By</h4>
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={circle.owner?.profileImage || `https://ui-avatars.com/api/?name=${circle.owner?.username}`} 
+                    className="w-12 h-12 rounded-2xl object-cover border border-[var(--border-primary)]" 
+                    alt="Owner avatar"
+                  />
+                  <div>
+                    <h5 className="font-bold text-[var(--text-primary)] text-sm">{circle.owner?.username}</h5>
+                    <p className="text-[10px] text-[#34D399] font-black uppercase tracking-widest">Circle Owner</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {circle.members && circle.members.length > 0 && (
+              <div className="border-t border-[var(--border-primary)] pt-6 space-y-4">
+                <h3 className="text-xs font-black text-[var(--text-secondary)] uppercase tracking-widest">
+                  Circle Members ({circle.members.length})
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {circle.members.map((m, i) => (
+                    <div 
+                      key={i} 
+                      className="flex items-center gap-2 bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-full pl-1.5 pr-4.5 py-1.5"
+                    >
+                      <img 
+                        src={m.user?.profileImage || `https://ui-avatars.com/api/?name=${m.user?.username}`} 
+                        className="w-7 h-7 rounded-full object-cover" 
+                        alt={m.user?.username}
+                      />
+                      <div>
+                        <span className="text-xs font-black text-[var(--text-primary)]">{m.user?.username}</span>
+                        <span className="text-[8px] text-[var(--text-muted)] font-black uppercase tracking-wider ml-1.5">
+                          {m.role}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="border-t border-[var(--border-primary)] pt-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
+              <div>
+                <h4 className="font-black text-[var(--text-primary)] text-base tracking-tight mb-1">
+                  Ready to join the collaboration?
+                </h4>
+                <p className="text-xs text-[var(--text-secondary)] font-medium">
+                  Accepting will add you as a contributor to this circle workspace.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  disabled={respondingInvite}
+                  onClick={() => handleRespondFromPreview('REJECTED')}
+                  className="w-full sm:w-auto px-6 py-3 bg-[var(--bg-sunken)] hover:bg-red-500/10 hover:text-red-500 text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all border border-[var(--border-primary)] hover:border-red-500/30"
+                >
+                  Decline
+                </button>
+                <button
+                  disabled={respondingInvite}
+                  onClick={() => handleRespondFromPreview('ACCEPTED')}
+                  className="w-full sm:w-auto px-8 py-3 bg-[#7B5CFA] hover:bg-[#684CE0] disabled:bg-purple-800 text-white text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-xl shadow-[#7B5CFA]/20 flex items-center justify-center gap-2"
+                >
+                  {respondingInvite ? (
+                    <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-white" />
+                  ) : (
+                    <>
+                      Accept & Join <ArrowRight size={12} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
       </div>
     );
   }

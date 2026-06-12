@@ -3,7 +3,7 @@ import axios from 'axios';
 import { 
   Bell, Check, Trash2, UserPlus, Briefcase, 
   MessageSquare, Heart, Clock, ChevronRight,
-  Filter, Shield, Zap
+  Filter, Shield, Zap, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
@@ -72,6 +72,35 @@ const Notifications = () => {
     }
   };
 
+  const handleCircleInvite = async (notificationId, inviteId, status) => {
+    if (!inviteId) {
+      alert("Missing invitation ID");
+      return;
+    }
+    
+    // Optimistic UI update
+    setNotifications(notifications.map(n => 
+      n.id === notificationId 
+      ? { ...n, actionResult: status } 
+      : n
+    ));
+
+    try {
+      await axios.patch(`/api/circles/invites/${inviteId}`, { status }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch (err) {
+      console.error(err);
+      // Revert on failure
+      setNotifications(notifications.map(n => 
+        n.id === notificationId 
+        ? { ...n, actionResult: undefined } 
+        : n
+      ));
+      alert('Failed to respond to circle invitation.');
+    }
+  };
+
   const deleteNotification = async (id) => {
     try {
       await axios.delete(`/api/notifications/${id}`, {
@@ -100,6 +129,9 @@ const Notifications = () => {
   });
 
   const getIcon = (type) => {
+    if (type && type.startsWith('CIRCLE')) {
+      return <Shield size={18} className="text-amber-500" />;
+    }
     switch(type) {
       case 'CONNECTION': return <UserPlus size={18} className="text-blue-500" />;
       case 'COLLAB_PROPOSAL': return <Briefcase size={18} className="text-emerald-500" />;
@@ -270,14 +302,54 @@ const Notifications = () => {
                                   </button>
                                 </div>
                              )}
-                             {notification.actionResult === 'ACCEPTED' && (
+                             {notification.actionResult === 'ACCEPTED' && notification.type !== 'CIRCLE_INVITE' && (
                                 <div className="mt-3">
                                   <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#7B5CFA]/10 border border-[#7B5CFA]/30 text-[#7B5CFA] text-[11px] font-black uppercase tracking-widest rounded-lg">
                                     <Check size={12} strokeWidth={3} /> Connected
                                   </span>
                                 </div>
                              )}
-                             {notification.actionResult === 'DECLINED' && (
+                             {notification.actionResult === 'DECLINED' && notification.type !== 'CIRCLE_INVITE' && (
+                                <div className="mt-3">
+                                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-red-500/10 border border-red-500/30 text-red-500 text-[11px] font-black uppercase tracking-widest rounded-lg">
+                                    <X size={12} strokeWidth={3} /> Declined
+                                  </span>
+                                </div>
+                             )}
+
+                             {notification.type === 'CIRCLE_INVITE' && !notification.actionResult && (
+                                <div className="flex items-center gap-2 mt-3">
+                                  <button 
+                                    onClick={() => handleCircleInvite(notification.id, notification.relatedId, 'ACCEPTED')}
+                                    className="px-4 py-1.5 bg-[#7B5CFA] hover:bg-[#684CE0] text-white text-[11px] font-black uppercase tracking-widest rounded-lg transition-all shadow-md shadow-[#7B5CFA]/20"
+                                  >
+                                    Accept
+                                  </button>
+                                  <button 
+                                    onClick={() => handleCircleInvite(notification.id, notification.relatedId, 'REJECTED')}
+                                    className="px-4 py-1.5 bg-[var(--bg-sunken)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[#2A303C] text-[11px] font-black uppercase tracking-widest rounded-lg transition-all"
+                                  >
+                                    Decline
+                                  </button>
+                                  {notification.link && (
+                                    <Link 
+                                      to={notification.link}
+                                      onClick={() => markAsRead(notification.id)}
+                                      className="px-4 py-1.5 bg-[var(--bg-surface-alt)] border border-[var(--border-primary)] text-[var(--text-primary)] hover:text-[#7B5CFA] text-[11px] font-black uppercase tracking-widest rounded-lg transition-all"
+                                    >
+                                      Review
+                                    </Link>
+                                  )}
+                                </div>
+                             )}
+                             {notification.type === 'CIRCLE_INVITE' && notification.actionResult === 'ACCEPTED' && (
+                                <div className="mt-3">
+                                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#7B5CFA]/10 border border-[#7B5CFA]/30 text-[#7B5CFA] text-[11px] font-black uppercase tracking-widest rounded-lg">
+                                    <Check size={12} strokeWidth={3} /> Joined Circle
+                                  </span>
+                                </div>
+                             )}
+                             {notification.type === 'CIRCLE_INVITE' && notification.actionResult === 'REJECTED' && (
                                 <div className="mt-3">
                                   <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-red-500/10 border border-red-500/30 text-red-500 text-[11px] font-black uppercase tracking-widest rounded-lg">
                                     <X size={12} strokeWidth={3} /> Declined
