@@ -67,6 +67,7 @@ router.get('/messages/conversations', authMiddleware, messageController.getConve
 router.get('/messages/history/:conversationId', authMiddleware, messageController.getMessages);
 router.post('/messages/send', authMiddleware, messageController.sendMessage);
 router.post('/messages/conversation', authMiddleware, messageController.getOrCreateConversation);
+router.patch('/messages/read/:conversationId', authMiddleware, messageController.markConversationAsRead);
 
 // Trust & Safety Routes
 const trustController = require('../controllers/trustController');

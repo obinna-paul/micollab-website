@@ -68,6 +68,7 @@ const initSocket = (httpServer) => {
     socket.on('typing_stop', ({ conversationId }) => {
       socket.to(conversationId).emit('user_stopped_typing', { 
         userId: socket.user.id, 
+        username: socket.user.username,
         conversationId 
       });
     });

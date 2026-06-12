@@ -99,7 +99,15 @@ exports.getMessages = async (req, res) => {
 
     const messages = await prisma.message.findMany({
       where: { conversationId },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
+      include: {
+        sender: { select: { id: true, username: true, profileImage: true } },
+        replyTo: {
+          include: {
+            sender: { select: { username: true } }
+          }
+        }
+      }
     });
 
     res.json(messages);
@@ -112,7 +120,7 @@ exports.getMessages = async (req, res) => {
 exports.sendMessage = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { conversationId, content, mediaUrl, mediaType } = req.body;
+    const { conversationId, content, mediaUrl, mediaType, replyToId } = req.body;
 
     // Check if conversation involves a blocked user
     const participants = await prisma.conversationParticipant.findMany({
@@ -134,13 +142,33 @@ exports.sendMessage = async (req, res) => {
       }
     }
 
+    const io = getIO();
+    const partnerSocketRoom = io.sockets.adapter.rooms.get(conversationId);
+    let isPartnerInRoom = false;
+    if (partner && partnerSocketRoom) {
+      const socketsInRoom = await io.in(conversationId).fetchSockets();
+      isPartnerInRoom = socketsInRoom.some(s => s.user?.id === partner.userId);
+    }
+    const isOnline = partner ? await isUserOnline(partner.userId) : false;
+
     const message = await prisma.message.create({
       data: {
         conversationId,
         senderId: userId,
         content: content || '',
         mediaUrl,
-        mediaType
+        mediaType,
+        replyToId: replyToId || null,
+        isRead: isPartnerInRoom,
+        readAt: isPartnerInRoom ? new Date() : null,
+        isDelivered: isPartnerInRoom || isOnline
+      },
+      include: {
+        replyTo: {
+          include: {
+            sender: { select: { username: true } }
+          }
+        }
       }
     });
 
@@ -159,12 +187,9 @@ exports.sendMessage = async (req, res) => {
     });
 
     // Emit to socket room
-    const io = getIO();
     io.to(conversationId).emit('new_message', messageWithSender);
     
-    // Also notify individuals in case they aren't in the conversation room
-    // Also notify individuals in case they aren't in the conversation room
-    // and send offline emails
+    // Also notify individuals in case they aren't in the conversation room and send offline emails
     for (const p of participants) {
       if (p.userId !== userId) {
         // Live socket notification
@@ -172,12 +197,11 @@ exports.sendMessage = async (req, res) => {
           conversationId,
           message: {
             ...messageWithSender,
-            content: messageWithSender.content.substring(0, 50)
+            content: messageWithSender.content ? messageWithSender.content.substring(0, 50) : (mediaUrl ? '[Attachment]' : '')
           }
         });
 
         // Offline email trigger
-        const isOnline = await isUserOnline(p.userId);
         if (!isOnline) {
           const partnerUser = await prisma.user.findUnique({
             where: { id: p.userId },
@@ -200,6 +224,41 @@ exports.sendMessage = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to send message' });
+  }
+};
+
+exports.markConversationAsRead = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const userId = req.user.id;
+
+    // Verify user is participant
+    const participant = await prisma.conversationParticipant.findUnique({
+      where: { conversationId_userId: { conversationId, userId } }
+    });
+
+    if (!participant) return res.status(403).json({ error: 'Unauthorized' });
+
+    await prisma.message.updateMany({
+      where: {
+        conversationId,
+        senderId: { not: userId },
+        isRead: false
+      },
+      data: {
+        isRead: true,
+        readAt: new Date(),
+        isDelivered: true
+      }
+    });
+
+    const io = getIO();
+    io.to(conversationId).emit('messages_read', { conversationId, readerId: userId });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to mark messages as read' });
   }
 };
 

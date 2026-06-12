@@ -96,6 +96,7 @@ model User {
   wallet             Wallet?
   transactions       Transaction[]
   withdrawalRequests WithdrawalRequest[]
+  sentDirectMessages Message[] @relation("SentDirectMessages")
 }
 
 model PortfolioItem {
@@ -532,14 +533,22 @@ model ConversationParticipant {
 }
 
 model Message {
-  id             String       @id @default(cuid())
+  id             String        @id @default(cuid())
   content        String?
   mediaUrl       String?
-  mediaType      String? // 'image', 'video', etc.
+  mediaType      String? // 'image', 'video', 'voice', etc.
   senderId       String
+  sender         User          @relation("SentDirectMessages", fields: [senderId], references: [id], onDelete: Cascade)
   conversationId String
-  createdAt      DateTime     @default(now())
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime      @default(now())
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  isRead         Boolean       @default(false)
+  isDelivered    Boolean       @default(false)
+  readAt         DateTime?
+  replyToId      String?
+  replyTo        Message?      @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies        Message[]     @relation("MessageReplies")
 }
 
 model Notification {

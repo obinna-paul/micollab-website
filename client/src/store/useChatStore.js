@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { io } from 'socket.io-client';
 import axios from 'axios';
+import useAuthStore from './useAuthStore';
 
 const useChatStore = create((set, get) => ({
   socket: null,
@@ -19,9 +20,18 @@ const useChatStore = create((set, get) => ({
     });
 
     socket.on('new_message', (message) => {
-      // If message belongs to active conversation, add it
-      if (get().activeConversation?.id === message.conversationId) {
+      const activeConv = get().activeConversation;
+      const currentUserId = useAuthStore.getState().user?.id;
+
+      if (activeConv?.id === message.conversationId) {
         set((state) => ({ messages: [...state.messages, message] }));
+        
+        // Mark as read immediately if it's from the partner and we are in the active chat
+        if (message.senderId !== currentUserId) {
+          axios.patch(`/api/messages/read/${message.conversationId}`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(console.error);
+        }
       }
       
       // Update conversations list with the latest message
@@ -43,9 +53,30 @@ const useChatStore = create((set, get) => ({
       }));
     });
 
-    socket.on('user_stopped_typing', ({ conversationId, userId }) => {
-      // This is slightly tricky as we only have userId here. 
-      // For simplicity, we'll clear all for now or wait for a specific username event
+    socket.on('user_stopped_typing', ({ conversationId, username }) => {
+      set((state) => {
+        const conversationStatus = { ...state.typingStatus[conversationId] };
+        if (username) {
+          delete conversationStatus[username];
+        }
+        return {
+          typingStatus: {
+            ...state.typingStatus,
+            [conversationId]: conversationStatus
+          }
+        };
+      });
+    });
+
+    socket.on('messages_read', ({ conversationId, readerId }) => {
+      // If active conversation is read, mark all messages we sent as read
+      if (get().activeConversation?.id === conversationId) {
+        set((state) => ({
+          messages: state.messages.map(msg => 
+            msg.senderId !== readerId ? { ...msg, isRead: true, isDelivered: true } : msg
+          )
+        }));
+      }
     });
 
     set({ socket });
@@ -72,6 +103,11 @@ const useChatStore = create((set, get) => ({
     }
     set({ activeConversation: conversation, messages: [], loading: true });
     try {
+      // Mark as read in backend
+      await axios.patch(`/api/messages/read/${conversation.id}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
       const res = await axios.get(`/api/messages/history/${conversation.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -86,7 +122,7 @@ const useChatStore = create((set, get) => ({
     }
   },
 
-  sendMessage: async (token, content, mediaUrl = null, mediaType = null) => {
+  sendMessage: async (token, content, mediaUrl = null, mediaType = null, replyToId = null) => {
     const { activeConversation } = get();
     if (!activeConversation) return;
 
@@ -95,11 +131,11 @@ const useChatStore = create((set, get) => ({
         conversationId: activeConversation.id,
         content,
         mediaUrl,
-        mediaType
+        mediaType,
+        replyToId
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Socket event 'new_message' will be received by the sender too and update the state
     } catch (err) {
       console.error('Failed to send message', err);
     }
